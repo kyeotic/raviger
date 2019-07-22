@@ -23,13 +23,16 @@ function Deep() {
 }
 
 function Filter() {
-  let [{ type }, setQuery] = useQueryParams()
+  let [{ type, name }, setQuery] = useQueryParams()
   return (
     <div>
-      <span>Filter: {type || ''}</span>
-      <button onClick={() => setQuery({ mode: 'button' }, false)}>
-        Button Filter
-      </button>
+      <p>Filter: {type || ''}</p>
+      <p>Name: {name || ''}</p>
+      <input
+        type="text"
+        value={name || ''}
+        onChange={e => setQuery({ name: e.target.value }, false)}
+      />
     </div>
   )
 }
