@@ -4,11 +4,8 @@ A React hook-based router but that updates on **all** url changes. Heavily inspi
 
 # Installation (coming soon)
 
-```shell
-npm i wanderer
-# or
-yarn add wanderer
-```
+**wanderer** is taken, and I am still looking for a suitable name on npm.
+
 # Quick Start
 
 ```jsx
