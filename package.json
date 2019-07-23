@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "React hook routing",
   "main": "dist/lib.js",
+  "files": [
+    "dist/"
+  ],
   "repository": "git@github.com:kyeotic/raviger.git",
   "author": "Tim Kye <tyrsius@gmail.com>",
   "license": "MIT",
