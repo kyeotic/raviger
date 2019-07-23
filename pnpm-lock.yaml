@@ -8,6 +8,8 @@ devDependencies:
   jest: 24.8.0
   npm-run-all: 4.1.5
   prettier: 1.18.2
+  react: 16.8.6
+  react-dom: 16.8.6_react@16.8.6
   rollup: 1.17.0
   rollup-plugin-babel: 4.3.3_@babel+core@7.5.5+rollup@1.17.0
   rollup-plugin-replace: 2.2.0
@@ -3026,6 +3028,9 @@ packages:
       node: '>=6'
     peerDependencies:
       jest-resolve: '*'
+    peerDependenciesMeta:
+      jest-resolve:
+        optional: true
     resolution:
       integrity: sha512-pgFw2tm54fzgYvc/OHrnysABEObZCUNFnhjoRjaVOCN8NYc032/gVjPaHD4Aq6ApkSieWtfKAFQtmDKAmhupnQ==
   /jest-regex-util/24.3.0:
@@ -4181,10 +4186,33 @@ packages:
       node: '>=0.6'
     resolution:
       integrity: sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
+  /react-dom/16.8.6_react@16.8.6:
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      prop-types: 15.7.2
+      react: 16.8.6
+      scheduler: 0.13.6
+    dev: true
+    peerDependencies:
+      react: ^16.0.0
+    resolution:
+      integrity: sha512-1nL7PIq9LTL3fthPqwkvr2zY7phIPjYrT0jp4HjyEQrEROnw4dG41VVwi/wfoCneoleqrNX7iAD+pXebJZwrwA==
   /react-is/16.8.6:
     dev: true
     resolution:
       integrity: sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
+  /react/16.8.6:
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      prop-types: 15.7.2
+      scheduler: 0.13.6
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha512-pC0uMkhLaHm11ZSJULfOBqV4tIZkx87ZLvbbQYunNixAAvjnC+snJCg0XQXn9VIsttVsbZP/H/ewzgsd5fxKXw==
   /read-pkg-up/2.0.0:
     dependencies:
       find-up: 2.1.0
@@ -4541,6 +4569,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
+  /scheduler/0.13.6:
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+    dev: true
+    resolution:
+      integrity: sha512-IWnObHt413ucAYKsD9J1QShUKkbKLQQHdxRyw73sw4FN26iWr3DY/H34xGPe4nmL1DwXyWmSWmMrA9TfQbE/XQ==
   /semver/5.7.0:
     dev: true
     hasBin: true
@@ -5266,6 +5301,8 @@ specifiers:
   jest: ^24.8.0
   npm-run-all: ^4.1.5
   prettier: ^1.18.2
+  react: ^16.8
+  react-dom: ^16.8
   rollup: ^1.17.0
   rollup-plugin-babel: ^4.3.3
   rollup-plugin-replace: ^2.2.0
