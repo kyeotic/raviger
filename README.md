@@ -1,6 +1,11 @@
 # raviger
 
+![Bundlephobia  minified](https://badgen.net/bundlephobia/min/raviger)
+![Bundlephobia gzip + minified](https://badgen.net/bundlephobia/minzip/raviger)
+
 **R**eact N**avig**at**or**. A React hook-based router but that updates on **all** url changes. Heavily inspired by [hookrouter](https://github.com/Paratron/hookrouter).
+
+Zero dependencies. Tiny footprint.
 
 
 # Installation
