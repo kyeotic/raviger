@@ -35,8 +35,6 @@ export function navigate(url, replace = false) {
 }
 
 export function usePath(basePath) {
-  // let { path } = useContext(RouterContext)
-  // return path
   let context = useContext(RouterContext)
   let [path, setPath] = useState(context.path || getCurrentPath(basePath))
   usePopState(basePath, isNode || context.path, setPath)
