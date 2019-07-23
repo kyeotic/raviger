@@ -1,9 +1,9 @@
 {
-  "name": "wanderer",
+  "name": "raviger",
   "version": "0.1.0",
   "description": "React hook routing",
-  "main": "src/main.js",
-  "repository": "git@github.com:kyeotic/wanderer.git",
+  "main": "dist/lib.js",
+  "repository": "git@github.com:kyeotic/raviger.git",
   "author": "Tim Kye <tyrsius@gmail.com>",
   "license": "MIT",
   "private": false,

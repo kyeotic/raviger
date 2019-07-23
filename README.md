@@ -1,15 +1,17 @@
-# wanderer
+# raviger
 
 A React hook-based router but that updates on **all** url changes. Heavily inspired by [hookrouter](https://github.com/Paratron/hookrouter).
 
-# Installation (coming soon)
+# Installation
 
-**wanderer** is taken, and I am still looking for a suitable name on npm.
+```
+npm i raviger
+```
 
 # Quick Start
 
 ```jsx
-import { useRoutes, Link, useQueryParams } from 'wanderer'
+import { useRoutes, Link, useQueryParams } from 'raviger'
 
 const routes = {
   '/': () => <Home />,
@@ -36,7 +38,7 @@ export default function App() {
 ## Query Strings
 
 ```javascript
-import { useQueryParams } from 'wanderer'
+import { useQueryParams } from 'raviger'
 
 function UserList ({ users }) {
   const [{ startsWith }, setQuery] = useQueryParams()
@@ -60,7 +62,7 @@ function UserList ({ users }) {
 Its possible to override either the querystring *serializer*, *deserializer*, or both, by providing functions to `useQueryParams`. Use a custom wrapper hook to reuse throughout your application.
 
 ```javascript
-import { useQueryParams } from 'wanderer'
+import { useQueryParams } from 'raviger'
 import qs from 'qs'
 
 export function useCustomQuery() {
@@ -70,13 +72,13 @@ export function useCustomQuery() {
 
 ## Navigation
 
-The preferred method for navigation is the `<Link>` component, which uses all the same properties as the standard `<a>` element, and requires `href`. If you need to perform programmatic navigation wanderer exports a `navigate` function.
+The preferred method for navigation is the `<Link>` component, which uses all the same properties as the standard `<a>` element, and requires `href`. If you need to perform programmatic navigation raviger exports a `navigate` function.
 
 # API
 
 ## **useRoutes**
 
-This hook is the main entry point for wanderer.
+This hook is the main entry point for raviger.
 
 * **useRoutes(routeMap, basePath): Route**
 
@@ -86,7 +88,7 @@ The second parameter can be a `basePath` that all routes must begin with, and al
 
 ## **navigate**
 
-This function causes programmatic navigation and cuases all wanderer hooks to re-render. Internally it used by the `<Link>` component.
+This function causes programmatic navigation and cuases all raviger hooks to re-render. Internally it used by the `<Link>` component.
 
 * **navigate(url, replace = false): void**
 
