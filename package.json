@@ -15,7 +15,7 @@
     "build:watch": "rollup -c --watch",
     "example:build": "rollup -c example/rollup.config.js && yarn run example:build:link-react",
     "example:build:watch": "rollup -c example/rollup.config.js --watch",
-    "example:build:link-react": "ln -sf $PWD/node_modules/react/umd/react.development.js example/dist/react.js && ln -sf $PWD/node_modules/react-dom/umd/react-dom.development.js example/dist/react-dom.js",
+    "example:build:link-react": "mkdir -p example/dist && ln -sf $PWD/node_modules/react/umd/react.development.js example/dist/react.js && ln -sf $PWD/node_modules/react-dom/umd/react-dom.development.js example/dist/react-dom.js",
     "example:serve": "npm run example:build:link-react && http-server example/ -p 8080 --proxy http://localhost:8080?",
     "example:dev": "run-p example:build:watch example:serve"
   },
@@ -37,5 +37,16 @@
     "rollup": "^1.17.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-replace": "^2.2.0"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "eslintConfig": {
+    "extends": [
+      "@kyeotic/eslint-config"
+    ]
   }
 }
