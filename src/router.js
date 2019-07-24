@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  createContext,
-  useMemo,
-  useCallback
-} from 'react'
+import React, { useState, useEffect, useContext, createContext, useMemo, useCallback } from 'react'
 import isNode from './isNode'
 import RouterContext from './context.js'
 import { parseQuery, serializeQuery } from './querystrings.js'
@@ -18,15 +11,9 @@ export function useRoutes(routes, basePath = '') {
   const [context, setContext] = useState({ path })
 
   // Watch for location changes
-  usePopState(basePath, isNode, path =>
-    setContext(context => ({ ...context, path }))
-  )
+  usePopState(basePath, isNode, path => setContext(context => ({ ...context, path })))
   const route = matchRoute(routes, path)
-  return (
-    <RouterContext.Provider value={{ ...context, basePath }}>
-      {route}
-    </RouterContext.Provider>
-  )
+  return <RouterContext.Provider value={{ ...context, basePath }}>{route}</RouterContext.Provider>
 }
 
 export function navigate(url, replace = false) {
@@ -41,10 +28,7 @@ export function usePath(basePath) {
   return context.path || path
 }
 
-export function useQueryParams(
-  parseFn = parseQuery,
-  serializeFn = serializeQuery
-) {
+export function useQueryParams(parseFn = parseQuery, serializeFn = serializeQuery) {
   const [querystring, setQuerystring] = useState(getQueryString())
   const setQueryParams = useCallback(
     (params, replace = true) => {
@@ -87,10 +71,7 @@ function getQueryString() {
 
 function matchRoute(routes, path) {
   const routePaths = Object.keys(routes)
-  const routeMatchers = useMemo(
-    () => routePaths.map(createRouteMatcher),
-    routePaths
-  )
+  const routeMatchers = useMemo(() => routePaths.map(createRouteMatcher), routePaths)
   // Hacky method for find + map
   let routeMatch
   routeMatchers.find(([routePath, regex, groups]) => {
@@ -122,7 +103,8 @@ function createRouteMatcher(routePath) {
     new RegExp(
       `${routePath.substr(0, 1) === '*' ? '' : '^'}${routePath
         .replace(/:[a-zA-Z]+/g, '([^/]+)')
-        .replace(/\*/g, '')}${routePath.substr(-1) === '*' ? '' : '$'}`
+        .replace(/\*/g, '')}${routePath.substr(-1) === '*' ? '' : '$'}`,
+      'i'
     )
   ]
 
@@ -132,9 +114,7 @@ function createRouteMatcher(routePath) {
 }
 
 function getCurrentPath(basePath = '') {
-  return isNode
-    ? ssrPath
-    : window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
+  return isNode ? ssrPath : window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
 }
 
 function basePathMatcher(basePath) {
