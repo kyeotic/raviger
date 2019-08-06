@@ -20,6 +20,9 @@
     "example:dev": "run-p example:build:watch example:serve",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:coverage:open": "run-s test:coverage coverage:report",
+    "coverage:report": "open coverage/lcov-report/index.html",
     "test:ci": "run-s size test",
     "size": "run-s build size:check",
     "size:check": "size-limit"
