@@ -17,7 +17,12 @@
     "example:build:watch": "rollup -c example/rollup.config.js --watch",
     "example:build:link-react": "mkdir -p example/dist && ln -sf $PWD/node_modules/react/umd/react.development.js example/dist/react.js && ln -sf $PWD/node_modules/react-dom/umd/react-dom.development.js example/dist/react-dom.js",
     "example:serve": "npm run example:build:link-react && http-server example/ -p 8080 --proxy http://localhost:8080?",
-    "example:dev": "run-p example:build:watch example:serve"
+    "example:dev": "run-p example:build:watch example:serve",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:ci": "run-s size test",
+    "size": "run-s build size:check",
+    "size:check": "size-limit"
   },
   "peerDependencies": {
     "react": "^16.8.0"
@@ -27,6 +32,9 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@kyeotic/eslint-config": "^0.9.0",
+    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/react": "^8.0.7",
+    "babel-jest": "^24.8.0",
     "eslint": "^5.6.0",
     "http-server": "^0.11.1",
     "jest": "^24.8.0",
@@ -36,7 +44,8 @@
     "react-dom": "^16.8",
     "rollup": "^1.17.0",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-replace": "^2.2.0"
+    "rollup-plugin-replace": "^2.2.0",
+    "size-limit": "^1.3.8"
   },
   "prettier": {
     "tabWidth": 2,
@@ -48,5 +57,12 @@
     "extends": [
       "@kyeotic/eslint-config"
     ]
-  }
+  },
+  "size-limit": [
+    {
+      "webpack": false,
+      "path": "dist/lib.js",
+      "limit": "4kb"
+    }
+  ]
 }
