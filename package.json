@@ -11,7 +11,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && rollup -c rollup.legacy.config.js",
     "build:watch": "rollup -c --watch",
     "example:build": "rollup -c example/rollup.config.js && yarn run example:build:link-react",
     "example:build:watch": "rollup -c example/rollup.config.js --watch",
