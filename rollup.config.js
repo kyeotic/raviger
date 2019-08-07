@@ -20,10 +20,10 @@ module.exports = {
       exclude: 'node_modules/**',
       presets: [
         [
-          '@babel/preset-env',
-          {
-            targets: '>3%, not ie 11, not dead'
-          }
+          '@babel/preset-env'
+          // {
+          //   targets: '>3%, not ie 11, not dead'
+          // }
         ],
         '@babel/preset-react'
       ],
