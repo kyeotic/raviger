@@ -2,7 +2,8 @@
   "name": "raviger",
   "version": "0.3.0",
   "description": "React routing with hooks",
-  "main": "dist/lib.js",
+  "main": "dist/main.js",
+  "module": "dist/module.js",
   "files": [
     "dist/"
   ],
@@ -11,6 +12,9 @@
   "license": "MIT",
   "private": false,
   "scripts": {
+    "style": "prettier --config package.json  --write \"{src,test}/**/*.js\"",
+    "lint": "eslint -c package.json \"{src,test}/**/*.js\"",
+    "check": "npm run style && npm run lint",
     "build": "rollup -c",
     "build:watch": "rollup -c --watch",
     "example:build": "rollup -c example/rollup.config.js && yarn run example:build:link-react",
@@ -54,7 +58,7 @@
     "tabWidth": 2,
     "semi": false,
     "singleQuote": true,
-    "printWidth": 100
+    "printWidth": 80
   },
   "eslintConfig": {
     "extends": [
@@ -64,7 +68,7 @@
   "size-limit": [
     {
       "webpack": false,
-      "path": "dist/lib.js",
+      "path": "dist/module.js",
       "limit": "4kb"
     }
   ]
