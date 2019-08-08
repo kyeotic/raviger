@@ -114,7 +114,7 @@ Like `useRoutes` it takes a `basePath` that will be removed from the returned pa
 
 This hooks, like `useState`, returns an array of `[queryParams, setQueryParams]` that contain the current deserialized query parameters and a setter function.
 
-* **useQueryParams(parseFn, serializeFn): [queryParams, setQueryParams]``
+* **useQueryParams(parseFn, serializeFn): [queryParams, setQueryParams]**
 
 The default parse and serialize functions utilized the browser built-in `URLSearchParams`. You can provide custom parse and serialize functions to control this behavior.
 
