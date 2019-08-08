@@ -5,8 +5,7 @@
 
 **R**eact N**avig**at**or**. A React hook-based router but that updates on **all** url changes. Heavily inspired by [hookrouter](https://github.com/Paratron/hookrouter).
 
-Zero dependencies. Tiny footprint.
-
+Zero dependencies. Ruthlessly small footprint.
 
 # Installation
 
@@ -46,18 +45,25 @@ export default function App() {
 ```javascript
 import { useQueryParams } from 'raviger'
 
-function UserList ({ users }) {
+function UserList({ users }) {
   const [{ startsWith }, setQuery] = useQueryParams()
 
   return (
     <div>
-    <label>
-      Filter by Name
-      <input value={startsWith || ''} onChange={(e) => setQuery({ startsWith: e.target.value})} />
-    </label>
-    {users.filter(u => !startsWith || u.name.startsWith(startsWith).map(user => (
-      <p key={user.name}>{user.name}</p>
-    )))}
+      <label>
+        Filter by Name
+        <input
+          value={startsWith || ''}
+          onChange={e => setQuery({ startsWith: e.target.value })}
+        />
+      </label>
+      {users.filter(
+        u =>
+          !startsWith ||
+          u.name
+            .startsWith(startsWith)
+            .map(user => <p key={user.name}>{user.name}</p>)
+      )}
     </div>
   )
 }
@@ -65,7 +71,7 @@ function UserList ({ users }) {
 
 ### Custom Query Serialization
 
-Its possible to override either the querystring *serializer*, *deserializer*, or both, by providing functions to `useQueryParams`. Use a custom wrapper hook to reuse throughout your application.
+Its possible to override either the querystring _serializer_, _deserializer_, or both, by providing functions to `useQueryParams`. Use a custom wrapper hook to reuse throughout your application.
 
 ```javascript
 import { useQueryParams } from 'raviger'
@@ -88,9 +94,9 @@ Some routing libraries only trigger React component updates if navigation was tr
 
 This hook is the main entry point for raviger.
 
-* **useRoutes(routeMap, basePath): Route**
+- **useRoutes(routeMap, basePath): Route**
 
-The first parameter is an object of path keys whose values are functions that return a **ReactElement**. The paths should start with a forward-slash `/` and then contain literal matches (`/base`), path variables (`/:userId`), and a `*` for catch-all wildcards. 
+The first parameter is an object of path keys whose values are functions that return a **ReactElement**. The paths should start with a forward-slash `/` and then contain literal matches (`/base`), path variables (`/:userId`), and a `*` for catch-all wildcards.
 
 The second parameter can be a `basePath` that all routes must begin with, and all `Link`s in the sub-tree will be prepended with. This can be used for sites hosted at a base path, or for nested routers.
 
@@ -98,7 +104,7 @@ The second parameter can be a `basePath` that all routes must begin with, and al
 
 This function causes programmatic navigation and cuases all raviger hooks to re-render. Internally it used by the `<Link>` component.
 
-* **navigate(url, replace = false): void**
+- **navigate(url, replace = false): void**
 
 The url should be relative to the root, e.g. (`/some/path`). If the second parameter is truthy then `replaceState` will be used instead of `pushState`.
 
@@ -106,7 +112,7 @@ The url should be relative to the root, e.g. (`/some/path`). If the second param
 
 Hook to return the current path portion.
 
-* **usePath(basePath): string**
+- **usePath(basePath): string**
 
 Like `useRoutes` it takes a `basePath` that will be removed from the returned path if present. This hook will cause re-rendering anytime the URL is changed, either with `<Link>` components, `navigate` or the `setQueryParams` function returned from `useQueryParams`.
 
@@ -114,7 +120,7 @@ Like `useRoutes` it takes a `basePath` that will be removed from the returned pa
 
 This hooks, like `useState`, returns an array of `[queryParams, setQueryParams]` that contain the current deserialized query parameters and a setter function.
 
-* **useQueryParams(parseFn, serializeFn): [queryParams, setQueryParams]**
+- **useQueryParams(parseFn, serializeFn): [queryParams, setQueryParams]**
 
 The default parse and serialize functions utilized the browser built-in `URLSearchParams`. You can provide custom parse and serialize functions to control this behavior.
 
@@ -122,11 +128,11 @@ The default parse and serialize functions utilized the browser built-in `URLSear
 
 The second return value from **useQueryParams**, used to update the query string.
 
-* **setQueryParams(newQueryParamsObj, replace = true)**
+- **setQueryParams(newQueryParamsObj, replace = true)**
 
 The first parameter takes an object that will be serialized into new query string parameters and sent to **navigate**. It will use the `serializeFn` provided to **useQueryParams**, or the default.
 
-The second parameter, if provided as falsy, will *merge* the provided query paramters into the current query parameters. This is useful if you only want to update the provided values but keep the rest.
+The second parameter, if provided as falsy, will _merge_ the provided query paramters into the current query parameters. This is useful if you only want to update the provided values but keep the rest.
 
 ## **Link**
 
