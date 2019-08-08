@@ -42,7 +42,7 @@ module.exports = [
     input: 'src/main.js',
     output: {
       file: 'dist/module.js',
-      format: 'iife',
+      format: 'esm',
       name: 'raviger',
       globals: {
         react: 'React'
