@@ -102,6 +102,22 @@ This function causes programmatic navigation and cuases all raviger hooks to re-
 
 The url should be relative to the root, e.g. (`/some/path`). If the second parameter is truthy then `replaceState` will be used instead of `pushState`.
 
+* **navigate(url, query, replace = false): void**
+
+Navigate with a serialized query string. This will use `URLSearchParams` to serialize the `query` object. 
+
+### Custom Query Serialization for Navigate
+
+If you need to customize serialization, you can write a wrapper in your app like this one:
+
+```javascript
+import {navigate as nav} from 'raviger'
+import qs from 'qs
+export function navigate (path, query, replace) {
+  return nav(path + '?' + qs.stringify(query)), replace)
+}
+```
+
 ## **usePath**
 
 Hook to return the current path portion.

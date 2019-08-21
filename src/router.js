@@ -29,7 +29,12 @@ export function useRoutes(routes, basePath = '') {
   )
 }
 
-export function navigate(url, replace = false) {
+export function navigate(url, replaceOrQuery = false, replace = false) {
+  if (typeof replaceOrQuery === 'object') {
+    url += '?' + new URLSearchParams(replaceOrQuery).toString()
+  } else {
+    replace = replaceOrQuery
+  }
   window.history[`${replace ? 'replace' : 'push'}State`](null, null, url)
   dispatchEvent(new PopStateEvent('popstate', null))
 }
