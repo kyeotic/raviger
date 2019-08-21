@@ -15,6 +15,7 @@ beforeAll(() => {
 })
 
 afterAll(() => {
+  act(() => navigate('/'))
   console.error = originalError
 })
 
@@ -135,5 +136,21 @@ describe('useQueryParams', () => {
     act(() => void fireEvent.click(getByTestId('params')))
 
     expect(getByTestId('params')).toHaveTextContent('name":"click')
+  })
+})
+
+describe('navigate', () => {
+  test('updates the url', async () => {
+    act(() => navigate('/'))
+    expect(window.location.toString()).toEqual('http://localhost/')
+    act(() => navigate('/home'))
+    expect(window.location.toString()).toEqual('http://localhost/home')
+    // console.log(window.location.toString())
+  })
+  test('allows query string objects', async () => {
+    // console.log(URLSearchParams)
+    act(() => navigate('/', { q: 'name', env: 'test' }))
+    expect(window.location.search).toContain('q=name')
+    expect(window.location.search).toContain('env=test')
   })
 })
