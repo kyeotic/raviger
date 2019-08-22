@@ -1,6 +1,6 @@
 import React from 'react'
-import { render, fireEvent, act } from '@testing-library/react'
-import { navigate, useRoutes } from '../src/router.js'
+import { render, act } from '@testing-library/react'
+import { navigate } from '../src/router.js'
 import { useRedirect } from '../src/redirect'
 
 // this is just a little hack to silence a warning that we'll get until we

@@ -3,6 +3,11 @@ module.exports = {
   rules: {
     'react/display-name': 0
   },
+  settings: {
+    react: {
+      version: 'detect'
+    }
+  },
   env: {
     browser: true
   },

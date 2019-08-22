@@ -29,7 +29,8 @@
     "coverage:report": "open coverage/lcov-report/index.html",
     "test:ci": "run-s size test",
     "size": "run-s build size:check",
-    "size:check": "size-limit"
+    "size:check": "size-limit",
+    "prepublishOnly": "run-s test lint size build"
   },
   "peerDependencies": {
     "react": "^16.8.0"
@@ -43,6 +44,7 @@
     "@testing-library/react": "^8.0.7",
     "babel-jest": "^24.8.0",
     "eslint": "^5.6.0",
+    "eslint-plugin-jest": "^22.15.2",
     "eslint-plugin-react": "^7.14.3",
     "http-server": "^0.11.1",
     "jest": "^24.8.0",
