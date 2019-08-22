@@ -21,7 +21,9 @@ afterAll(() => {
 
 describe('useRoutes', () => {
   function Harness({ routes, basePath }) {
-    const route = useRoutes(routes, basePath)
+    const route = useRoutes(routes, basePath) || (
+      <span data-testid="label">not found</span>
+    )
     return route
   }
 
@@ -44,6 +46,13 @@ describe('useRoutes', () => {
 
     act(() => navigate('/'))
     expect(getByTestId('label')).toHaveTextContent('home')
+  })
+
+  test('returns null when no match', async () => {
+    const { getByTestId } = render(<Harness routes={routes} />)
+
+    act(() => navigate('/missing'))
+    expect(getByTestId('label')).toHaveTextContent('not found')
   })
   test('matches updated route', async () => {
     const { getByTestId } = render(<Harness routes={routes} />)

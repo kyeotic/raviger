@@ -21,6 +21,7 @@ export function useRoutes(routes, basePath = '') {
     setContext(context => ({ ...context, path }))
   )
   const route = matchRoute(routes, path)
+  if (!route) return null
   return (
     <RouterContext.Provider value={{ ...context, basePath }}>
       {route}
