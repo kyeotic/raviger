@@ -2,7 +2,6 @@ import React, {
   useState,
   useEffect,
   useContext,
-  createContext,
   useMemo,
   useCallback
 } from 'react'
@@ -53,28 +52,28 @@ export function useQueryParams(
   const [querystring, setQuerystring] = useState(getQueryString())
   const setQueryParams = useCallback(
     (params, replace = true) => {
-      params = replace ? params : { ...parseQuery(querystring), ...params }
-      navigate(`${getCurrentPath()}?${serializeQuery(params)}`)
+      params = replace ? params : { ...parseFn(querystring), ...params }
+      navigate(`${getCurrentPath()}?${serializeFn(params)}`)
     },
     [querystring]
   )
   // Watch for location changes
   usePopState('', isNode, () => setQuerystring(getQueryString()))
-  return [parseQuery(querystring), setQueryParams]
+  return [parseFn(querystring), setQueryParams]
 }
 
 export function setPath(path) {
   if (!isNode) {
     throw new Error('This method should only be used in NodeJS environments')
   }
-  const url = require('url')
+  const url = require('url') // eslint-disable-line import/no-nodejs-modules
   ssrPath = url.resolve(ssrPath, path)
 }
 
 function usePopState(basePath, predicate, setFn) {
   useEffect(() => {
     if (predicate) return
-    const onPopState = e => {
+    const onPopState = () => {
       setFn(getCurrentPath(basePath))
     }
     window.addEventListener('popstate', onPopState)
@@ -100,7 +99,7 @@ function matchRoute(routes, path) {
   let routeMatch
   routeMatchers.find(([routePath, regex, groups]) => {
     const match = path.match(regex)
-    if (!match) return
+    if (!match) return null
     const result = [routePath, {}]
     if (groups && groups.length) {
       result[1] = groups.reduce((props, prop, i) => {
@@ -119,7 +118,10 @@ function matchRoute(routes, path) {
  * Create a matching set that can Regex match on a route and collect its token properties
  *
  * @param {String} routePath path for a route, should be the KEY on the routes object
- * @returns [String routepath, RegExp routeMatcher, RegExp propMatcher]
+ * @returns {Object} matcher
+ * @returns {String} matcher.routepath
+ * @return {RegExp} mather.routeMatcher
+ * @returns {RegExp} matcher.propMatcher
  */
 function createRouteMatcher(routePath) {
   const route = [

@@ -27,7 +27,11 @@ describe('useRoutes', () => {
 
   function Route({ label }) {
     let path = usePath()
-    return <span data-testid="label">{label}</span>
+    return (
+      <span data-testid="label">
+        {label} {path}
+      </span>
+    )
   }
   const routes = {
     '/': () => <Route label="home" />,
@@ -111,6 +115,7 @@ describe('useQueryParams', () => {
     let [params, setQuery] = useQueryParams()
     return (
       <span data-testid="params" onClick={() => setQuery({ name: 'click' })}>
+        {label}
         {JSON.stringify(params)}
       </span>
     )

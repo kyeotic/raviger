@@ -147,3 +147,11 @@ The second parameter, if provided as falsy, will *merge* the provided query para
 ## **Link**
 
 This component takes all the same parameters as the built-in `<a>` tag. It's `onClick` will be extended to perform local navigation, and if it is inside a component returned from `useRoutes` it will have the provided `basePath` preprended to its `href`.
+
+## **useRedirect**
+
+A redirect hook. 
+
+* **useRedirect(predicateUrl, targetUrl, queryObj, replace)**
+
+If `predicateUrl` is the current path, redirect to the `targetUrl`. `queryObj` is optional, and uses the same serializer that `useQueryParams` uses by default. If `replace` (default: true) it will replace the current URL (back button will skip the `predicateUrl`).
