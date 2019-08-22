@@ -7,6 +7,15 @@
   "files": [
     "dist/"
   ],
+  "keywords": [
+    "react",
+    "hooks",
+    "router",
+    "routing",
+    "route",
+    "navigation",
+    "navigator"
+  ],
   "repository": "git@github.com:kyeotic/raviger.git",
   "author": "Tim Kye <tyrsius@gmail.com>",
   "license": "MIT",
