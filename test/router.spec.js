@@ -69,6 +69,27 @@ describe('useRoutes', () => {
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 1')
   })
+  test('works with lazy routes', async () => {
+    let loader = new Promise(resolve => {
+      setTimeout(() => resolve({ default: Route }), 50)
+    })
+    let Lazy = React.lazy(() => loader)
+    const routes = {
+      '/': () => <Route label="home" />,
+      '/lazy': () => (
+        <React.Suspense fallback={<span data-testid="label">loading</span>}>
+          <Lazy label="lazy" />
+        </React.Suspense>
+      )
+    }
+    act(() => navigate('/'))
+    const { getByTestId } = render(<Harness routes={routes} />)
+    act(() => navigate('/lazy'))
+    expect(getByTestId('label')).toHaveTextContent('loading')
+    await loader
+    act(() => navigate('/lazy'))
+    expect(getByTestId('label')).toHaveTextContent('lazy')
+  })
 })
 
 describe('usePath', () => {
