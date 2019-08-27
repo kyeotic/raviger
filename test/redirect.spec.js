@@ -23,6 +23,7 @@ afterAll(() => {
 describe('useRedirect', () => {
   function Mock() {
     useRedirect('/fail', '/catch', { name: 'kyeotic' })
+    useRedirect('/miss', '/catch')
     return <span>Mock</span>
   }
   test('route is unchanged when predicate does not match', async () => {
@@ -39,5 +40,12 @@ describe('useRedirect', () => {
     expect(window.location.toString()).toEqual(
       'http://localhost/catch?name=kyeotic'
     )
+  })
+  test('route handles empty redirect', async () => {
+    act(() => navigate('/'))
+    expect(window.location.toString()).toEqual('http://localhost/')
+    render(<Mock />)
+    act(() => navigate('/miss'))
+    expect(window.location.toString()).toEqual('http://localhost/catch')
   })
 })

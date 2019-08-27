@@ -30,7 +30,7 @@ export function useRoutes(routes, basePath = '') {
 }
 
 export function navigate(url, replaceOrQuery = false, replace = false) {
-  if (typeof replaceOrQuery === 'object') {
+  if (replaceOrQuery && typeof replaceOrQuery === 'object') {
     url += '?' + new URLSearchParams(replaceOrQuery).toString()
   } else {
     replace = replaceOrQuery
