@@ -188,4 +188,7 @@ describe('navigate', () => {
     expect(window.location.search).toContain('q=name')
     expect(window.location.search).toContain('env=test')
   })
+  test('throws when url is an object', async () => {
+    expect(() => navigate({})).toThrow(/must be a string/)
+  })
 })
