@@ -36,7 +36,7 @@
     "test:coverage": "jest --coverage",
     "test:coverage:open": "run-s test:coverage coverage:report",
     "coverage:report": "open coverage/lcov-report/index.html",
-    "test:ci": "run-s size test",
+    "test:ci": "run-s check size test",
     "size": "run-s build size:check",
     "size:check": "size-limit",
     "prepublishOnly": "run-s test lint size build"
