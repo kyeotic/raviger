@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, fireEvent, act } from '@testing-library/react'
-import { useRoutes, usePath, useQueryParams, navigate } from '../src/router.js'
+import { useRoutes, usePath, useQueryParams, navigate } from '../src/main.js'
 
 // this is just a little hack to silence a warning that we'll get until we
 // upgrade to 16.9: https://github.com/facebook/react/pull/14853

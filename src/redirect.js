@@ -1,4 +1,5 @@
-import { navigate, usePath } from './router'
+import { usePath } from './router.js'
+import { navigate } from './navigate.js'
 
 export function useRedirect(
   predicateUrl,

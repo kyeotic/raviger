@@ -1,7 +1,6 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
-import { navigate } from '../src/router.js'
-import { useRedirect } from '../src/redirect'
+import { useRedirect, navigate } from '../src/main.js'
 
 // this is just a little hack to silence a warning that we'll get until we
 // upgrade to 16.9: https://github.com/facebook/react/pull/14853

@@ -5,11 +5,10 @@ import React, {
   useMemo,
   useCallback
 } from 'react'
-import isNode from './isNode'
+import { isNode, setSsrPath, getSsrPath } from './node'
 import RouterContext from './context.js'
-import { parseQuery, serializeQuery } from './querystrings.js'
-
-let ssrPath = '/'
+import { getQueryString, parseQuery, serializeQuery } from './querystrings.js'
+import { navigate } from './navigate.js'
 
 export function useRoutes(routes, basePath = '') {
   // path is the browser url location
@@ -27,19 +26,6 @@ export function useRoutes(routes, basePath = '') {
       {route}
     </RouterContext.Provider>
   )
-}
-
-export function navigate(url, replaceOrQuery = false, replace = false) {
-  if (typeof url === 'object') {
-    throw new Error('"url" must be a string, was provided an object.')
-  }
-  if (replaceOrQuery && typeof replaceOrQuery === 'object') {
-    url += '?' + new URLSearchParams(replaceOrQuery).toString()
-  } else {
-    replace = replaceOrQuery
-  }
-  window.history[`${replace ? 'replace' : 'push'}State`](null, null, url)
-  dispatchEvent(new PopStateEvent('popstate', null))
 }
 
 export function usePath(basePath) {
@@ -71,7 +57,7 @@ export function setPath(path) {
     throw new Error('This method should only be used in NodeJS environments')
   }
   const url = require('url') // eslint-disable-line import/no-nodejs-modules
-  ssrPath = url.resolve(ssrPath, path)
+  setSsrPath(url.resolve(getSsrPath(), path))
 }
 
 function usePopState(basePath, predicate, setFn) {
@@ -83,14 +69,6 @@ function usePopState(basePath, predicate, setFn) {
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
   }, [basePath])
-}
-
-function getQueryString() {
-  if (isNode) {
-    let queryIndex = ssrPath.indexOf('?')
-    return queryIndex === -1 ? '' : ssrPath.substring(queryIndex + 1)
-  }
-  return location.search
 }
 
 function matchRoute(routes, path) {
@@ -118,15 +96,6 @@ function matchRoute(routes, path) {
   return routes[routePath](props)
 }
 
-/**
- * Create a matching set that can Regex match on a route and collect its token properties
- *
- * @param {String} routePath path for a route, should be the KEY on the routes object
- * @returns {Object} matcher
- * @returns {String} matcher.routepath
- * @return {RegExp} mather.routeMatcher
- * @returns {RegExp} matcher.propMatcher
- */
 function createRouteMatcher(routePath) {
   const route = [
     routePath,
@@ -145,7 +114,7 @@ function createRouteMatcher(routePath) {
 
 function getCurrentPath(basePath = '') {
   return isNode
-    ? ssrPath
+    ? getSsrPath()
     : window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
 }
 

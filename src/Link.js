@@ -1,5 +1,5 @@
 import React, { useContext, useCallback } from 'react'
-import { navigate } from './router.js'
+import { navigate } from './navigate'
 import RouterContext from './context.js'
 
 export default function Link(props) {
