@@ -1,4 +1,4 @@
-import { usePath } from './router.js'
+import { usePath } from './path.js'
 import { navigate } from './navigate.js'
 
 export function useRedirect(

@@ -1,14 +1,9 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
-  useCallback
-} from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import RouterContext from './context.js'
 import { getQueryString, parseQuery, serializeQuery } from './querystrings.js'
 import { navigate } from './navigate.js'
+import { getCurrentPath, usePopState } from './path.js'
 
 export function useRoutes(routes, basePath = '') {
   // path is the browser url location
@@ -26,13 +21,6 @@ export function useRoutes(routes, basePath = '') {
       {route}
     </RouterContext.Provider>
   )
-}
-
-export function usePath(basePath) {
-  let context = useContext(RouterContext)
-  let [path, setPath] = useState(context.path || getCurrentPath(basePath))
-  usePopState(basePath, isNode || context.path, setPath)
-  return context.path || path
 }
 
 export function useQueryParams(
@@ -58,17 +46,6 @@ export function setPath(path) {
   }
   const url = require('url') // eslint-disable-line import/no-nodejs-modules
   setSsrPath(url.resolve(getSsrPath(), path))
-}
-
-function usePopState(basePath, predicate, setFn) {
-  useEffect(() => {
-    if (predicate) return
-    const onPopState = () => {
-      setFn(getCurrentPath(basePath))
-    }
-    window.addEventListener('popstate', onPopState)
-    return () => window.removeEventListener('popstate', onPopState)
-  }, [basePath])
 }
 
 function matchRoute(routes, path) {
@@ -110,14 +87,4 @@ function createRouteMatcher(routePath) {
   const propList = routePath.match(/:[a-zA-Z]+/g)
   route.push(propList ? propList.map(paramName => paramName.substr(1)) : [])
   return route
-}
-
-function getCurrentPath(basePath = '') {
-  return isNode
-    ? getSsrPath()
-    : window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
-}
-
-function basePathMatcher(basePath) {
-  return new RegExp('^' + basePath)
 }

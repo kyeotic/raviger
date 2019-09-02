@@ -39,7 +39,7 @@
     "test:ci": "run-s check size test",
     "size": "run-s build size:check",
     "size:check": "size-limit",
-    "prepublishOnly": "run-s test lint size build"
+    "prepublishOnly": "run-s test:ci"
   },
   "peerDependencies": {
     "react": "^16.8.0"
