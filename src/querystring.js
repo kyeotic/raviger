@@ -1,4 +1,24 @@
+import { useState, useCallback } from 'react'
 import { isNode, getSsrPath } from './node.js'
+import { navigate } from './navigate.js'
+import { getCurrentPath, usePopState } from './path.js'
+
+export function useQueryParams(
+  parseFn = parseQuery,
+  serializeFn = serializeQuery
+) {
+  const [querystring, setQuerystring] = useState(getQueryString())
+  const setQueryParams = useCallback(
+    (params, replace = true) => {
+      params = replace ? params : { ...parseFn(querystring), ...params }
+      navigate(`${getCurrentPath()}?${serializeFn(params)}`)
+    },
+    [querystring]
+  )
+  // Watch for location changes
+  usePopState('', isNode, () => setQuerystring(getQueryString()))
+  return [parseFn(querystring), setQueryParams]
+}
 
 export function parseQuery(querystring) {
   return [...new URLSearchParams(querystring)].reduce(

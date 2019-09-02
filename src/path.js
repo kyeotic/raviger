@@ -1,9 +1,9 @@
-import { useState, useEffect, useContext } from 'react'
-import RouterContext from './context.js'
+import { useState, useEffect } from 'react'
+import { useRouter } from './context.js'
 import { isNode, getSsrPath } from './node.js'
 
 export function usePath(basePath) {
-  let context = useContext(RouterContext)
+  let context = useRouter()
   let [path, setPath] = useState(context.path || getCurrentPath(basePath))
   usePopState(basePath, isNode || context.path, setPath)
   return context.path || path
