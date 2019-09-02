@@ -20,7 +20,7 @@ export function useQueryParams(
   return [parseFn(querystring), setQueryParams]
 }
 
-export function parseQuery(querystring) {
+function parseQuery(querystring) {
   return [...new URLSearchParams(querystring)].reduce(
     (result, [key, value]) => {
       result[key] = decodeURIComponent(value)
@@ -30,7 +30,7 @@ export function parseQuery(querystring) {
   )
 }
 
-export function serializeQuery(queryParams) {
+function serializeQuery(queryParams) {
   return Object.entries(queryParams).reduce((query, [key, value]) => {
     query.append(key, value)
     return query
