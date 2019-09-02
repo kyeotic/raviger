@@ -1,8 +1,6 @@
-import React, { useState, useMemo, useCallback } from 'react'
-import { isNode, setSsrPath, getSsrPath } from './node'
+import React, { useState, useMemo } from 'react'
 import RouterContext from './context.js'
-import { getQueryString, parseQuery, serializeQuery } from './querystrings.js'
-import { navigate } from './navigate.js'
+import { isNode, setSsrPath, getSsrPath } from './node'
 import { getCurrentPath, usePopState } from './path.js'
 
 export function useRoutes(routes, basePath = '') {
@@ -21,23 +19,6 @@ export function useRoutes(routes, basePath = '') {
       {route}
     </RouterContext.Provider>
   )
-}
-
-export function useQueryParams(
-  parseFn = parseQuery,
-  serializeFn = serializeQuery
-) {
-  const [querystring, setQuerystring] = useState(getQueryString())
-  const setQueryParams = useCallback(
-    (params, replace = true) => {
-      params = replace ? params : { ...parseFn(querystring), ...params }
-      navigate(`${getCurrentPath()}?${serializeFn(params)}`)
-    },
-    [querystring]
-  )
-  // Watch for location changes
-  usePopState('', isNode, () => setQuerystring(getQueryString()))
-  return [parseFn(querystring), setQueryParams]
 }
 
 export function setPath(path) {
