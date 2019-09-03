@@ -1,9 +1,9 @@
-import React, { useContext, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { navigate } from './navigate'
-import RouterContext from './context.js'
+import { useRouter } from './context.js'
 
 export default function Link(props) {
-  const { basePath } = useContext(RouterContext)
+  const { basePath } = useRouter()
   const href =
     props.href.substr(0, 1) === '/' ? basePath + props.href : props.href
   const onClick = useCallback(
