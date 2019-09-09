@@ -8,16 +8,26 @@ export default function Link(props) {
     props.href.substr(0, 1) === '/' ? basePath + props.href : props.href
   const onClick = useCallback(
     e => {
-      if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+      try {
+        if (props.onClick) props.onClick(e)
+      } catch (ex) {
+        e.preventDefault()
+        throw ex
+      }
+      if (shouldTrap(e)) {
         e.preventDefault() // prevent the link from actually navigating
         navigate(e.currentTarget.href)
-      }
-
-      if (props.onClick) {
-        props.onClick(e)
       }
     },
     [basePath, href]
   )
   return <a {...props} href={href} onClick={onClick} />
+}
+
+function shouldTrap(e) {
+  return (
+    !e.defaultPrevented && // onClick prevented default
+    e.button === 0 && // ignore everything but left clicks
+    !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
+  )
 }
