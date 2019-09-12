@@ -9,6 +9,11 @@ export function usePath(basePath) {
   return context.path || path
 }
 
+export function useBasePath() {
+  let context = useRouter()
+  return context.basePath
+}
+
 export function getCurrentPath(basePath = '') {
   return isNode
     ? getSsrPath()
