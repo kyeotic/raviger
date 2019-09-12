@@ -1,6 +1,13 @@
 import React from 'react'
 import { render, fireEvent, act } from '@testing-library/react'
-import { useRoutes, usePath, useQueryParams, navigate } from '../src/main.js'
+import {
+  useRoutes,
+  usePath,
+  useBasePath,
+  useQueryParams,
+  navigate
+} from '../src/main.js'
+import { type } from 'os'
 
 // this is just a little hack to silence a warning that we'll get until we
 // upgrade to 16.9: https://github.com/facebook/react/pull/14853
@@ -137,6 +144,43 @@ describe('usePath', () => {
 
     act(() => navigate('/nested/about'))
     expect(getByTestId('path')).toHaveTextContent('/about')
+  })
+})
+
+describe('useBasePath', () => {
+  function Harness({ routes, basePath }) {
+    const route = useRoutes(routes, basePath)
+    return route
+  }
+
+  function Route() {
+    let basePath = useBasePath()
+    return <span data-testid="basePath">{basePath || 'none'}</span>
+  }
+
+  const nestedRoutes = {
+    '/': () => <Route />,
+    '/about': () => <Route />
+  }
+
+  const routes = {
+    '/': () => <Route />,
+    '/about': () => <Route />,
+    '/nested*': () => <Harness basePath="/nested" routes={nestedRoutes} />
+  }
+  test('returns basePath inside useRoutes', async () => {
+    const { getByTestId } = render(<Harness routes={routes} />)
+    act(() => navigate('/'))
+    expect(getByTestId('basePath')).toHaveTextContent('none')
+    act(() => navigate('/about'))
+    expect(getByTestId('basePath')).toHaveTextContent('none')
+    act(() => navigate('/nested'))
+    expect(getByTestId('basePath')).toHaveTextContent('nested')
+  })
+  test('returns empty string outside', async () => {
+    const { getByTestId } = render(<Route />)
+    act(() => navigate('/'))
+    expect(getByTestId('basePath')).toHaveTextContent('none')
   })
 })
 

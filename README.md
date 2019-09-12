@@ -126,6 +126,14 @@ Hook to return the current path portion.
 
 Like `useRoutes` it takes a `basePath` that will be removed from the returned path if present. This hook will cause re-rendering anytime the URL is changed, either with `<Link>` components, `navigate` or the `setQueryParams` function returned from `useQueryParams`.
 
+## **useBasePath**
+
+Hook to return the basePath provided to any parent `useRoutes` components.
+
+* **useBasePath(): string**
+
+If no `useRoutes` parent component exists, or no `basePath` was provided, an empty string is returned.
+
 ## **useQueryParams**
 
 This hooks, like `useState`, returns an array of `[queryParams, setQueryParams]` that contain the current deserialized query parameters and a setter function.
