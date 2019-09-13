@@ -42,7 +42,7 @@ const deepRoutes = {
 }
 
 function Deep() {
-  let route = useRoutes(deepRoutes, '/deep')
+  let route = useRoutes(deepRoutes, { basePath: '/deep' })
   return (
     <div>
       <Nav>
