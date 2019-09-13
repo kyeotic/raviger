@@ -26,24 +26,27 @@ afterAll(() => {
 })
 
 describe('useRoutes', () => {
-  function Harness({ routes, basePath }) {
-    const route = useRoutes(routes, basePath) || (
+  function Harness({ routes, options }) {
+    const route = useRoutes(routes, options) || (
       <span data-testid="label">not found</span>
     )
     return route
   }
 
-  function Route({ label }) {
+  function Route({ label, extra }) {
     let path = usePath()
     return (
-      <span data-testid="label">
-        {label} {path}
-      </span>
+      <div>
+        <span data-testid="label">
+          {label} {path}
+        </span>
+        <span data-testid="extra">{extra}</span>
+      </div>
     )
   }
   const routes = {
     '/': () => <Route label="home" />,
-    '/about': () => <Route label="about" />,
+    '/about': ({ extra }) => <Route label="about" extra={extra} />,
     '/users/:userId': ({ userId }) => <Route label={`User ${userId}`} />
   }
 
@@ -96,6 +99,33 @@ describe('useRoutes', () => {
     act(() => navigate('/lazy'))
     expect(getByTestId('label')).toHaveTextContent('lazy')
   })
+  test('passes extra route props to route', async () => {
+    const { getByTestId } = render(
+      <Harness
+        routes={routes}
+        options={{ routeProps: { extra: 'injected' } }}
+      />
+    )
+    act(() => navigate('/about'))
+    expect(getByTestId('extra')).toHaveTextContent('injected')
+  })
+  test('overrides route props', async () => {
+    const { getByTestId } = render(
+      <Harness routes={routes} options={{ routeProps: { userId: 4 } }} />
+    )
+    act(() => navigate('/users/1'))
+    expect(getByTestId('label')).toHaveTextContent('User 4')
+  })
+  test('underrides route props', async () => {
+    const { getByTestId } = render(
+      <Harness
+        routes={routes}
+        options={{ routeProps: { userId: 4 }, overridePathParams: false }}
+      />
+    )
+    act(() => navigate('/users/1'))
+    expect(getByTestId('label')).toHaveTextContent('User 1')
+  })
 })
 
 describe('usePath', () => {
@@ -120,7 +150,7 @@ describe('usePath', () => {
 
   test('does not include parent router base path', async () => {
     function Harness({ routes, basePath }) {
-      const route = useRoutes(routes, basePath)
+      const route = useRoutes(routes, { basePath })
       return route
     }
 
@@ -148,7 +178,7 @@ describe('usePath', () => {
 
 describe('useBasePath', () => {
   function Harness({ routes, basePath }) {
-    const route = useRoutes(routes, basePath)
+    const route = useRoutes(routes, { basePath })
     return route
   }
 

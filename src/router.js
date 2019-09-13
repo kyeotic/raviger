@@ -3,7 +3,10 @@ import RouterContext from './context.js'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import { getCurrentPath, usePopState } from './path.js'
 
-export function useRoutes(routes, basePath = '') {
+export function useRoutes(
+  routes,
+  { basePath = '', routeProps = {}, overridePathParams = true } = {}
+) {
   // path is the browser url location
   const path = getCurrentPath(basePath)
   const [context, setContext] = useState({ path })
@@ -12,7 +15,7 @@ export function useRoutes(routes, basePath = '') {
   usePopState(basePath, isNode, path =>
     setContext(context => ({ ...context, path }))
   )
-  const route = matchRoute(routes, path)
+  const route = matchRoute(routes, path, { routeProps, overridePathParams })
   if (!route) return null
   return (
     <RouterContext.Provider value={{ ...context, basePath }}>
@@ -29,7 +32,7 @@ export function setPath(path) {
   setSsrPath(url.resolve(getSsrPath(), path))
 }
 
-function matchRoute(routes, path) {
+function matchRoute(routes, path, { routeProps, overridePathParams }) {
   const routePaths = Object.keys(routes)
   const routeMatchers = useMemo(
     () => routePaths.map(createRouteMatcher),
@@ -51,7 +54,11 @@ function matchRoute(routes, path) {
   })
   if (!routeMatch) return null
   const [routePath, props] = routeMatch
-  return routes[routePath](props)
+  return routes[routePath](
+    overridePathParams
+      ? { ...props, ...routeProps }
+      : { ...routeProps, ...props }
+  )
 }
 
 function createRouteMatcher(routePath) {
