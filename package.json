@@ -5,8 +5,10 @@
   "main": "dist/main.js",
   "module": "dist/module.js",
   "files": [
-    "dist/"
+    "dist/",
+    "types/"
   ],
+  "types": "types/raviger.d.ts",
   "keywords": [
     "react",
     "hooks",
