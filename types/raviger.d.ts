@@ -39,17 +39,21 @@ export function usePopState(
   setFn: (path: string) => any
 ): void
 
+export interface QueryParam {
+  [key: string]: any
+}
+
 export function useQueryParams(
-  parseFn?: (query: string) => Object,
-  serializeFn?: (query: Object) => string
-): [{ [key: string]: any }, (query: Object, replace?: boolean) => void]
+  parseFn?: (query: string) => QueryParam,
+  serializeFn?: (query: QueryParam) => string
+): [QueryParam, (query: QueryParam, replace?: boolean) => void]
 
 export function useQueryParams<T>(
-  parseFn?: (query: string) => Object,
-  serializeFn?: (query: Object) => string
-): [T, (query: Object, replace?: boolean) => void]
+  parseFn?: (query: string) => T,
+  serializeFn?: (query: T) => string
+): [T, (query: T, replace?: boolean) => void]
 
 export function useQueryParams<T, Q>(
-  parseFn?: (query: string) => Object,
-  serializeFn?: (query: Object) => string
+  parseFn?: (query: string) => T,
+  serializeFn?: (query: Q) => string
 ): [T, (query: Q, replace?: boolean) => void]
