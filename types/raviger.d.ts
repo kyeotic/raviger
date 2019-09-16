@@ -1,10 +1,10 @@
 import * as React from 'react'
 
 export function useRoutes(
-  routes: { [key: string]: (props: Object) => JSX.Element },
+  routes: { [key: string]: (props: { [k: string]: any }) => JSX.Element },
   options?: {
     basePath?: string
-    routeProps?: Object
+    routeProps?: { [k: string]: any }
     overridePathParams?: boolean
   }
 ): JSX.Element
@@ -12,7 +12,7 @@ export function useRoutes(
 export function useRedirect(
   predicateUrl: string,
   targetUrl: string,
-  queryParams?: Object | URLSearchParams,
+  queryParams?: QueryParam | URLSearchParams,
   replace?: boolean
 ): void
 
@@ -25,7 +25,7 @@ export const Link: React.FC<LinkProps>
 export function navigate(url: string, replace?: boolean): void
 export function navigate(
   url: string,
-  query?: Object | URLSearchParams,
+  query?: QueryParam | URLSearchParams,
   replace?: boolean
 ): void
 
