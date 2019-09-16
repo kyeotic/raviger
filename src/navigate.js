@@ -1,6 +1,6 @@
 export function navigate(url, replaceOrQuery = false, replace = false) {
-  if (typeof url === 'object') {
-    throw new Error('"url" must be a string, was provided an object.')
+  if (typeof url !== 'string') {
+    throw new Error(`"url" must be a string, was provided a(n) ${typeof url}.`)
   }
   if (typeof replaceOrQuery === 'object') {
     url += '?' + new URLSearchParams(replaceOrQuery).toString()
