@@ -20,7 +20,7 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          npm test:ci
+          npm run test:ci
         env:
           CI: true
       - name: Archive code coverage results
