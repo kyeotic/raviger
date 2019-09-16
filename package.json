@@ -37,8 +37,9 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:coverage:open": "run-s test:coverage coverage:report",
+    "test:unit:ci": "jest --ci --reporters=default --reporters=jest-junit",
     "coverage:report": "open coverage/lcov-report/index.html",
-    "test:ci": "run-s check test size",
+    "test:ci": "run-s check test:unit:ci size",
     "size": "run-s build size:check",
     "size:check": "size-limit",
     "prepublishOnly": "run-s test:ci"
@@ -59,6 +60,7 @@
     "eslint-plugin-react": "^7.14.3",
     "http-server": "^0.11.1",
     "jest": "^24.8.0",
+    "jest-junit": "^8.0.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.18.2",
     "react": "^16.8",
