@@ -9,7 +9,7 @@ export function useRoutes(
   }: { basePath: string; routeProps: Object; overridePathParams: boolean }
 ): JSX.Element
 
-export function useRedrect(
+export function useRedirect(
   predicateUrl: string,
   targetUrl: string,
   queryParams: Object | URLSearchParams,
