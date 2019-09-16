@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 export function useRoutes(
-  routes: Dict<string, (props: Object) => JSX.Element>,
+  routes: { [key: string]: (props: Object) => JSX.Element },
   options?: {
     basePath?: string
     routeProps?: Object
@@ -42,4 +42,14 @@ export function usePopState(
 export function useQueryParams(
   parseFn?: (query: string) => Object,
   serializeFn?: (query: Object) => string
-): [Object, (query: Object) => void]
+): [{ [key: string]: any }, (query: Object, replace?: boolean) => void]
+
+export function useQueryParams<T>(
+  parseFn?: (query: string) => Object,
+  serializeFn?: (query: Object) => string
+): [T, (query: Object, replace?: boolean) => void]
+
+export function useQueryParams<T, Q>(
+  parseFn?: (query: string) => Object,
+  serializeFn?: (query: Object) => string
+): [T, (query: Q, replace?: boolean) => void]
