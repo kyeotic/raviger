@@ -92,7 +92,7 @@ This hook is the main entry point for raviger.
 
 * **useRoutes(routeMap, { basePath, routeProps, overridePathParams }): Route**
 
-The first parameter is an object of path keys whose values are functions that return a **ReactElement**. The paths should start with a forward-slash `/` and then contain literal matches (`/base`), path variables (`/:userId`), and a `*` for catch-all wildcards. 
+The first parameter is an object of path keys whose values are functions that return a **ReactElement**. The paths should start with a forward-slash `/` and then contain literal matches (`/base`), path variables (`/:userId`), and a `*` for catch-all wildcards.
 
 ### Options
 
@@ -110,7 +110,7 @@ The url should be relative to the root, e.g. (`/some/path`). If the second param
 
 * **navigate(url, query, replace = false): void**
 
-Navigate with a serialized query string. This will use `URLSearchParams` to serialize the `query` object. 
+Navigate with a serialized query string. This will use `URLSearchParams` to serialize the `query` object.
 
 ### Custom Query Serialization for Navigate
 
@@ -118,7 +118,7 @@ If you need to customize serialization, you can write a wrapper in your app like
 
 ```javascript
 import {navigate as nav} from 'raviger'
-import qs from 'qs
+import qs from 'qs'
 export function navigate (path, query, replace) {
   return nav(path + '?' + qs.stringify(query)), replace)
 }
@@ -164,7 +164,7 @@ This component takes all the same parameters as the built-in `<a>` tag. It's `on
 
 ## **useRedirect**
 
-A redirect hook. 
+A redirect hook.
 
 * **useRedirect(predicateUrl, targetUrl, queryObj, replace)**
 
