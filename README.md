@@ -90,10 +90,6 @@ Some routing libraries only trigger React component updates if navigation was tr
 
 This hook is the main entry point for raviger.
 
-## **useRoutes**
-
-This hook is the main entry point for raviger.
-
 - **useRoutes(routeMap, { basePath, routeProps, overridePathParams, matchTrailingSlash }): Route**
 
 The first parameter is an object of path keys whose values are functions that return a **ReactElement**. The paths should start with a forward-slash `/` and then contain literal matches (`/base`), path variables (`/:userId`), and a `*` for catch-all wildcards.
