@@ -90,15 +90,20 @@ Some routing libraries only trigger React component updates if navigation was tr
 
 This hook is the main entry point for raviger.
 
-* **useRoutes(routeMap, { basePath, routeProps, overridePathParams }): Route**
+## **useRoutes**
+
+This hook is the main entry point for raviger.
+
+- **useRoutes(routeMap, { basePath, routeProps, overridePathParams, matchTrailingSlash }): Route**
 
 The first parameter is an object of path keys whose values are functions that return a **ReactElement**. The paths should start with a forward-slash `/` and then contain literal matches (`/base`), path variables (`/:userId`), and a `*` for catch-all wildcards.
 
 ### Options
 
-* **basePath** a `basePath` that all routes must begin with, and all `Link`s in the sub-tree will be prepended with. This can be used for sites hosted at a base path, or for nested routers.
-* **routeProps** additional props to pass to the matched route. They will be merged into any path parameters that are matched with the route.
-* **overridePathParams** (_default: true_) If `true` **routeProps** will override path parameters of the same name when passed to the matched route. If `false` the path parameters will be override **routeProps** of the same name.
+- **basePath** a `basePath` that all routes must begin with, and all `Link`s in the sub-tree will be prepended with. This can be used for sites hosted at a base path, or for nested routers.
+- **routeProps** additional props to pass to the matched route. They will be merged into any path parameters that are matched with the route.
+- **overridePathParams** (_default: true_) If `true` **routeProps** will override path parameters of the same name when passed to the matched route. If `false` the path parameters will be override **routeProps** of the same name.
+- **matchTrailingSlash** (_default: false_) If `true` paths that end with `/` will match routes that don't. e.g. `/about` will match on the path `/about/` if `matchTrailingSlash: true`
 
 ## **navigate**
 
