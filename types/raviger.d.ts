@@ -6,6 +6,7 @@ export function useRoutes(
     basePath?: string
     routeProps?: { [k: string]: any }
     overridePathParams?: boolean
+    matchTrailingSlash?: boolean
   }
 ): JSX.Element
 

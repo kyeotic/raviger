@@ -72,6 +72,20 @@ describe('useRoutes', () => {
     act(() => navigate('/about'))
     expect(getByTestId('label')).toHaveTextContent('about')
   })
+  test('does not match trailing slash by default', async () => {
+    const { getByTestId } = render(<Harness routes={routes} />)
+    act(() => navigate('/'))
+    act(() => navigate('/about/'))
+    expect(getByTestId('label')).toHaveTextContent('not found')
+  })
+  test('matches trailing slash with option', async () => {
+    const { getByTestId } = render(
+      <Harness routes={routes} options={{ matchTrailingSlash: true }} />
+    )
+    act(() => navigate('/'))
+    act(() => navigate('/about/'))
+    expect(getByTestId('label')).toHaveTextContent('about')
+  })
   test('matches route with parameters', async () => {
     const { getByTestId } = render(<Harness routes={routes} />)
 

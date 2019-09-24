@@ -5,7 +5,12 @@ import { getCurrentPath, usePopState } from './path.js'
 
 export function useRoutes(
   routes,
-  { basePath = '', routeProps = {}, overridePathParams = true } = {}
+  {
+    basePath = '',
+    routeProps = {},
+    overridePathParams = true,
+    matchTrailingSlash = false
+  } = {}
 ) {
   // path is the browser url location
   const path = getCurrentPath(basePath)
@@ -15,7 +20,11 @@ export function useRoutes(
   usePopState(basePath, isNode, path =>
     setContext(context => ({ ...context, path }))
   )
-  const route = matchRoute(routes, path, { routeProps, overridePathParams })
+  const route = matchRoute(routes, path, {
+    routeProps,
+    overridePathParams,
+    matchTrailingSlash
+  })
   if (!route) return null
   return (
     <RouterContext.Provider value={{ ...context, basePath }}>
@@ -32,7 +41,14 @@ export function setPath(path) {
   setSsrPath(url.resolve(getSsrPath(), path))
 }
 
-function matchRoute(routes, path, { routeProps, overridePathParams }) {
+function matchRoute(
+  routes,
+  path,
+  { routeProps, overridePathParams, matchTrailingSlash }
+) {
+  if (matchTrailingSlash && path && path[path.length - 1] === '/') {
+    path = path.substring(0, path.length - 1)
+  }
   const routePaths = Object.keys(routes)
   const routeMatchers = useMemo(
     () => routePaths.map(createRouteMatcher),
