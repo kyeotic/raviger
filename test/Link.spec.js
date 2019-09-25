@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, fireEvent, act } from '@testing-library/react'
+import { render, act } from '@testing-library/react'
 import { Link, navigate } from '../src/main.js'
 
 // this is just a little hack to silence a warning that we'll get until we
