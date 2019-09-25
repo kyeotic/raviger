@@ -1,11 +1,15 @@
 import React, { useCallback } from 'react'
 import { navigate } from './navigate'
+import { usePath } from './path.js'
 import { useRouter } from './context.js'
 
 export default function Link(props) {
+  let { className, activeClass, exactActiveClass, ...rest } = props
+  if (!className) className = ''
   const { basePath } = useRouter()
+  const path = usePath()
   const href =
-    props.href.substr(0, 1) === '/' ? basePath + props.href : props.href
+    props.href.substring(0, 1) === '/' ? basePath + props.href : props.href
   const onClick = useCallback(
     e => {
       try {
@@ -19,9 +23,11 @@ export default function Link(props) {
         navigate(e.currentTarget.href)
       }
     },
-    [basePath, href]
+    [basePath, href, props.onClick]
   )
-  return <a {...props} href={href} onClick={onClick} />
+  if (exactActiveClass && path === href) className += ` ${exactActiveClass}`
+  if (activeClass && path.startsWith(href)) className += ` ${activeClass}`
+  return <a {...rest} className={className} href={href} onClick={onClick} />
 }
 
 function shouldTrap(e) {
