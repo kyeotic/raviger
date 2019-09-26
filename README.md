@@ -163,6 +163,13 @@ The second parameter, if provided as falsy, will *merge* the provided query para
 
 This component takes all the same parameters as the built-in `<a>` tag. It's `onClick` will be extended to perform local navigation, and if it is inside a component returned from `useRoutes` it will have the provided `basePath` preprended to its `href`.
 
+### **ActiveLink**
+
+Just like `<Link>`, but with two additional properties for modifying the `className`
+
+* *activeClass: string* If the `href` matches the start of the current path this will be appended to the `<a> `className`.
+* *exactActiveClass: string* If the `href` matches the cirrent path exactly this will be appended to the `<a> `className`. Stacks with `activeClass*
+
 ## **useRedirect**
 
 A redirect hook.
