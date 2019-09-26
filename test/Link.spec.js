@@ -1,6 +1,6 @@
 import React from 'react'
-import { render, act } from '@testing-library/react'
-import { Link, navigate } from '../src/main.js'
+import { render, act, fireEvent } from '@testing-library/react'
+import { Link, ActiveLink, navigate } from '../src/main.js'
 
 // this is just a little hack to silence a warning that we'll get until we
 // upgrade to 16.9: https://github.com/facebook/react/pull/14853
@@ -30,9 +30,21 @@ describe('Link', () => {
     act(() => navigate('/'))
     expect(getByTestId('link')).toHaveTextContent('go to foo')
   })
+  test('navigates to href', async () => {
+    act(() => navigate('/'))
+    const { getByTestId } = render(
+      <Link href="/foo" className="base" data-testid="link">
+        go to foo
+      </Link>
+    )
+    act(() => void fireEvent.click(getByTestId('link')))
+    expect(document.location.pathname).toEqual('/foo')
+  })
+})
+describe('ActiveLink', () => {
   test('adds active class when active', async () => {
     const { getByTestId } = render(
-      <Link
+      <ActiveLink
         href="/foo"
         className="base"
         activeClass="extra"
@@ -40,7 +52,7 @@ describe('Link', () => {
         data-testid="link"
       >
         go to foo
-      </Link>
+      </ActiveLink>
     )
 
     act(() => navigate('/'))
