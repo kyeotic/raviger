@@ -37,7 +37,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:coverage:open": "run-s test:coverage coverage:report",
-    "test:unit:ci": "jest --ci --reporters=default --reporters=jest-junit",
+    "test:unit:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit",
     "coverage:report": "open coverage/lcov-report/index.html",
     "test:ci": "run-s check test:unit:ci size",
     "size": "run-s build size:check",

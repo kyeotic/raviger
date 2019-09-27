@@ -10,8 +10,7 @@ export function usePath(basePath) {
 }
 
 export function useBasePath() {
-  let context = useRouter()
-  return context.basePath
+  return useRouter().basePath
 }
 
 export function getCurrentPath(basePath = '') {

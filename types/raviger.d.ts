@@ -22,6 +22,11 @@ export interface LinkProps
   href: string
 }
 export const Link: React.FC<LinkProps>
+export interface ActiveLinkProps extends LinkProps {
+  activeClass?: string
+  exactActiveClass?: string
+}
+export const ActiveLink: React.FC<ActiveLinkProps>
 
 export function navigate(url: string, replace?: boolean): void
 export function navigate(
