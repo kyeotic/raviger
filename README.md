@@ -167,8 +167,8 @@ This component takes all the same parameters as the built-in `<a>` tag. It's `on
 
 Just like `<Link>`, but with two additional properties for modifying the `className`
 
-* *activeClass: string* If the `href` matches the start of the current path this will be appended to the `<a> `className`.
-* *exactActiveClass: string* If the `href` matches the cirrent path exactly this will be appended to the `<a> `className`. Stacks with `activeClass*
+* **activeClass: string** If the `href` matches the start of the current path this will be appended to the `<a>` `className`.
+* **exactActiveClass: string** If the `href` matches the cirrent path exactly this will be appended to the `<a>` `className`. Stacks with *activeClass*
 
 ## **useRedirect**
 
