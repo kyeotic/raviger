@@ -23,6 +23,8 @@ dist/*
 example/dist/*
 .history/
 /build
+/public/
+/themes/
 
 # misc
 .DS_Store
