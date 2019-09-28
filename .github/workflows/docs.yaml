@@ -1,0 +1,26 @@
+name: Publish Docs
+
+on:
+  push:
+    branches:
+      - docs
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2.2.1
+        with:
+          hugo-version: '0.58.3'
+      - name: Deploy
+        run: |
+          make deploy
+        env:
+          CI: true
