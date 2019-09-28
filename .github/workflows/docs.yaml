@@ -1,5 +1,7 @@
 name: Publish Docs
 
+# the actual workflow is on the docs branch
+
 on:
   push:
     branches:
