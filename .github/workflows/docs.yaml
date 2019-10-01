@@ -21,9 +21,7 @@ jobs:
           hugo-version: '0.58.3'
       - name: Prepare Hugo
         run: |
-          pushd docs
           git submodule sync && git submodule update --init
-          popd
       - name: Build
         run: make docs
       - name: add nojekyll
