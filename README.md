@@ -77,11 +77,10 @@ Complete documentation is available [here on GitHub Pages](https://kyeotic.githu
 
 ## Contributing
 
-Docs are built with [Hugo](https://gohugo.io/documentation/) and stored on the **docs** branch. To contribute clone the repo, [install hugo](https://gohugo.io/getting-started/installing/), and `make run` to run the docs site locally
+Docs are built with [Hugo](https://gohugo.io/documentation/) and stored on the **master** branch. To contribute clone the repo, [install hugo](https://gohugo.io/getting-started/installing/), and `make run-docs` to run the docs site locally
 
 ```bash
-git checkout docs
-make run # run hugo in watch mode.
+make run-docs # run hugo in watch mode.
 ```
 
-When you are done open a **Pull Request** against the **docs** branch (not *gh-pages*!)
+When you are done open a **Pull Request** against the **master** branch (not *gh-pages*!)

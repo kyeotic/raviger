@@ -1,11 +1,9 @@
 name: Publish Docs
 
-# the actual workflow is on the docs branch
-
 on:
   push:
     branches:
-      - master
+      - docs
 
 jobs:
   build:
@@ -21,10 +19,20 @@ jobs:
         uses: peaceiris/actions-hugo@v2.2.1
         with:
           hugo-version: '0.58.3'
-      - name: Deploy
+      - name: Prepare Hugo
         run: |
-          git remote set-url --push origin https://$GITHUB_TOKEN@github.com/kyeotic/raviger
-          make deploy
+          pushd docs
+          git submodule sync && git submodule update --init
+          popd
+      - name: Build
+        run: make docs
+      - name: add nojekyll
+        run: touch ./docs/public/.nojekyll
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v2.4.0
+        with:
+          emptyCommits: false
         env:
-          CI: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: ./docs/public
