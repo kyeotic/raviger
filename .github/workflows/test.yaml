@@ -1,14 +1,12 @@
 name: Tests
 
-on: [push, pull_request]
-
 on:
   push:
     paths-ignore:
-    - "docs/**"
+      - 'docs/**'
   pull_request:
     paths-ignore:
-    - "docs/**"
+      - 'docs/**'
 
 jobs:
   build:
