@@ -38,5 +38,17 @@ CanonifyURLs=true
   # Change default color scheme with a variant one. Can be "red", "blue", "green".
   themeVariant = "green"
 
+[[menu.shortcuts]] 
+  name = "<i class='fab fa-github'></i> Github repo"
+  identifier = "ds"
+  url = "https://github.com/kyeotic/raviger"
+  weight = 10
+
+[[menu.shortcuts]] 
+  name = "<i class='fab fa-npm'></i> npm Package"
+  url = "https://www.npmjs.com/package/raviger"
+  weight = 11
+
+
 [outputs]
   home = [ "HTML", "RSS", "JSON"]
