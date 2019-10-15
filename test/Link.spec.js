@@ -40,6 +40,16 @@ describe('Link', () => {
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/foo')
   })
+  test('doesnt navigate for target=blank', async () => {
+    act(() => navigate('/'))
+    const { getByTestId } = render(
+      <Link href="/foo" className="base" target="_blank" data-testid="link">
+        go to foo
+      </Link>
+    )
+    act(() => void fireEvent.click(getByTestId('link')))
+    expect(document.location.pathname).toEqual('/')
+  })
 })
 describe('ActiveLink', () => {
   test('adds active class when active', async () => {
