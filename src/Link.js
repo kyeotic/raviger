@@ -13,7 +13,7 @@ export default function Link(props) {
         e.preventDefault()
         throw ex
       }
-      if (shouldTrap(e)) {
+      if (shouldTrap(e, props)) {
         e.preventDefault() // prevent the link from actually navigating
         navigate(e.currentTarget.href)
       }
@@ -38,10 +38,12 @@ function getLinkHref(href, basePath = '') {
   return href.substring(0, 1) === '/' ? basePath + href : href
 }
 
-function shouldTrap(e) {
+function shouldTrap(e, props) {
+  let { target } = props
   return (
     !e.defaultPrevented && // onClick prevented default
     e.button === 0 && // ignore everything but left clicks
+    !(target || target === '_self') && // dont trap target === blank
     !(e.metaKey || e.altKey || e.ctrlKey || e.shiftKey)
   )
 }
