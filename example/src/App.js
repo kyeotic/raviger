@@ -1,11 +1,13 @@
 import React from 'react'
 import { useRoutes, Link, usePath, useQueryParams } from '../../src/main.js'
 import Nav from './Nav.js'
+import Form from './Form.js'
 
 const routes = {
   '/': () => <span>Home</span>,
   '/about': () => <span>about</span>,
   '/contact': () => <span>contact</span>,
+  '/form': () => <Form />,
   '/users/:userId': ({ userId }) => <span>User: {userId}</span>,
   '/filter': () => <Filter />,
   '/deep*': () => <Deep />,
@@ -21,6 +23,7 @@ export default function App() {
         <Link href="/">Home</Link>
         <Link href="/about">About</Link>
         <Link href="/contact">Contact</Link>
+        <Link href="/form">Form</Link>
         <Link href="/users/1">Tom</Link>
         <Link href="/users/2">Jane</Link>
         <Link href="/deep">Deep Root</Link>
