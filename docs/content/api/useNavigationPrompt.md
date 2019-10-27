@@ -1,5 +1,5 @@
 ---
-title: "useInterceptor"
+title: "useNavigationPrompt"
 weight: 7
 date: 2019-10-26T11:32:24-07:00
 ---
@@ -9,7 +9,7 @@ This hook causes a confirmation to block navigation.
 ## API
 
 {{< highlight typescript >}}
-export function useInterceptor(
+export function useNavigationPrompt(
   predicate = true,
   prompt?: string
 ): void
@@ -24,11 +24,11 @@ A standard `prompt` will be used if none is provided. **Note**: due to browser r
 
 {{< highlight jsx >}}
 import React, { useState } from 'react'
-import { useInterceptor, navigate } from 'raviger'
+import { useNavigationPrompt, navigate } from 'raviger'
 
 function Form({ isFormDirty }) {
   // When isFormDirty navigation will cause a confirm dialog
-  useInterceptor(isFormDirty)
+  useNavigationPrompt(isFormDirty)
   return (/* */)
 {{< /highlight >}}
 

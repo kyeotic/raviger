@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { useInterceptor, navigate } from '../../src/main.js'
+import { useNavigationPrompt, navigate } from '../../src/main.js'
 
 export default function Form() {
   const [names, setNames] = useState([])
   const [newName, setName] = useState('')
-  useInterceptor(
+  useNavigationPrompt(
     !!newName.length,
     'Are you sure you want to leave the name form?'
   )

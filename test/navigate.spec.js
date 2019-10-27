@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
-import { useInterceptor, navigate } from '../src/main.js'
+import { useNavigationPrompt, navigate } from '../src/main.js'
 
 const originalConfirm = window.confirm
 
@@ -9,9 +9,9 @@ afterAll(() => {
   act(() => navigate('/'))
 })
 
-describe('useInterceptor', () => {
+describe('useNavigationPrompt', () => {
   function Route({ block = true, prompt }) {
-    useInterceptor(block, prompt)
+    useNavigationPrompt(block, prompt)
     return null
   }
   test('navigation does not block when prompt is false', async () => {
