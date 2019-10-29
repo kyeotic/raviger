@@ -1,6 +1,6 @@
 export { useRoutes } from './router.js'
 export { useRedirect } from './redirect.js'
 export { default as Link, ActiveLink } from './Link.js'
-export { navigate } from './navigate.js'
+export { navigate, useNavigationPrompt } from './navigate.js'
 export { usePath, useBasePath, usePopState } from './path.js'
 export { useQueryParams } from './querystring.js'
