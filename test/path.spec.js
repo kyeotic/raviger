@@ -2,19 +2,27 @@ import React from 'react'
 import { render, act } from '@testing-library/react'
 import { useLocationChange, navigate } from '../src/main.js'
 
-afterAll(() => {
+beforeAll(() => {
   act(() => navigate('/'))
 })
 
 describe('useLocationChange', () => {
-  function Route({ onChange = () => {} }) {
-    useLocationChange(onChange)
+  function Route({ onChange, isActive }) {
+    useLocationChange(onChange, { isActive })
     return null
   }
-  test('navigation does not block when prompt is false', async () => {
-    render(<Route block={false} />)
+  test('setter gets updated path', async () => {
+    let watcher = jest.fn()
+    render(<Route onChange={watcher} />)
     act(() => navigate('/foo'))
 
-    expect(document.location.pathname).toEqual('/foo')
+    expect(watcher).toBeCalledWith('/foo')
+  })
+  test('setter is not updated when isActive is false', async () => {
+    let watcher = jest.fn()
+    render(<Route onChange={watcher} isActive={false} />)
+    act(() => navigate('/foo'))
+
+    expect(watcher).not.toBeCalled()
   })
 })
