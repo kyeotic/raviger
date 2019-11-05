@@ -8,7 +8,7 @@ import {
   navigate
 } from '../src/main.js'
 
-afterAll(() => {
+beforeAll(() => {
   act(() => navigate('/'))
 })
 

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { isNode, getSsrPath } from './node.js'
 import { navigate } from './navigate.js'
-import { getCurrentPath, usePopState } from './path.js'
+import { getCurrentPath, useLocationChange } from './path.js'
 
 export function useQueryParams(
   parseFn = parseQuery,
@@ -16,7 +16,7 @@ export function useQueryParams(
     [querystring]
   )
   // Watch for location changes
-  usePopState('', isNode, () => setQuerystring(getQueryString()))
+  useLocationChange(() => setQuerystring(getQueryString()))
   return [parseFn(querystring), setQueryParams]
 }
 
