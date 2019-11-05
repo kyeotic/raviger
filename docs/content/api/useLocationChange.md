@@ -39,7 +39,7 @@ function App () {
 }
 {{< /highlight>}}
 
-You should try to provide the same function (referential-equality) to **useLocationChange** whenever possible. If you are unable to create the function outside the component scope, use **useCallback** to get a memoized function.
+You should try to provide the same function (referential-equality) to **useLocationChange** whenever possible. If you are unable to create the function outside the component scope use **useCallback** to get a memoized function.
 
 {{< highlight jsx>}}
 import { useCallback } from 'react'
@@ -58,11 +58,11 @@ function App () {
 
 ## Conditional Updates
 
-When `options.isActive` is both **defined** and  **falsey** the `setFn` will not be invoked during location changes. If it is **undefined** or **truthy** `setFn` will be invoked.
+When `options.isActive` is both **defined** and **falsey** the `setFn` will not be invoked during location changes. If it is **undefined** or **truthy** `setFn` will be invoked.
 
 ## Re-rendering
 
-**useLocationChange** does not itself cause re-rendering. If you are trying to get the current path in your component that is better done with the [usePath](/api/link) hook, which returns the value. However,  it is possible to trigger re-rendering by combining **useLocationChange** with **useState**.
+**useLocationChange** does not itself cause re-rendering. If you are trying to get the current path in your component that is better done with the [usePath](/api/link) hook, which returns the value. However, it is possible to trigger re-rendering by combining **useLocationChange** with **useState**.
 
 {{< highlight jsx>}}
 import { useState } from 'react'
