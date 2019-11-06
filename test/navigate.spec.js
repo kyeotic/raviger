@@ -4,7 +4,7 @@ import { useNavigationPrompt, navigate } from '../src/main.js'
 
 const originalConfirm = window.confirm
 
-afterAll(() => {
+beforeEach(() => {
   window.confirm = originalConfirm
   act(() => navigate('/'))
 })

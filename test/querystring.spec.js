@@ -2,7 +2,7 @@ import React from 'react'
 import { render, act } from '@testing-library/react'
 import { navigate, useQueryParams } from '../src/main.js'
 
-beforeAll(() => {
+beforeEach(() => {
   act(() => navigate('/'))
 })
 
@@ -18,8 +18,7 @@ describe('useQueryParams', () => {
       JSON.stringify({ foo: 'bar' })
     )
   })
-  // eslint-disable-next-line jest/no-disabled-tests
-  test.skip('navigation updates query', async () => {
+  test('navigation updates query', async () => {
     const q1 = { foo: 'bar' }
     const q2 = { bar: 'foo' }
     act(() => navigate('/about', q1))
@@ -27,10 +26,9 @@ describe('useQueryParams', () => {
     expect(getByTestId('label')).toHaveTextContent(JSON.stringify(q1))
     act(() => navigate('/check', q2))
     expect(getByTestId('label')).toHaveTextContent(JSON.stringify(q2))
-    console.log(window.location.href)
     // Jest doesn't appear to do this...
-    act(() => window.history.back())
-    console.log(window.location.href)
+    // act(() => window.history.back())
+    act(() => navigate('/about', q1))
     expect(getByTestId('label')).toHaveTextContent(JSON.stringify(q1))
   })
 })

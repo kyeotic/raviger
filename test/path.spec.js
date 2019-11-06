@@ -2,7 +2,7 @@ import React from 'react'
 import { render, act } from '@testing-library/react'
 import { useLocationChange, navigate } from '../src/main.js'
 
-beforeAll(() => {
+beforeEach(() => {
   act(() => navigate('/'))
 })
 

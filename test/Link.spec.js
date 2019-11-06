@@ -2,7 +2,7 @@ import React from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
 import { Link, ActiveLink, navigate } from '../src/main.js'
 
-afterAll(() => {
+beforeEach(() => {
   act(() => navigate('/'))
 })
 
