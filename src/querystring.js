@@ -16,7 +16,10 @@ export function useQueryParams(
     [querystring]
   )
   // Watch for location changes
-  useLocationChange(() => setQuerystring(getQueryString()))
+  const watcher = useCallback(() => setQuerystring(getQueryString()), [
+    setQuerystring
+  ])
+  useLocationChange(watcher)
   return [parseFn(querystring), setQueryParams]
 }
 
