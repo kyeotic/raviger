@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import RouterContext from './context.js'
 import { isNode, setSsrPath, getSsrPath } from './node'
-import { getCurrentPath, usePopState } from './path.js'
+import { getCurrentPath, useLocationChange } from './path.js'
 
 export function useRoutes(
   routes,
@@ -17,9 +17,14 @@ export function useRoutes(
   const [context, setContext] = useState({ path })
 
   // Watch for location changes
-  usePopState(basePath, isNode, path =>
-    setContext(context => ({ ...context, path }))
+  const pathWatcher = useCallback(
+    path => setContext(context => ({ ...context, path })),
+    []
   )
+  useLocationChange(pathWatcher, {
+    basePath
+  })
+  // Get the current route
   const route = matchRoute(routes, path, {
     routeProps,
     overridePathParams,

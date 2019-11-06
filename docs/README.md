@@ -10,3 +10,12 @@ You may need to run this command once to initialize the theme submodule
 ```bash
 git submodule sync && git submodule update --init
 ```
+
+# Creating Content
+
+```bash
+# Either
+hugo new <chapter>/<name>/_index.md
+# Or
+hugo new <chapter>/<name>.md
+```
