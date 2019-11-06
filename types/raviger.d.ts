@@ -42,9 +42,9 @@ export function useBasePath(): string
 export function useLocationChange(
   setFn: (path: string) => any,
   options?: {
-    inheritBasePath: boolean
-    basePath: string
-    isActive: () => boolean | boolean
+    inheritBasePath?: boolean
+    basePath?: string
+    isActive?: () => boolean | boolean
   }
 ): void
 
