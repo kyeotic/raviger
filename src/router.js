@@ -17,7 +17,7 @@ export function useRoutes(
   const [context, setContext] = useState({ path })
 
   // Watch for location changes
-  let pathWatcher = useCallback(
+  const pathWatcher = useCallback(
     path => setContext(context => ({ ...context, path })),
     []
   )

@@ -47,7 +47,7 @@ import { useLocationChange } from 'raviger'
 import { pageChanged } from './monitoring'
 
 function App () {
-  let onChange = useCallback(path => pageChanged('App', path), [])
+  const onChange = useCallback(path => pageChanged('App', path), [])
   useLocationChange(onChange)
 
   return (
@@ -69,7 +69,7 @@ import { useState } from 'react'
 import { useLocationChange } from 'raviger'
 
 function Route () {
-  let [path, setPath] = useState('/')
+  const [path, setPath] = useState('/')
   useLocationChange(setPath)
 
   return (

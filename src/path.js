@@ -25,8 +25,9 @@ export function getCurrentPath(basePath = '') {
 
 export function useLocationChange(setFn, options = {}) {
   if (isNode) return
+  const routerBasePath = useBasePath()
   let basePath = ''
-  if (options.inheritBasePath !== false) basePath = useBasePath()
+  if (options.inheritBasePath !== false) basePath = routerBasePath
   else if (options.basePath) basePath = options.basePath
   useEffect(() => {
     // No predicate defaults true
