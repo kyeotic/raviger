@@ -24,7 +24,7 @@ export function useLocationChange(
 
 ## Basic
 
-The first paramter is a setter-function that is invoked with the new path whenever the url is changed. It does not automatically cause a re-render of the parent component (see _re-rendering_ below).
+The first parameter is a setter-function that is invoked with the new path whenever the url is changed. It does not automatically cause a re-render of the parent component (see _re-rendering_ below).
 
 {{< highlight jsx>}}
 import { useLocationChange } from 'raviger'
