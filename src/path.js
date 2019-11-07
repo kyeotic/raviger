@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from './context.js'
 import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
@@ -29,16 +29,16 @@ export function useLocationChange(setFn, options = {}) {
   const routerBasePath = useBasePath()
   if (options.inheritBasePath !== false) basePath = routerBasePath
   else if (options.basePath) basePath = options.basePath
-  useEffect(() => {
+  const onPopState = useCallback(() => {
     // No predicate defaults true
     if (options.isActive !== undefined && !isPredicateActive(options.isActive))
       return
-    const onPopState = () => {
-      setFn(getCurrentPath(basePath))
-    }
+    setFn(getCurrentPath(basePath))
+  }, [setFn, options.isActive, basePath])
+  useEffect(() => {
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
-  }, [setFn, options.isActive, basePath])
+  }, [onPopState])
 }
 
 function isPredicateActive(predicate) {
