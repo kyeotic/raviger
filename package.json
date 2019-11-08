@@ -28,7 +28,7 @@
     "check": "npm run style && npm run lint",
     "build": "rollup -c",
     "build:watch": "rollup -c --watch",
-    "example:build": "rollup -c example/rollup.config.js && yarn run example:build:link-react",
+    "example:build": "NODE_ENV=development rollup -c example/rollup.config.js && yarn run example:build:link-react",
     "example:build:watch": "rollup -c example/rollup.config.js --watch",
     "example:build:link-react": "mkdir -p example/dist && ln -sf $PWD/node_modules/react/umd/react.development.js example/dist/react.js && ln -sf $PWD/node_modules/react-dom/umd/react-dom.development.js example/dist/react-dom.js",
     "example:serve": "npm run example:build:link-react && http-server example/ -p 8080 --proxy http://localhost:8080?",
