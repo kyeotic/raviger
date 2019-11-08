@@ -4,13 +4,9 @@ import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
 
 export function usePath(basePath) {
-  let context = useRouter()
-  let [path, setPath] = useState(context.path || getCurrentPath(basePath))
-  useLocationChange(setPath, {
-    basePath,
-    isActive: !context.path
-  })
-  return context.path || path
+  let [path, setPath] = useState(getCurrentPath(basePath || useBasePath()))
+  useLocationChange(setPath, { basePath })
+  return path
 }
 
 export function useBasePath() {

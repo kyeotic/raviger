@@ -129,54 +129,6 @@ describe('useRoutes', () => {
   })
 })
 
-describe('usePath', () => {
-  function Route() {
-    let path = usePath()
-    return <span data-testid="path">{path}</span>
-  }
-  test('returns original path', async () => {
-    act(() => navigate('/'))
-    const { getByTestId } = render(<Route />)
-
-    expect(getByTestId('path')).toHaveTextContent('/')
-  })
-
-  test('returns updated path', async () => {
-    act(() => navigate('/'))
-    const { getByTestId } = render(<Route />)
-    act(() => navigate('/about'))
-
-    expect(getByTestId('path')).toHaveTextContent('/about')
-  })
-
-  test('does not include parent router base path', async () => {
-    function Harness({ routes, basePath }) {
-      const route = useRoutes(routes, { basePath })
-      return route
-    }
-
-    const nestedRoutes = {
-      '/': () => <Route />,
-      '/about': () => <Route />
-    }
-    const routes = {
-      '/': () => <Route />,
-      '/about': () => <Route />,
-      '/nested*': () => <Harness basePath="/nested" routes={nestedRoutes} />
-    }
-
-    const { getByTestId } = render(<Harness routes={routes} />)
-    act(() => navigate('/'))
-    expect(getByTestId('path')).toHaveTextContent('/')
-
-    act(() => navigate('/about'))
-    expect(getByTestId('path')).toHaveTextContent('/about')
-
-    act(() => navigate('/nested/about'))
-    expect(getByTestId('path')).toHaveTextContent('/about')
-  })
-})
-
 describe('useBasePath', () => {
   function Harness({ routes, basePath }) {
     const route = useRoutes(routes, { basePath })
