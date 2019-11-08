@@ -1,6 +1,7 @@
 const replace = require('rollup-plugin-replace')
 const babel = require('rollup-plugin-babel')
 const packageJson = require('./package.json')
+
 const deps = Object.keys(packageJson.dependencies || []).concat(
   Object.keys(packageJson.peerDependencies)
 )
