@@ -29,7 +29,7 @@ export function useLocationChange(setFn, options = {}) {
   const routerBasePath = useBasePath()
   if (options.inheritBasePath !== false) basePath = routerBasePath
   else if (options.basePath) basePath = options.basePath
-  const setRef = useRef()
+  const setRef = useRef(setFn)
   useEffect(() => {
     // setFn could be an in-render declared callback, making it unstable
     // This is a method of using an often-changing callback from React Hooks
