@@ -14,9 +14,11 @@ describe('useLocationChange', () => {
   test('setter gets updated path', async () => {
     let watcher = jest.fn()
     render(<Route onChange={watcher} />)
-    act(() => navigate('/foo'))
 
+    act(() => navigate('/foo'))
     expect(watcher).toBeCalledWith('/foo')
+    act(() => navigate('/base'))
+    expect(watcher).toBeCalledWith('/base')
   })
   test('setter is not updated when isActive is false', async () => {
     let watcher = jest.fn()

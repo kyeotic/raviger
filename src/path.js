@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from './context.js'
 import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
@@ -29,12 +29,21 @@ export function useLocationChange(setFn, options = {}) {
   const routerBasePath = useBasePath()
   if (options.inheritBasePath !== false) basePath = routerBasePath
   else if (options.basePath) basePath = options.basePath
+  const setRef = useRef()
+  useEffect(() => {
+    // setFn could be an in-render declared callback, making it unstable
+    // This is a method of using an often-changing callback from React Hooks
+    // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
+    // While not recommended, it is the best current (16.9) available method
+    // For reducing the useEffect cleanup from setFn changing every render
+    setRef.current = setFn
+  })
   const onPopState = useCallback(() => {
     // No predicate defaults true
     if (options.isActive !== undefined && !isPredicateActive(options.isActive))
       return
-    setFn(getCurrentPath(basePath))
-  }, [setFn, options.isActive, basePath])
+    setRef.current(getCurrentPath(basePath))
+  }, [options.isActive, basePath])
   useEffect(() => {
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)

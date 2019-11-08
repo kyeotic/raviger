@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo } from 'react'
 import RouterContext from './context.js'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import { getCurrentPath, useLocationChange } from './path.js'
@@ -16,12 +16,8 @@ export function useRoutes(
   const path = getCurrentPath(basePath)
   const [context, setContext] = useState({ path })
 
-  // Watch for location changes
-  const pathWatcher = useCallback(
-    path => setContext(context => ({ ...context, path })),
-    []
-  )
-  useLocationChange(pathWatcher, {
+  // Watch for path changes
+  useLocationChange(path => setContext(context => ({ ...context, path })), {
     basePath
   })
   // Get the current route
@@ -30,6 +26,7 @@ export function useRoutes(
     overridePathParams,
     matchTrailingSlash
   })
+  // No match should not return an empty Provider, just null
   if (!route) return null
   return (
     <RouterContext.Provider value={{ ...context, basePath }}>
