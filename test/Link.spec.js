@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
 import { Link, ActiveLink, navigate } from '../src/main.js'
 
@@ -36,6 +36,28 @@ describe('Link', () => {
     )
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/')
+  })
+  test('passes linkRef to anchor element', async () => {
+    act(() => navigate('/'))
+
+    let ref
+    function LinkTest() {
+      const linkRef = useRef()
+      ref = linkRef
+      return (
+        <Link
+          href="/foo"
+          target="_blank"
+          data-testid="linkref"
+          linkRef={linkRef}
+        >
+          go to foo
+        </Link>
+      )
+    }
+    const { getByTestId } = render(<LinkTest />)
+    expect(getByTestId('linkref')).toBe(ref.current)
+    expect(ref.current).toBeInstanceOf(HTMLAnchorElement)
   })
 })
 describe('ActiveLink', () => {

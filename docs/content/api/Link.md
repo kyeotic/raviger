@@ -12,7 +12,8 @@ A React component for rendering a `<a>` that uses *history* navigation for local
 export interface LinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   // Unlike normal <a>, this property is required
-  href: string
+  href: string,
+  linkRef?: React.RefObject<HTMLAnchorElement>
 }
 export const Link: React.FC<LinkProps>
 {{< /highlight >}}
@@ -28,3 +29,7 @@ This component takes all the same parameters as the built-in `<a>` tag. It's `on
   go to foo
 </Link>
 {{< /highlight >}}
+
+## Ref Passing
+
+To pass a [React ref](https://reactjs.org/docs/refs-and-the-dom.html) to the `<Link>` DOM Node use the `linkRef` property. This will assign the ref to the internal `<a>` node. In future version this will become `ref` and use the standard [forwardRef](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components) API.
