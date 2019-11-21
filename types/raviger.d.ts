@@ -20,6 +20,7 @@ export function useRedirect(
 export interface LinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string
+  linkRef?: React.RefObject<HTMLAnchorElement>
 }
 export const Link: React.FC<LinkProps>
 export interface ActiveLinkProps extends LinkProps {
