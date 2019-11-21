@@ -2,9 +2,9 @@ import React, { useCallback } from 'react'
 import { navigate } from './navigate'
 import { usePath, useBasePath } from './path.js'
 
-export default function Link(props) {
+export default function Link({ href, linkRef, ...props }) {
   const basePath = useBasePath()
-  const href = getLinkHref(props.href, basePath)
+  href = getLinkHref(href, basePath)
   const onClick = useCallback(
     e => {
       try {
@@ -20,7 +20,8 @@ export default function Link(props) {
     },
     [basePath, href, props.onClick]
   )
-  return <a {...props} href={href} onClick={onClick} />
+  // TODO: 2.0 - replace linkRef with forwardRef API
+  return <a {...props} href={href} onClick={onClick} ref={linkRef} />
 }
 
 export function ActiveLink(props) {
