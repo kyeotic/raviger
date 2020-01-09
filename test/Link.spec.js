@@ -27,6 +27,18 @@ describe('Link', () => {
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/foo')
   })
+  test('fires onClick', async () => {
+    let spy = jest.fn()
+    act(() => navigate('/'))
+    const { getByTestId } = render(
+      <Link href="/foo" className="base" data-testid="link" onClick={spy}>
+        go to foo
+      </Link>
+    )
+    act(() => void fireEvent.click(getByTestId('link')))
+    expect(document.location.pathname).toEqual('/foo')
+    expect(spy).toHaveBeenCalled()
+  })
   test('doesnt navigate for target=blank', async () => {
     act(() => navigate('/'))
     const { getByTestId } = render(

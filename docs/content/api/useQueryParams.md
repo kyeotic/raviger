@@ -42,7 +42,7 @@ function UserList ({ users }) {
 
 ## Updating the Query with merge
 
-The second return value from `useQueryParams` is a function that updates the query string. By default it overwrites the entire query, but it can merge with the query object by setting the second param to `true`.
+The second return value from `useQueryParams` is a function that updates the query string. By default it overwrites the entire query, but it can merge with the query object by setting the second param to `false`.
 
 {{< highlight jsx>}}
 import { useQueryParams } from 'raviger'
@@ -50,10 +50,12 @@ import { useQueryParams } from 'raviger'
 function UserList ({ users }) {
   const [{ startsWith }, setQuery] = useQueryParams()
   return (
-    <input value={startsWith || ''} onChange={(e) => setQuery({ startsWith: e.target.value}, true )} />
+    <input value={startsWith || ''} onChange={(e) => setQuery({ startsWith: e.target.value}, false )} />
   )
 }
 {{< /highlight>}}
+
+The `replace: false` setting also preserves the `location.hash`. The intent should be thought of as updating only the part of the URL that the `setQuery` object describes.
 
 ## Custom serialization and parsing
 

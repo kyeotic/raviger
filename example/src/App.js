@@ -64,6 +64,7 @@ function Filter() {
     <Nav>
       <Link href="/filter?type=projects">Filter Projects</Link>
       <Link href="/filter?type=apis">Filter APIs</Link>
+      <Link href="/filter?type=apis#this">Filter APIs /w Hash</Link>
       <p>Filter: {type || ''}</p>
       <p>Query: {name || ''}</p>
       <input

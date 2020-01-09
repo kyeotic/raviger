@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, act } from '@testing-library/react'
+import { render, act, fireEvent } from '@testing-library/react'
 import { navigate, useQueryParams } from '../src/main.js'
 
 beforeEach(() => {
@@ -30,5 +30,45 @@ describe('useQueryParams', () => {
     // act(() => window.history.back())
     act(() => navigate('/about', q1))
     expect(getByTestId('label')).toHaveTextContent(JSON.stringify(q1))
+  })
+  describe('setQueryParams', () => {
+    function Route({ replace }) {
+      let [, setQuery] = useQueryParams()
+      return (
+        <button
+          data-testid="update"
+          onClick={() => setQuery({ foo: 'bar' }, replace)}
+        >
+          Set Query
+        </button>
+      )
+    }
+    test('updates query', async () => {
+      act(() => navigate('/about', { bar: 'foo' }))
+      const { getByTestId } = render(<Route replace />)
+
+      act(() => void fireEvent.click(getByTestId('update')))
+      expect(document.location.search).toEqual('?foo=bar')
+    })
+    test('merges query', async () => {
+      act(() => navigate('/about', { bar: 'foo' }))
+      const { getByTestId } = render(<Route replace={false} />)
+
+      act(() => void fireEvent.click(getByTestId('update')))
+      expect(document.location.search).toContain('bar=foo')
+      expect(document.location.search).toContain('foo=bar')
+    })
+    test('removes has when replace is true', async () => {
+      act(() => navigate('/about#test'))
+      const { getByTestId } = render(<Route replace />)
+      act(() => void fireEvent.click(getByTestId('update')))
+      expect(document.location.hash).toEqual('')
+    })
+    test('retains has when replace is false', async () => {
+      act(() => navigate('/about#test'))
+      const { getByTestId } = render(<Route replace={false} />)
+      act(() => void fireEvent.click(getByTestId('update')))
+      expect(document.location.hash).toEqual('#test')
+    })
   })
 })
