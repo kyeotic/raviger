@@ -39,6 +39,17 @@ describe('useNavigationPrompt', () => {
     expect(document.location.pathname).toEqual('/')
   })
 
+  test('window navigation blocks when prompt is declined', async () => {
+    window.confirm = jest.fn().mockImplementation(() => false)
+    act(() => navigate('/'))
+    render(<Route block />)
+    let event = window.document.createEvent('Event')
+    event.initEvent('beforeunload', true, true)
+    window.dispatchEvent(event)
+
+    expect(document.location.pathname).toEqual('/')
+  })
+
   test('navigation is confirmed with custom prompt', async () => {
     window.confirm = jest.fn().mockImplementation(() => false)
     act(() => navigate('/'))
