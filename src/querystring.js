@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { isNode, getSsrPath } from './node.js'
 import { navigate } from './navigate.js'
-import { getCurrentPath, useLocationChange } from './path.js'
+import { getCurrentPath, useLocationChange, getCurrentHash } from './path.js'
 
 export function useQueryParams(
   parseFn = parseQuery,
@@ -11,7 +11,9 @@ export function useQueryParams(
   const setQueryParams = useCallback(
     (params, replace = true) => {
       params = replace ? params : { ...parseFn(querystring), ...params }
-      navigate(`${getCurrentPath()}?${serializeFn(params)}`)
+      let path = `${getCurrentPath()}?${serializeFn(params)}`
+      if (!replace) path += getCurrentHash()
+      navigate(path)
     },
     [querystring]
   )

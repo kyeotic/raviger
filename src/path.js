@@ -19,6 +19,15 @@ export function getCurrentPath(basePath = '') {
     : window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
 }
 
+export function getCurrentHash() {
+  if (isNode) {
+    let path = getSsrPath() || ''
+    let hashIndex = path.indexOf('#')
+    return path !== -1 ? path.substring(hashIndex) : ''
+  }
+  return window.location.hash
+}
+
 export function useLocationChange(setFn, options = {}) {
   if (isNode) return
   let basePath = ''
