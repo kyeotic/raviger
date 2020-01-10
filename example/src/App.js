@@ -14,9 +14,12 @@ const routes = {
   '/*': () => <DisplayPath />
 }
 
+let renders = 0
 export default function App() {
+  renders++
   let route = useRoutes(routes)
   let path = usePath()
+  console.log('rendered', renders)
   return (
     <div>
       <Nav>
@@ -33,6 +36,7 @@ export default function App() {
       </Nav>
       <div></div>
       <span style={{ display: 'block' }}>Root Path: {path}</span>
+      <span style={{ display: 'block' }}>Render Count: {renders}</span>
       {route}
     </div>
   )

@@ -44,6 +44,7 @@
     "size:check": "size-limit",
     "prepublishOnly": "run-s test:ci"
   },
+  "dependencies": {},
   "peerDependencies": {
     "react": "^16.8.0"
   },
