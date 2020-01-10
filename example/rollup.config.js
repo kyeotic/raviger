@@ -9,10 +9,11 @@ module.exports = {
     sourcemap: true,
     globals: {
       react: 'React',
-      'react-dom': 'ReactDOM'
+      'react-dom': 'ReactDOM',
+      whyDidYouRender: 'whyDidYouRender'
     }
   },
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom', 'whyDidYouRender'],
   plugins: [
     replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)

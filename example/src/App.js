@@ -15,7 +15,7 @@ const routes = {
 }
 
 let renders = 0
-export default function App() {
+const App = () => {
   renders++
   let route = useRoutes(routes)
   let path = usePath()
@@ -41,6 +41,12 @@ export default function App() {
     </div>
   )
 }
+
+// App.whyDidYouRender = {
+//   logOnDifferentValues: true
+// }
+
+export default App
 
 const deepRoutes = {
   '/': () => <DisplayPath />,
