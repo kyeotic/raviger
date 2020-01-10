@@ -1,16 +1,18 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { useRouter } from './context.js'
+import { useState, useEffect, useCallback, useRef, useContext } from 'react'
+import { BasePathContext } from './context.js'
 import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
 
 export function usePath(basePath) {
-  let [path, setPath] = useState(getCurrentPath(basePath || useBasePath()))
+  let innerBasePath = useBasePath() // hooks can't be called conditionally
+  basePath = basePath || innerBasePath
+  let [path, setPath] = useState(getCurrentPath(basePath))
   useLocationChange(setPath, { basePath })
   return path
 }
 
 export function useBasePath() {
-  return useRouter().basePath
+  return useContext(BasePathContext)
 }
 
 export function getCurrentPath(basePath = '') {
@@ -33,7 +35,7 @@ export function useLocationChange(setFn, options = {}) {
   let basePath = ''
   const routerBasePath = useBasePath()
   if (options.inheritBasePath !== false) basePath = routerBasePath
-  else if (options.basePath) basePath = options.basePath
+  if (!basePath && options.basePath) basePath = options.basePath
   const setRef = useRef(setFn)
   useEffect(() => {
     // setFn could be an in-render declared callback, making it unstable
@@ -47,6 +49,7 @@ export function useLocationChange(setFn, options = {}) {
     // No predicate defaults true
     if (options.isActive !== undefined && !isPredicateActive(options.isActive))
       return
+    // console.log('tracking', getCurrentPath(basePath))
     setRef.current(getCurrentPath(basePath))
   }, [options.isActive, basePath])
   useEffect(() => {

@@ -32,13 +32,10 @@ describe('useQueryParams', () => {
     expect(getByTestId('label')).toHaveTextContent(JSON.stringify(q1))
   })
   describe('setQueryParams', () => {
-    function Route({ replace }) {
+    function Route({ replace, foo = 'bar' }) {
       let [, setQuery] = useQueryParams()
       return (
-        <button
-          data-testid="update"
-          onClick={() => setQuery({ foo: 'bar' }, replace)}
-        >
+        <button data-testid="update" onClick={() => setQuery({ foo }, replace)}>
           Set Query
         </button>
       )
@@ -57,6 +54,14 @@ describe('useQueryParams', () => {
       act(() => void fireEvent.click(getByTestId('update')))
       expect(document.location.search).toContain('bar=foo')
       expect(document.location.search).toContain('foo=bar')
+    })
+    test('merges query without null', async () => {
+      act(() => navigate('/about', { bar: 'foo' }))
+      const { getByTestId } = render(<Route replace={false} foo={null} />)
+
+      act(() => void fireEvent.click(getByTestId('update')))
+      expect(document.location.search).toContain('bar=foo')
+      expect(document.location.search).not.toContain('foo=')
     })
     test('removes has when replace is true', async () => {
       act(() => navigate('/about#test'))

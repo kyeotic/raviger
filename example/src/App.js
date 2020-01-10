@@ -14,9 +14,12 @@ const routes = {
   '/*': () => <DisplayPath />
 }
 
-export default function App() {
+let renders = 0
+const App = () => {
+  renders++
   let route = useRoutes(routes)
   let path = usePath()
+  console.log('rendered', renders)
   return (
     <div>
       <Nav>
@@ -33,10 +36,17 @@ export default function App() {
       </Nav>
       <div></div>
       <span style={{ display: 'block' }}>Root Path: {path}</span>
+      <span style={{ display: 'block' }}>Render Count: {renders}</span>
       {route}
     </div>
   )
 }
+
+// App.whyDidYouRender = {
+//   logOnDifferentValues: true
+// }
+
+export default App
 
 const deepRoutes = {
   '/': () => <DisplayPath />,
