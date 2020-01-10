@@ -35,7 +35,7 @@ function parseQuery(querystring) {
 
 function serializeQuery(queryParams) {
   return Object.entries(queryParams).reduce((query, [key, value]) => {
-    query.append(key, value)
+    if (value !== null) query.append(key, value)
     return query
   }, new URLSearchParams())
 }
