@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 
 const BasePathContext = createContext('')
 const PathContext = createContext(null)
@@ -7,8 +7,7 @@ export { BasePathContext }
 export { PathContext }
 
 export function useRouter() {
-  return {
-    basePath: useContext(BasePathContext),
-    path: useContext(PathContext)
-  }
+  const basePath = useContext(BasePathContext)
+  const path = useContext(PathContext)
+  return useMemo(() => ({ basePath, path }), [basePath, path])
 }

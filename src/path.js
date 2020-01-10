@@ -4,8 +4,8 @@ import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
 
 export function usePath(basePath) {
-  let innerBasePath = useBasePath() // hooks can't be called conditionally
-  basePath = basePath || innerBasePath
+  let contextBasePath = useBasePath() // hooks can't be called conditionally
+  basePath = basePath || contextBasePath
   let [path, setPath] = useState(getCurrentPath(basePath))
   useLocationChange(setPath, { basePath })
   return path
@@ -49,7 +49,6 @@ export function useLocationChange(setFn, options = {}) {
     // No predicate defaults true
     if (options.isActive !== undefined && !isPredicateActive(options.isActive))
       return
-    // console.log('tracking', getCurrentPath(basePath))
     setRef.current(getCurrentPath(basePath))
   }, [options.isActive, basePath])
   useEffect(() => {
