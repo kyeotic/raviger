@@ -1,6 +1,6 @@
 {
   "name": "raviger",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "React routing with hooks",
   "main": "dist/main.js",
   "module": "dist/module.js",
