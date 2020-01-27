@@ -2,8 +2,9 @@ import React, { useCallback } from 'react'
 import { navigate } from './navigate'
 import { usePath, useBasePath } from './path.js'
 
-export default function Link({ href, linkRef, ...props }) {
-  const basePath = useBasePath()
+export default function Link({ href, basePath, linkRef, ...props }) {
+  const contextBasePath = useBasePath()
+  basePath = basePath || contextBasePath
   href = getLinkHref(href, basePath)
   const onClick = useCallback(
     e => {

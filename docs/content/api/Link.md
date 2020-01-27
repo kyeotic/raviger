@@ -13,6 +13,7 @@ export interface LinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   // Unlike normal <a>, this property is required
   href: string,
+  basePath?: string,
   linkRef?: React.RefObject<HTMLAnchorElement>
 }
 export const Link: React.FC<LinkProps>
@@ -29,6 +30,33 @@ This component takes all the same parameters as the built-in `<a>` tag. It's `on
   go to foo
 </Link>
 {{< /highlight >}}
+
+## BasePath
+
+If a `<Link>` component is inside a router context (there is a `useRoutes` in its parent heirarchy) the `basePath` will be inherited. You can also provide a `basePath` as a `<Link>` prop, which will override an inherited one.
+
+{{< highlight jsx >}}
+import { useRoutes, Link } from 'raviger'
+
+function Home () {
+  return (
+    <div>
+      <Link href="/foo" /> {/* href = /app/foo */}
+      <Link href="/foo" basePath="/bar" /> {/* href = /bar/foo */}
+    </div>
+  )
+}
+
+const routes = {
+  '/': () => <Home />
+}
+
+export default function App() {
+  return useRoutes(routes, { basePath: 'app' })
+  )
+}
+{{< /highlight >}}
+
 
 ## Ref Passing
 

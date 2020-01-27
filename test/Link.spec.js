@@ -27,6 +27,26 @@ describe('Link', () => {
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/foo')
   })
+  test('navigates to href with basePath', async () => {
+    act(() => navigate('/'))
+    const { getByTestId } = render(
+      <Link href="/foo" basePath="/bar" className="base" data-testid="link">
+        go to foo
+      </Link>
+    )
+    act(() => void fireEvent.click(getByTestId('link')))
+    expect(document.location.pathname).toEqual('/bar/foo')
+  })
+  test('navigates to href with basePath without root slash', async () => {
+    act(() => navigate('/'))
+    const { getByTestId } = render(
+      <Link href="/foo" basePath="bar" className="base" data-testid="link">
+        go to foo
+      </Link>
+    )
+    act(() => void fireEvent.click(getByTestId('link')))
+    expect(document.location.pathname).toEqual('/bar/foo')
+  })
   test('fires onClick', async () => {
     let spy = jest.fn()
     act(() => navigate('/'))
