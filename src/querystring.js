@@ -26,7 +26,7 @@ export function useQueryParams(
 function parseQuery(querystring) {
   return [...new URLSearchParams(querystring)].reduce(
     (result, [key, value]) => {
-      result[key] = decodeURIComponent(value)
+      result[key] = value
       return result
     },
     {}

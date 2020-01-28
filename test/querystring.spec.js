@@ -31,49 +31,60 @@ describe('useQueryParams', () => {
     act(() => navigate('/about', q1))
     expect(getByTestId('label')).toHaveTextContent(JSON.stringify(q1))
   })
-  describe('setQueryParams', () => {
-    function Route({ replace, foo = 'bar' }) {
-      let [, setQuery] = useQueryParams()
-      return (
-        <button data-testid="update" onClick={() => setQuery({ foo }, replace)}>
-          Set Query
-        </button>
-      )
-    }
-    test('updates query', async () => {
-      act(() => navigate('/about', { bar: 'foo' }))
-      const { getByTestId } = render(<Route replace />)
+})
 
-      act(() => void fireEvent.click(getByTestId('update')))
-      expect(document.location.search).toEqual('?foo=bar')
-    })
-    test('merges query', async () => {
-      act(() => navigate('/about', { bar: 'foo' }))
-      const { getByTestId } = render(<Route replace={false} />)
+describe('setQueryParams', () => {
+  function Route({ replace, foo = 'bar' }) {
+    let [query, setQuery] = useQueryParams()
+    return (
+      <button data-testid="update" onClick={() => setQuery({ foo }, replace)}>
+        Set Query: {query.foo}
+      </button>
+    )
+  }
+  test('updates query', async () => {
+    act(() => navigate('/about', { bar: 'foo' }))
+    const { getByTestId } = render(<Route replace />)
 
-      act(() => void fireEvent.click(getByTestId('update')))
-      expect(document.location.search).toContain('bar=foo')
-      expect(document.location.search).toContain('foo=bar')
-    })
-    test('merges query without null', async () => {
-      act(() => navigate('/about', { bar: 'foo' }))
-      const { getByTestId } = render(<Route replace={false} foo={null} />)
+    act(() => void fireEvent.click(getByTestId('update')))
+    expect(document.location.search).toEqual('?foo=bar')
+  })
+  test('handles encoded values', async () => {
+    act(() => navigate('/about', { foo: 'foo' }))
+    const { getByTestId } = render(<Route replace={false} foo={'%100'} />)
 
-      act(() => void fireEvent.click(getByTestId('update')))
-      expect(document.location.search).toContain('bar=foo')
-      expect(document.location.search).not.toContain('foo=')
-    })
-    test('removes has when replace is true', async () => {
-      act(() => navigate('/about#test'))
-      const { getByTestId } = render(<Route replace />)
-      act(() => void fireEvent.click(getByTestId('update')))
-      expect(document.location.hash).toEqual('')
-    })
-    test('retains has when replace is false', async () => {
-      act(() => navigate('/about#test'))
-      const { getByTestId } = render(<Route replace={false} />)
-      act(() => void fireEvent.click(getByTestId('update')))
-      expect(document.location.hash).toEqual('#test')
-    })
+    act(() => void fireEvent.click(getByTestId('update')))
+    expect(document.location.search).toContain(
+      `foo=${encodeURIComponent('%100')}`
+    )
+    expect(getByTestId('update')).toHaveTextContent('Set Query: %100')
+  })
+  test('merges query', async () => {
+    act(() => navigate('/about', { bar: 'foo' }))
+    const { getByTestId } = render(<Route replace={false} />)
+
+    act(() => void fireEvent.click(getByTestId('update')))
+    expect(document.location.search).toContain('bar=foo')
+    expect(document.location.search).toContain('foo=bar')
+  })
+  test('merges query without null', async () => {
+    act(() => navigate('/about', { bar: 'foo' }))
+    const { getByTestId } = render(<Route replace={false} foo={null} />)
+
+    act(() => void fireEvent.click(getByTestId('update')))
+    expect(document.location.search).toContain('bar=foo')
+    expect(document.location.search).not.toContain('foo=')
+  })
+  test('removes has when replace is true', async () => {
+    act(() => navigate('/about#test'))
+    const { getByTestId } = render(<Route replace />)
+    act(() => void fireEvent.click(getByTestId('update')))
+    expect(document.location.hash).toEqual('')
+  })
+  test('retains has when replace is false', async () => {
+    act(() => navigate('/about#test'))
+    const { getByTestId } = render(<Route replace={false} />)
+    act(() => void fireEvent.click(getByTestId('update')))
+    expect(document.location.hash).toEqual('#test')
   })
 })
