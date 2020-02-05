@@ -57,6 +57,8 @@ function UserList ({ users }) {
 
 The `replace: false` setting also preserves the `location.hash`. The intent should be thought of as updating only the part of the URL that the `setQuery` object describes.
 
+> Warning: using `setQuery` inside of a `useEffect` (or other on-mount/on-update lifecycle methods) can result in unwanted navigations, which show up as duplicate entries in the browser history stack.
+
 ## Custom serialization and parsing
 
 Its possible to override either the querystring *serializer*, *deserializer*, or both, by providing functions to `useQueryParams`. Use a custom wrapper hook to reuse throughout your application.
