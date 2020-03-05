@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
-import { useRedirect, navigate } from '../src/main.js'
+import { useRedirect, navigate, Redirect } from '../src/main.js'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -33,5 +33,31 @@ describe('useRedirect', () => {
     render(<Mock />)
     act(() => navigate('/miss'))
     expect(window.location.toString()).toEqual('http://localhost/catch')
+  })
+})
+
+describe('Redirect', () => {
+  test('redirects to "to" without merge', async () => {
+    render(<Redirect to="/foo" merge={false} />)
+    expect(window.location.toString()).toEqual('http://localhost/foo')
+  })
+  test('redirects to "to" without merge and query', async () => {
+    act(() => navigate('/?things=act'))
+    render(<Redirect to="/foo" merge={false} />)
+    expect(window.location.toString()).toEqual('http://localhost/foo')
+  })
+  test('redirects to "to" with merge (default) and query', async () => {
+    act(() => navigate('/?things=act'))
+    render(<Redirect to="/foo" />)
+    expect(window.location.toString()).toEqual(
+      'http://localhost/foo?things=act'
+    )
+  })
+  test('redirects to "to" with merge and query/hash', async () => {
+    act(() => navigate('/?things=act#test'))
+    render(<Redirect to="/foo" merge />)
+    expect(window.location.toString()).toEqual(
+      'http://localhost/foo?things=act#test'
+    )
   })
 })

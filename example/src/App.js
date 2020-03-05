@@ -1,5 +1,11 @@
 import React from 'react'
-import { useRoutes, Link, usePath, useQueryParams } from '../../src/main.js'
+import {
+  useRoutes,
+  Link,
+  usePath,
+  useQueryParams,
+  Redirect
+} from '../../src/main.js'
 import Nav from './Nav.js'
 import Form from './Form.js'
 
@@ -10,6 +16,7 @@ const routes = {
   '/form': () => <Form />,
   '/users/:userId': ({ userId }) => <span>User: {userId}</span>,
   '/filter': () => <Filter />,
+  '/redirect': () => <Redirect to={'/filter'} />,
   '/deep*': () => <Deep />,
   '/*': () => <DisplayPath />
 }
@@ -19,7 +26,7 @@ const App = () => {
   renders++
   let route = useRoutes(routes)
   let path = usePath()
-  console.log('rendered', renders)
+  // console.log('rendered', renders)
   return (
     <div>
       <Nav>
