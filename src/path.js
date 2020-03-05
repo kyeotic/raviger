@@ -15,6 +15,20 @@ export function useBasePath() {
   return useContext(BasePathContext)
 }
 
+export function useHash({ stripHash = true } = {}) {
+  const [hash, setHash] = useState(window.location.hash)
+  const handleHash = useCallback(() => {
+    if (window.location.hash === hash) return
+    setHash(window.location.hash)
+  }, [setHash])
+  useEffect(() => {
+    window.addEventListener('hashchange', handleHash, false)
+    return () => window.removeEventListener('hashchange', handleHash)
+  }, [handleHash])
+  useLocationChange(handleHash)
+  return stripHash ? hash.substring(1) : hash
+}
+
 export function getCurrentPath(basePath = '') {
   return isNode
     ? getSsrPath()

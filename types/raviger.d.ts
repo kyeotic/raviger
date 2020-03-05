@@ -30,6 +30,13 @@ export interface ActiveLinkProps extends LinkProps {
 }
 export const ActiveLink: React.FC<ActiveLinkProps>
 
+export interface RedirectProps {
+  to: string
+  replace?: boolean
+  merge?: boolean
+}
+export const Redirect: React.FC<RedirectProps>
+
 export function navigate(url: string, replace?: boolean): void
 export function navigate(
   url: string,
@@ -38,6 +45,7 @@ export function navigate(
 ): void
 
 export function usePath(basePath?: string): string
+export function useHash(options?: { stripHash?: boolean }): string
 
 export function useBasePath(): string
 

@@ -1,6 +1,12 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
-import { useRoutes, usePath, useLocationChange, navigate } from '../src/main.js'
+import {
+  useRoutes,
+  usePath,
+  useLocationChange,
+  useHash,
+  navigate
+} from '../src/main.js'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -80,5 +86,32 @@ describe('usePath', () => {
     act(() => navigate('/nested/about'))
     expect(getByTestId('path')).toHaveTextContent('/about')
     expect(getByTestId('path')).not.toHaveTextContent('/nested')
+  })
+})
+
+describe('useHash', () => {
+  function Route({ skip }) {
+    let hash = useHash({ stripHash: skip ? false : undefined })
+    return <span data-testid="hash">{hash}</span>
+  }
+  test('returns original hash', async () => {
+    act(() => navigate('/#test'))
+    const { getByTestId } = render(<Route />)
+
+    expect(getByTestId('hash')).toHaveTextContent('test')
+  })
+
+  test('returns updated hash', async () => {
+    act(() => navigate('/#test'))
+    const { getByTestId } = render(<Route />)
+    act(() => navigate('/#updated'))
+
+    expect(getByTestId('hash')).toHaveTextContent('updated')
+  })
+  test('returns hash without stripping when stripHash is false', async () => {
+    act(() => navigate('/#test'))
+    const { getByTestId } = render(<Route skip />)
+
+    expect(getByTestId('hash')).toHaveTextContent('#test')
   })
 })
