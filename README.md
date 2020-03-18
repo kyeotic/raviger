@@ -16,6 +16,10 @@ Zero dependencies. Tiny footprint.
 npm i raviger
 ```
 
+# Docs
+
+Complete documentation is available [here on GitHub Pages](https://kyeotic.github.io/raviger/)
+
 # Quick Start
 
 ```jsx
@@ -70,10 +74,6 @@ function UserList ({ users }) {
 The preferred method for navigation is the `<Link>` component, which uses all the same properties as the standard `<a>` element, and requires `href`. Internally `<Link>` uses `history.pushState` to ensure navigation without a page refresh. If you need to perform programmatic navigation raviger exports a `navigate` function.
 
 Some routing libraries only trigger React component updates if navigation was triggered using specific methods, such as a specific instance of **history**. **raviger** listens for all `popstate` events and checks for changes. You can even have two isolated React instances on a page and URL changes will properly trigger **raviger** hooks.
-
-# Docs
-
-Complete documentation is available [here on GitHub Pages](https://kyeotic.github.io/raviger/)
 
 ## Contributing
 
