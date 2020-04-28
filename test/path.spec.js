@@ -87,6 +87,38 @@ describe('usePath', () => {
     expect(getByTestId('path')).toHaveTextContent('/about')
     expect(getByTestId('path')).not.toHaveTextContent('/nested')
   })
+
+  test('has correct path for nested base path', async () => {
+    function Harness({ routes, basePath }) {
+      const route = useRoutes(routes, { basePath })
+      return route
+    }
+
+    const nestedRoutes = {
+      '/': () => <Route />,
+      '/about': () => <Route />,
+      '/info': () => <Route />
+    }
+    const routes = {
+      '/': () => <Route />,
+      '/about': () => <Route />,
+      '/nested*': () => <Harness basePath="/foo/nested" routes={nestedRoutes} />
+    }
+
+    const { getByTestId } = render(<Harness routes={routes} basePath="/foo" />)
+    act(() => navigate('/foo'))
+    expect(getByTestId('path')).toHaveTextContent('/')
+
+    act(() => navigate('/foo/nested/about'))
+    expect(getByTestId('path')).toHaveTextContent('/about')
+
+    // Yes, check twice
+    // This is a regression check for this bug: https://github.com/kyeotic/raviger/issues/50
+    act(() => navigate('/foo/nested/info'))
+    expect(getByTestId('path')).toHaveTextContent('/')
+    act(() => navigate('/foo/nested/info'))
+    expect(getByTestId('path')).toHaveTextContent('/')
+  })
 })
 
 describe('useHash', () => {
