@@ -7,7 +7,8 @@ export function usePath(basePath) {
   let contextBasePath = useBasePath() // hooks can't be called conditionally
   basePath = basePath || contextBasePath
   let [path, setPath] = useState(getCurrentPath(basePath))
-  useLocationChange(setPath, { basePath })
+  // useLocationChange(setPath, { basePath })
+  useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
   return path
 }
 
