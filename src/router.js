@@ -45,10 +45,9 @@ function matchRoute(
   if (matchTrailingSlash && path && path[path.length - 1] === '/') {
     path = path.substring(0, path.length - 1)
   }
-  const routePaths = Object.keys(routes)
   const routeMatchers = useMemo(
-    () => routePaths.map(createRouteMatcher),
-    routePaths
+    () => Object.keys(routes).map(createRouteMatcher),
+    [hashRoutes(routes)]
   )
   // Hacky method for find + map
   let routeMatch
@@ -87,4 +86,13 @@ function createRouteMatcher(routePath) {
   const propList = routePath.match(/:[a-zA-Z]+/g)
   route.push(propList ? propList.map(paramName => paramName.substr(1)) : [])
   return route
+}
+
+// React doesn't like when the hook dependency array changes size
+// >> Warning: The final argument passed to useMemo changed size between renders. The order and size of this array must remain constant.
+// It is recommended to use a hashing function to produce a single, stable value
+// https://github.com/facebook/react/issues/14324#issuecomment-441489421
+function hashRoutes(routes) {
+  const paths = Object.keys(routes).sort()
+  return paths.join(':')
 }

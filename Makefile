@@ -23,3 +23,5 @@ run-docs: ## Run in development mode
 docs: ## Build the site
 	cd docs && hugo -t learn -d public --gc --minify --cleanDestinationDir
 
+sync-docs: ## update docs theme submodules
+	git submodule update --init --recursive
