@@ -141,24 +141,28 @@ describe('useRoutes', () => {
         })
       }
 
-      const route = useRoutes(myRoutes) || <span data-testid="label">not found</span>
+      const route = useRoutes(myRoutes) || (
+        <span data-testid="label">not found</span>
+      )
 
       return (
         <>
           {route}
-          <button onClick={addNewRoute} data-testid="add-route">Add route</button>
+          <button onClick={addNewRoute} data-testid="add-route">
+            Add route
+          </button>
         </>
       )
     }
 
-    const { getByTestId } = render(<Harness/>)
-    act(() => navigate('/new'));
+    const { getByTestId } = render(<Harness />)
+    act(() => navigate('/new'))
     expect(getByTestId('label')).not.toHaveTextContent('new route')
 
     const button = getByTestId('add-route')
 
     act(() => button.click())
-    act(() => navigate('/new'));
+    act(() => navigate('/new'))
     expect(getByTestId('label')).toHaveTextContent('new route')
   })
 })
