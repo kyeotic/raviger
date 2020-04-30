@@ -47,7 +47,7 @@ function matchRoute(
   }
   const routeMatchers = useMemo(
     () => Object.keys(routes).map(createRouteMatcher),
-    [routes]
+    [hashRoutes(routes)]
   )
   // Hacky method for find + map
   let routeMatch
@@ -86,4 +86,13 @@ function createRouteMatcher(routePath) {
   const propList = routePath.match(/:[a-zA-Z]+/g)
   route.push(propList ? propList.map(paramName => paramName.substr(1)) : [])
   return route
+}
+
+// React doesn't like when the hook dependency array changes size
+// >> Warning: The final argument passed to useMemo changed size between renders. The order and size of this array must remain constant.
+// It is recommended to use a hashing function to produce a single, stable value
+// https://github.com/facebook/react/issues/14324#issuecomment-441489421
+function hashRoutes(routes) {
+  const paths = Object.keys(routes).sort()
+  return paths.join(':')
 }
