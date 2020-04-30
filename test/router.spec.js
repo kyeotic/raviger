@@ -127,6 +127,40 @@ describe('useRoutes', () => {
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 1')
   })
+
+  test('handles dynamic routes', async () => {
+    const Harness = () => {
+      const [myRoutes, setRoutes] = React.useState(routes)
+
+      const addNewRoute = () => {
+        setRoutes(prevRoutes => {
+          return {
+            ...prevRoutes,
+            '/new': () => <Route label="new route" />
+          }
+        })
+      }
+
+      const route = useRoutes(myRoutes) || <span data-testid="label">not found</span>
+
+      return (
+        <>
+          {route}
+          <button onClick={addNewRoute} data-testid="add-route">Add route</button>
+        </>
+      )
+    }
+
+    const { getByTestId } = render(<Harness/>)
+    act(() => navigate('/new'));
+    expect(getByTestId('label')).not.toHaveTextContent('new route')
+
+    const button = getByTestId('add-route')
+
+    act(() => button.click())
+    act(() => navigate('/new'));
+    expect(getByTestId('label')).toHaveTextContent('new route')
+  })
 })
 
 describe('useBasePath', () => {
