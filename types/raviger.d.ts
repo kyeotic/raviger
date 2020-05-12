@@ -77,4 +77,4 @@ export function useQueryParams<T, Q>(
   serializeFn?: (query: Q) => string
 ): [T, (query: Q, replace?: boolean) => void]
 
-export function useNavigationPrompt(predicate = true, prompt?: string): void
+export function useNavigationPrompt(predicate?: boolean, prompt?: string): void
