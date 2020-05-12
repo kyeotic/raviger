@@ -11,8 +11,10 @@ export function useQueryParams(
   const setQueryParams = useCallback(
     // TODO: V2 using options param for replace
     (params, replace = true) => {
+      let path = getCurrentPath()
       params = replace ? params : { ...parseFn(querystring), ...params }
-      let path = `${getCurrentPath()}?${serializeFn(params)}`
+      const serialized = serializeFn(params).toString()
+      if (serialized) path += '?' + serialized
       if (!replace) path += getCurrentHash()
       navigate(path)
     },
