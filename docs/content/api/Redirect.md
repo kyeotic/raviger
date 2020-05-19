@@ -22,7 +22,7 @@ export const Redirect: React.FC<RedirectProps>
 If rendered this component will force a redirect. Usefult as a route function
 
 {{< highlight jsx>}}
-<import { useRoutes, Redirect } from 'raviger'
+import { useRoutes, Redirect } from 'raviger'
 
 const routes = {
   '/': ({ title }) => <Home title={title} />,
