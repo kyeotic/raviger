@@ -76,5 +76,5 @@ function isPredicateActive(predicate) {
 }
 
 function basePathMatcher(basePath) {
-  return new RegExp('^' + basePath)
+  return new RegExp('^' + basePath, 'i')
 }
