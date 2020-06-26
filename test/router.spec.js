@@ -79,6 +79,12 @@ describe('useRoutes', () => {
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 1')
   })
+  test('matches case insensitive rout', async () => {
+    const { getByTestId } = render(<Harness routes={routes} />)
+
+    act(() => navigate('/About'))
+    expect(getByTestId('label')).toHaveTextContent('about')
+  })
   test('works with lazy routes', async () => {
     let loader = new Promise(resolve => {
       setTimeout(() => resolve({ default: Route }), 50)
@@ -195,6 +201,8 @@ describe('useBasePath', () => {
     act(() => navigate('/about'))
     expect(getByTestId('basePath')).toHaveTextContent('none')
     act(() => navigate('/nested'))
+    expect(getByTestId('basePath')).toHaveTextContent('nested')
+    act(() => navigate('/Nested'))
     expect(getByTestId('basePath')).toHaveTextContent('nested')
   })
   test('returns empty string outside', async () => {
