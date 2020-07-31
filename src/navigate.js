@@ -4,7 +4,7 @@ import { isNode } from './node.js'
 const defaultPrompt = 'Are you sure you want to leave this page?'
 const interceptors = new Set()
 
-export function navigate(url, replaceOrQuery = false, replace = false) {
+export function navigate(url, replaceOrQuery, replace) {
   if (typeof url !== 'string') {
     throw new Error(`"url" must be a string, was provided a(n) ${typeof url}`)
   }
@@ -16,8 +16,10 @@ export function navigate(url, replaceOrQuery = false, replace = false) {
   if (shouldCancelNavigation()) return
   if (replaceOrQuery !== null && typeof replaceOrQuery === 'object') {
     url += '?' + new URLSearchParams(replaceOrQuery).toString()
-  } else {
+  } else if (replace === undefined && replaceOrQuery !== undefined) {
     replace = replaceOrQuery
+  } else if (replace === undefined && replaceOrQuery === undefined) {
+    replace = false
   }
   window.history[`${replace ? 'replace' : 'push'}State`](null, null, url)
   dispatchEvent(new PopStateEvent('popstate', null))

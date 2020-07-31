@@ -40,6 +40,7 @@ const App = () => {
         <Link href="/fallthrough">Fallthrough 1</Link>
         <Link href="/fallthrough/nested">Fallthrough Nested</Link>
         <Link href="/filter">Filters</Link>
+        <Link href="/redirect">Redirect</Link>
       </Nav>
       <div></div>
       <span style={{ display: 'block' }}>Root Path: {path}</span>
