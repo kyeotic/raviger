@@ -3,10 +3,20 @@ import { render, act } from '@testing-library/react'
 import { useNavigationPrompt, navigate } from '../src/main.js'
 
 const originalConfirm = window.confirm
+const originalReplaceState = window.history.replaceState
+const originalPushState = window.history.pushState
 
 beforeEach(() => {
   window.confirm = originalConfirm
+  window.history.replaceState = originalReplaceState
+  window.history.pushState = originalPushState
   act(() => navigate('/'))
+})
+
+afterEach(() => {
+  window.confirm = originalConfirm
+  window.history.replaceState = originalReplaceState
+  window.history.pushState = originalPushState
 })
 
 describe('useNavigationPrompt', () => {
@@ -57,5 +67,49 @@ describe('useNavigationPrompt', () => {
     act(() => navigate('/foo'))
 
     expect(window.confirm).toHaveBeenCalledWith('custom')
+  })
+})
+
+describe('navigate', () => {
+  test('replace is correctly set in all cases', async () => {
+    window.history.replaceState = jest.fn()
+    window.history.pushState = jest.fn()
+    const url = '/foo'
+
+    navigate(url, false)
+    expect(window.history.pushState).toHaveBeenCalled()
+    jest.clearAllMocks()
+
+    navigate(url, true)
+    expect(window.history.replaceState).toHaveBeenCalled()
+    jest.clearAllMocks()
+
+    navigate(url, null, true)
+    expect(window.history.replaceState).toHaveBeenCalled()
+    jest.clearAllMocks()
+
+    navigate(url, null, false)
+    expect(window.history.pushState).toHaveBeenCalled()
+    jest.clearAllMocks()
+
+    navigate(url, undefined, true)
+    expect(window.history.replaceState).toHaveBeenCalled()
+    jest.clearAllMocks()
+
+    navigate(url, undefined, false)
+    expect(window.history.pushState).toHaveBeenCalled()
+    jest.clearAllMocks()
+
+    navigate(url, {})
+    expect(window.history.pushState).toHaveBeenCalled()
+    jest.clearAllMocks()
+
+    navigate(url, {}, true)
+    expect(window.history.replaceState).toHaveBeenCalled()
+    jest.clearAllMocks()
+
+    navigate(url, {}, false)
+    expect(window.history.pushState).toHaveBeenCalled()
+    jest.clearAllMocks()
   })
 })

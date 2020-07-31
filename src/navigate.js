@@ -4,18 +4,22 @@ import { isNode } from './node.js'
 const defaultPrompt = 'Are you sure you want to leave this page?'
 const interceptors = new Set()
 
-export function navigate(url, queryParams = false, replace = false) {
+export function navigate(url, replaceOrQuery, replace) {
   if (typeof url !== 'string') {
     throw new Error(`"url" must be a string, was provided a(n) ${typeof url}`)
   }
-  if (Array.isArray(queryParams)) {
+  if (Array.isArray(replaceOrQuery)) {
     throw new Error(
-      '"queryParams" must be boolean, object, or URLSearchParams'
+      '"replaceOrQuery" must be boolean, object, or URLSearchParams'
     )
   }
   if (shouldCancelNavigation()) return
-  if (queryParams !== null && typeof queryParams === 'object') {
-    url += '?' + new URLSearchParams(queryParams).toString()
+  if (replaceOrQuery !== null && typeof replaceOrQuery === 'object') {
+    url += '?' + new URLSearchParams(replaceOrQuery).toString()
+  } else if (replace === undefined && replaceOrQuery !== undefined) {
+    replace = replaceOrQuery
+  } else if (replace === undefined && replaceOrQuery === undefined) {
+    replace = false
   }
   window.history[`${replace ? 'replace' : 'push'}State`](null, null, url)
   dispatchEvent(new PopStateEvent('popstate', null))
