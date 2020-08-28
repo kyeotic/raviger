@@ -63,6 +63,7 @@ export function useLocationChange(setFn, options = {}) {
     // No predicate defaults true
     if (options.isActive !== undefined && !isPredicateActive(options.isActive))
       return
+    console.log('changing path', getCurrentPath(basePath))
     setRef.current(getCurrentPath(basePath))
   }, [options.isActive, basePath])
   useEffect(() => {
