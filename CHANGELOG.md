@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [UNRELEASED]
+### Fixed
+- `useRoutes` path tracking with `usePath` causing improper child invocations
+
 ## [1.4.5] - 2020-07-31
 ### Fixed
 - `navigate` handling of `replace` in edge cases for `replaceOrQuery`
