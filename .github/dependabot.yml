@@ -1,9 +1,11 @@
-version: 1
-update_configs:
-  - package_manager: "javascript"
+version: 2
+updates:
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
     directory: "/"
-    update_schedule: "daily"
-    allowed_updates:
-      - match:
-          dependency_type: "production"
-          update_type: "security"
+    schedule:
+      interval: "daily"
+   allow:
+      # Allow updates for Lodash
+      - dependency-name: "*"
+        dependency-type: "production
