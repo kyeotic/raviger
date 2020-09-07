@@ -5,7 +5,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-   allow:
+    allow:
       # Allow updates for Lodash
       - dependency-name: "*"
-        dependency-type: "production
+        dependency-type: "production"
