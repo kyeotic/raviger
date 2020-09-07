@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
 import {
   useRoutes,
@@ -124,15 +124,19 @@ describe('usePath', () => {
     const homeFn = jest.fn()
     function Home() {
       const path = usePath()
-      console.log('home', path)
-      homeFn(path)
+      useEffect(() => {
+        // console.log('home', path)
+        homeFn(path)
+      }, [path])
       return <span data-testid="path">{path}</span>
     }
     const aboutFn = jest.fn()
     function About() {
       const path = usePath()
-      console.log('about', path)
-      aboutFn(path)
+      useEffect(() => {
+        // console.log('about', path)
+        aboutFn(path)
+      }, [path])
       return <span data-testid="path">{path}</span>
     }
 
@@ -141,14 +145,14 @@ describe('usePath', () => {
       '/about': () => <About />
     }
     function Harness({ routes, basePath }) {
-      console.log('start harness update')
+      // console.log('start harness update')
       const route = useRoutes(routes, { basePath })
       const onGoHome = useCallback(
         () => setTimeout(() => navigate('/'), 50),
         // () => setTimeout(() => act(() => navigate('/')), 50),
         []
       )
-      console.log('harness update', route.props.children.props.children.type)
+      // console.log('harness update', route.props.children.props.children.type)
       return (
         <div>
           {route}
@@ -166,9 +170,10 @@ describe('usePath', () => {
 
     aboutFn.mockClear()
 
-    console.log('reset')
+    // console.log('reset')
     // act(() => navigate('/'))
     act(() => void fireEvent.click(getByTestId('home-btn')))
+    // console.log('acted')
     // Wait for the internal setTimeout
     await act(() => delay(100))
 

@@ -1,14 +1,22 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react'
-import { BasePathContext } from './context.js'
+import { BasePathContext, PathContext } from './context.js'
 import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
 
 export function usePath(basePath) {
-  let contextBasePath = useBasePath() // hooks can't be called conditionally
+  const contextPath = useContext(PathContext)
+
+  const contextBasePath = useBasePath() // hooks can't be called conditionally
   basePath = basePath || contextBasePath
-  let [path, setPath] = useState(getCurrentPath(basePath))
+  const [path, setPath] = useState(getCurrentPath(basePath))
   useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
-  return path
+
+  return (
+    (contextPath !== null
+      ? contextPath
+      : path.replace(basePathMatcher(basePath), '')) || '/'
+  )
+  // return path
 }
 
 export function useBasePath() {
@@ -63,7 +71,6 @@ export function useLocationChange(setFn, options = {}) {
     // No predicate defaults true
     if (options.isActive !== undefined && !isPredicateActive(options.isActive))
       return
-    console.log('changing path', getCurrentPath(basePath))
     setRef.current(getCurrentPath(basePath))
   }, [options.isActive, basePath])
   useEffect(() => {
