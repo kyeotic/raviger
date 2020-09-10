@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      # Allow updates for Lodash
+      - dependency-name: "*"
+        dependency-type: "production"
