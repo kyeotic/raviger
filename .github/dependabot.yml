@@ -6,6 +6,8 @@ updates:
     schedule:
       interval: "daily"
     allow:
-      # Allow updates for Lodash
       - dependency-name: "*"
         dependency-type: "production"
+    ignore:
+      - dependency-name: "*"
+        dependency-type: "development"
