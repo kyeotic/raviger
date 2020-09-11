@@ -8,6 +8,3 @@ updates:
     allow:
       - dependency-name: "*"
         dependency-type: "production"
-    ignore:
-      - dependency-name: "*"
-        dependency-type: "development"
