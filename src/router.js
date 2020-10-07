@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { BasePathContext, PathContext } from './context.js'
 import { isNode, setSsrPath, getSsrPath } from './node'
-import { usePath } from './path.js'
+import { useLocationChange, getCurrentPath } from './path.js'
 
 export function useRoutes(
   routes,
@@ -13,7 +13,9 @@ export function useRoutes(
   } = {}
 ) {
   // path is the browser url location
-  const path = usePath(basePath)
+  const [path, setPath] = useState(getCurrentPath(basePath))
+
+  useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
   // Get the current route
   const route = matchRoute(routes, path, {
     routeProps,

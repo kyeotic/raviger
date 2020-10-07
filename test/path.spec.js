@@ -1,5 +1,5 @@
-import React from 'react'
-import { render, act } from '@testing-library/react'
+import React, { useCallback, useEffect } from 'react'
+import { render, act, fireEvent } from '@testing-library/react'
 import {
   useRoutes,
   usePath,
@@ -119,6 +119,68 @@ describe('usePath', () => {
     act(() => navigate('/foo/nested/info'))
     expect(getByTestId('path')).toHaveTextContent('/')
   })
+
+  test('usePath is not called when unmounting', async () => {
+    const homeFn = jest.fn()
+    function Home() {
+      const path = usePath()
+      useEffect(() => {
+        // console.log('home', path)
+        homeFn(path)
+      }, [path])
+      return <span data-testid="path">{path}</span>
+    }
+    const aboutFn = jest.fn()
+    function About() {
+      const path = usePath()
+      useEffect(() => {
+        // console.log('about', path)
+        aboutFn(path)
+      }, [path])
+      return <span data-testid="path">{path}</span>
+    }
+
+    const routes = {
+      '/': () => <Home />,
+      '/about': () => <About />
+    }
+    function Harness({ routes, basePath }) {
+      // console.log('start harness update')
+      const route = useRoutes(routes, { basePath })
+      const onGoHome = useCallback(
+        () => setTimeout(() => navigate('/'), 50),
+        // () => setTimeout(() => act(() => navigate('/')), 50),
+        []
+      )
+      // console.log('harness update', route.props.children.props.children.type)
+      return (
+        <div>
+          {route}
+          <button data-testid="home-btn" onClick={onGoHome}>
+            Go Home
+          </button>
+        </div>
+      )
+    }
+
+    act(() => navigate('/about'))
+    const { getByTestId } = render(<Harness routes={routes} />)
+    expect(getByTestId('path')).toHaveTextContent('/about')
+    expect(aboutFn).toHaveBeenCalledTimes(1)
+
+    aboutFn.mockClear()
+
+    // console.log('reset')
+    // act(() => navigate('/'))
+    act(() => void fireEvent.click(getByTestId('home-btn')))
+    // console.log('acted')
+    // Wait for the internal setTimeout
+    await act(() => delay(100))
+
+    expect(getByTestId('path')).toHaveTextContent('/')
+    expect(homeFn).toHaveBeenCalledTimes(1)
+    expect(aboutFn).toHaveBeenCalledTimes(0)
+  })
 })
 
 describe('useHash', () => {
@@ -147,3 +209,7 @@ describe('useHash', () => {
     expect(getByTestId('hash')).toHaveTextContent('#test')
   })
 })
+
+async function delay(ms) {
+  return new Promise(resolve => setTimeout(() => resolve(), ms))
+}
