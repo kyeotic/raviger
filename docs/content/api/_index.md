@@ -7,4 +7,4 @@ chapter = true
 
 # API
 
-Explore the raviger API
+Explore the raviger API. Check out the sidebar for a list of exported functions/components.
