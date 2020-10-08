@@ -32,6 +32,7 @@ export const ActiveLink: React.FC<ActiveLinkProps>
 
 export interface RedirectProps {
   to: string
+  query?: QueryParam | URLSearchParams
   replace?: boolean
   merge?: boolean
 }
