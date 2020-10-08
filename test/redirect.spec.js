@@ -60,4 +60,18 @@ describe('Redirect', () => {
       'http://localhost/foo?things=act#test'
     )
   })
+  test('redirects to "to" with query when merge', async () => {
+    act(() => navigate('/?things=act#test'))
+    render(<Redirect to="/foo" query={{ stuff: 'junk' }} merge />)
+    expect(window.location.toString()).toEqual(
+      'http://localhost/foo?things=act&stuff=junk#test'
+    )
+  })
+  test('redirects to "to" with query when not merge', async () => {
+    act(() => navigate('/?things=act#test'))
+    render(<Redirect to="/foo" query={{ stuff: 'junk' }} merge={false} />)
+    expect(window.location.toString()).toEqual(
+      'http://localhost/foo?stuff=junk'
+    )
+  })
 })
