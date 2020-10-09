@@ -73,6 +73,13 @@ describe('useRoutes', () => {
     act(() => navigate('/about/'))
     expect(getByTestId('label')).toHaveTextContent('about')
   })
+  test('matches trailing slash on "/"', async () => {
+    const { getByTestId } = render(
+      <Harness routes={routes} options={{ matchTrailingSlash: true }} />
+    )
+    act(() => navigate('/'))
+    expect(getByTestId('label')).toHaveTextContent('home')
+  })
   test('matches route with parameters', async () => {
     const { getByTestId } = render(<Harness routes={routes} />)
 

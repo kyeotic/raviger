@@ -44,7 +44,13 @@ function matchRoute(
   path,
   { routeProps, overridePathParams, matchTrailingSlash }
 ) {
-  if (matchTrailingSlash && path && path[path.length - 1] === '/') {
+  // path.length > 1 ensure we still match on the root route "/" when matchTrailingSlash is set
+  if (
+    matchTrailingSlash &&
+    path &&
+    path[path.length - 1] === '/' &&
+    path.length > 1
+  ) {
     path = path.substring(0, path.length - 1)
   }
   const routeMatchers = useMemo(
