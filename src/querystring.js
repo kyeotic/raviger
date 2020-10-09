@@ -50,3 +50,16 @@ export function getQueryString() {
   }
   return location.search
 }
+
+export function deriveQueryString(current, target, merge) {
+  current = queryAsObject(current)
+  target = queryAsObject(target)
+  return merge
+    ? new URLSearchParams({ ...current, ...target }).toString()
+    : new URLSearchParams(target).toString()
+}
+
+function queryAsObject(query) {
+  if (!query) return {}
+  return Object.fromEntries(new URLSearchParams(query).entries())
+}

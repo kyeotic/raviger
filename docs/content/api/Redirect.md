@@ -11,6 +11,7 @@ A React component for causing a browser redirect
 {{< highlight typescript >}}
 export interface RedirectProps {
   to: string
+  query?: QueryParam | URLSearchParams
   replace?: boolean
   merge?: boolean
 }
@@ -45,6 +46,10 @@ By default it will navigate with `replace` and `merge` both `true`.
 ## replace
 
 If `replace` is `true` the redirect will not create a new entry in the history stack. `default = true`
+
+## query
+
+Provide an object or URLSearchParams to be appended to the `url`. Will be merged over the current query values if `merge: true`
 
 ## merge
 
