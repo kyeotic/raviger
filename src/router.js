@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import { BasePathContext, PathContext } from './context.js'
-import { isNode, setSsrPath, getSsrPath } from './node'
-import { useLocationChange, getCurrentPath } from './path.js'
+import { useLocationChange, getCurrentPath, joinUrlPath } from './path.js'
 
 export function useRoutes(
   routes,
@@ -13,11 +12,20 @@ export function useRoutes(
   } = {}
 ) {
   // path is the browser url location
-  const [path, setPath] = useState(getCurrentPath(basePath))
+  const [path, setPath] = useState(getCurrentPath())
+  const setPath2 = useCallback(
+    path => {
+      console.log('setting router path', path)
+      setPath(path)
+    },
+    [setPath]
+  )
+  console.log('router path', path)
 
-  useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
+  useLocationChange(setPath2, { basePath, inheritBasePath: !basePath })
   // Get the current route
   const route = matchRoute(routes, path, {
+    basePath,
     routeProps,
     overridePathParams,
     matchTrailingSlash
@@ -31,18 +39,10 @@ export function useRoutes(
   )
 }
 
-export function setPath(path) {
-  if (!isNode) {
-    throw new Error('This method should only be used in NodeJS environments')
-  }
-  const url = require('url') // eslint-disable-line import/no-nodejs-modules
-  setSsrPath(url.resolve(getSsrPath(), path))
-}
-
 function matchRoute(
   routes,
   path,
-  { routeProps, overridePathParams, matchTrailingSlash }
+  { basePath = '', routeProps, overridePathParams, matchTrailingSlash }
 ) {
   // path.length > 1 ensure we still match on the root route "/" when matchTrailingSlash is set
   if (
@@ -54,9 +54,14 @@ function matchRoute(
     path = path.substring(0, path.length - 1)
   }
   const routeMatchers = useMemo(
-    () => Object.keys(routes).map(createRouteMatcher),
-    [hashRoutes(routes)]
+    () =>
+      Object.keys(routes)
+        .map(withBasePath(basePath))
+        .map(createRouteMatcher),
+    [basePath, hashRoutes(routes)]
   )
+
+  console.log('props', path, basePath, routeMatchers)
   // Hacky method for find + map
   let routeMatch
   routeMatchers.find(([routePath, regex, groups]) => {
@@ -73,6 +78,7 @@ function matchRoute(
   })
   if (!routeMatch) return null
   const [routePath, props] = routeMatch
+  console.log('match', routePath, routes)
   return routes[routePath](
     overridePathParams
       ? { ...props, ...routeProps }
@@ -80,7 +86,12 @@ function matchRoute(
   )
 }
 
+function withBasePath(basePath) {
+  return path => joinUrlPath(basePath, path)
+}
+
 function createRouteMatcher(routePath) {
+  console.log('matcher', routePath)
   const route = [
     routePath,
     new RegExp(

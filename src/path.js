@@ -37,10 +37,8 @@ export function useHash({ stripHash = true } = {}) {
   return stripHash ? hash.substring(1) : hash
 }
 
-export function getCurrentPath(basePath = '') {
-  return isNode
-    ? getSsrPath()
-    : window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
+export function getCurrentPath() {
+  return isNode ? getSsrPath() : window.location.pathname //.replace(basePathMatcher(basePath), '') || '/'
 }
 
 export function getCurrentHash() {
@@ -71,7 +69,9 @@ export function useLocationChange(setFn, options = {}) {
     // No predicate defaults true
     if (options.isActive !== undefined && !isPredicateActive(options.isActive))
       return
-    setRef.current(getCurrentPath(basePath))
+    const path = getCurrentPath(basePath)
+    console.log('loc path', path)
+    setRef.current(path)
   }, [options.isActive, basePath])
   useEffect(() => {
     window.addEventListener('popstate', onPopState)
@@ -85,4 +85,19 @@ function isPredicateActive(predicate) {
 
 function basePathMatcher(basePath) {
   return new RegExp('^' + basePath, 'i')
+}
+
+export function joinUrlPath(...paths) {
+  return paths
+    .map((part, i, arr) => {
+      console.log('part', part, i, part.replace(/[/]+$/, ''))
+      if (i > 0) {
+        // Removing the starting slashes for each part but the first.
+        return part.replace(/^[/]+/, '')
+      }
+      // Removing the ending slashes for each part
+      return part.replace(/[/]+$/, '')
+    })
+    .join('/')
+    .replace(/[/]+$/, '')
 }

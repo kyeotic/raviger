@@ -11,3 +11,11 @@ export function getSsrPath() {
 export function setSsrPath(path) {
   ssrPath = path
 }
+
+export function setPath(path) {
+  if (!isNode) {
+    throw new Error('This method should only be used in NodeJS environments')
+  }
+  const url = require('url') // eslint-disable-line import/no-nodejs-modules
+  setSsrPath(url.resolve(getSsrPath(), path))
+}
