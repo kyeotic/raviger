@@ -92,7 +92,7 @@
     {
       "webpack": false,
       "path": "dist/module.js",
-      "limit": "4kb"
+      "limit": "4.1kb"
     }
   ]
 }

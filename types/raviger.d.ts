@@ -45,6 +45,11 @@ export function navigate(
   replace?: boolean
 ): void
 
+type NavigateWithReplace = (url: string, replace?: boolean) => void;
+type NavigateWithQuery = (url: string, query?: URLSearchParams | QueryParam, replace?: boolean) => void;
+
+export function useNavigate(optBasePath?: string): NavigateWithReplace & NavigateWithQuery;
+
 export function usePath(basePath?: string): string
 export function useHash(options?: { stripHash?: boolean }): string
 

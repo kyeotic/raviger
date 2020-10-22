@@ -17,6 +17,8 @@ export function navigate(
 ): void
 {{< /highlight >}}
 
+**Note**: `navigate` does not consider any `basePath` that may be set.  The `useNavigate` hook should be used if you want to prepend the `basePath` to the URL when navigating.
+
 ## Basic
 
 the `navigate` function is intended to be used outside of components to perform page navigation programmatically. 
