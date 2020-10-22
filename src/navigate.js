@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { isNode } from './node.js'
+import { useBasePath } from './path.js'
 
 const defaultPrompt = 'Are you sure you want to leave this page?'
 const interceptors = new Set()
@@ -65,4 +66,17 @@ function cancelNavigation(event, prompt) {
   event.returnValue = prompt
   // Return value for prompt per spec
   return prompt
+}
+
+export function useNavigate(optBasePath = '') {
+  const basePath = useBasePath()
+  const navigateWithBasePath = useCallback(
+    (url, replaceOrQuery, replace) => {
+      const base = optBasePath || basePath
+      const href = url.startsWith('/') ? base + url : url
+      navigate(href, replaceOrQuery, replace)
+    },
+    [basePath, optBasePath]
+  )
+  return navigateWithBasePath
 }
