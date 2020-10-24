@@ -179,7 +179,7 @@ describe('useRoutes', () => {
     expect(getByTestId('label')).toHaveTextContent('new route')
   })
 
-  describe.only('with basePath', () => {
+  describe('with basePath', () => {
     const routes = {
       '/': () => <Route label="home" />,
       '/about': () => <Route label="about" />

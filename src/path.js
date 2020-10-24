@@ -38,7 +38,7 @@ export function useHash({ stripHash = true } = {}) {
 }
 
 export function getCurrentPath() {
-  return isNode ? getSsrPath() : window.location.pathname //.replace(basePathMatcher(basePath), '') || '/'
+  return isNode ? getSsrPath() : window.location.pathname
 }
 
 export function getCurrentHash() {
@@ -70,7 +70,6 @@ export function useLocationChange(setFn, options = {}) {
     if (options.isActive !== undefined && !isPredicateActive(options.isActive))
       return
     const path = getCurrentPath(basePath)
-    console.log('loc path', path)
     setRef.current(path)
   }, [options.isActive, basePath])
   useEffect(() => {
@@ -89,8 +88,7 @@ function basePathMatcher(basePath) {
 
 export function joinUrlPath(...paths) {
   return paths
-    .map((part, i, arr) => {
-      console.log('part', part, i, part.replace(/[/]+$/, ''))
+    .map((part, i) => {
       if (i > 0) {
         // Removing the starting slashes for each part but the first.
         return part.replace(/^[/]+/, '')
