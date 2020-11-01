@@ -59,7 +59,7 @@ export default function App() {
 
 ## Using a Base Path
 
-The `basePath` option sets a base path that causes all routes to match as if they had the base path prepended to them. It also sets the base path on the router's context, making it available to hooks and `<Link>` components lower in matching *route's* tree.
+The `basePath` option sets a base path that causes all routes to match as if they had the base path prepended to them. It also sets the base path on the router's context, making it available to hooks and `<Link>` components lower in matching *route's* tree. If `basePath` is provided and missing from the current path `null` is returned.
 
 {{< highlight jsx >}}
 import { useRoutes } from 'raviger'

@@ -82,7 +82,7 @@ export function getCurrentHash() {
 
 export function useLocationChange(
   setFn,
-  { inheritBasePath = false, basePath = '', isActive } = {}
+  { inheritBasePath = true, basePath = '', isActive } = {}
 ) {
   if (isNode) return
   const routerBasePath = useBasePath()

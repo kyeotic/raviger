@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `useRoutes` and `usePath` will return `null` if `basePath` is provided and missing from path
 - `useLocationChange` will invoke callback with `null` if `basePath` is provided and missing from path
-- `useLocationChange` option `inheritBasePath` now requires truthy value (previously accepted any non `false` value)
+- `useLocationChange` option `inheritBasePath` now accepts any false value (previously required `false` with `===`)
 - `useRoutes` option `matchTrailingSlash` default to `true` (was `false`)
 - removed `linkRef` prop from `Link` and `ActiveLink`, replaced with standard React `forwardRef`
 - `useQueryParams` setter second argument changed from `replace` to options param with `replace` property

@@ -4,19 +4,17 @@ date: 2019-09-30T18:16:24-07:00
 weight: 3
 ---
 
-A React component for rendering a `<a>` that uses *history* navigation for local URLs.
+A React component for rendering a `<a>` that uses *history* navigation for local URLs. Supports `ref` forwarding.
 
 ## API
 
 {{< highlight typescript >}}
 export interface LinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  // Unlike normal <a>, this property is required
-  href: string,
-  basePath?: string,
-  linkRef?: React.RefObject<HTMLAnchorElement>
+  href: string
+  basePath?: string
 }
-export const Link: React.FC<LinkProps>
+export const Link: React.ForwardRefExoticComponent<LinkProps & React.RefAttributes<HTMLAnchorElement>>
 {{< /highlight >}}
 
 ## Basic
@@ -60,4 +58,4 @@ export default function App() {
 
 ## Ref Passing
 
-To pass a [React ref](https://reactjs.org/docs/refs-and-the-dom.html) to the `<Link>` DOM Node use the `linkRef` property. This will assign the ref to the internal `<a>` node. In future version this will become `ref` and use the standard [forwardRef](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components) API.
+`Link` supports the standard [forwardRef](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components) API.
