@@ -38,7 +38,10 @@ describe('setQueryParams', () => {
   function Route({ replace, foo = 'bar' }) {
     let [query, setQuery] = useQueryParams()
     return (
-      <button data-testid="update" onClick={() => setQuery({ foo }, replace)}>
+      <button
+        data-testid="update"
+        onClick={() => setQuery({ foo }, { replace })}
+      >
         Set Query: {query.foo}
       </button>
     )

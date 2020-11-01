@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - Unreleased
+### Changed
+- `useRoutes` and `usePath` will return `null` if `basePath` is provided and missing from path
+- `useLocationChange` will invoke callback with `null` if `basePath` is provided and missing from path
+- `useLocationChange` option `inheritBasePath` now requires truthy value (previously accepted any non `false` value)
+- `useRoutes` option `matchTrailingSlash` default to `true` (was `false`)
+- removed `linkRef` prop from `Link` and `ActiveLink`, replaced with standard React `forwardRef`
+- `useQueryParams` setter second argument changed from `replace` to options param with `replace` property
+- `useRedirect` parameters changed to match properties on `Redirect` component
+### Added
+- `useFullPath` for getting the full path, ignoring any context-provided `basePath`
+
 ## [1.6.0] - 2020-10-22
 ### Added
 - `useNavigate` hook

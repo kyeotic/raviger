@@ -178,6 +178,36 @@ describe('useRoutes', () => {
     act(() => navigate('/new'))
     expect(getByTestId('label')).toHaveTextContent('new route')
   })
+
+  describe('with basePath', () => {
+    const routes = {
+      '/': () => <Route label="home" />,
+      '/about': () => <Route label="about" />
+    }
+
+    test('matches current route', async () => {
+      act(() => navigate('/foo'))
+      const options = { basePath: '/foo' }
+      const { getByTestId } = render(
+        <Harness routes={routes} options={options} />
+      )
+
+      // act(() => navigate('/foo'))
+      expect(getByTestId('label')).toHaveTextContent('home')
+      act(() => navigate('/foo/about'))
+      expect(getByTestId('label')).toHaveTextContent('about')
+    })
+
+    test('does not match current route', async () => {
+      const options = { basePath: '/foo' }
+      const { getByTestId } = render(
+        <Harness routes={routes} options={options} />
+      )
+
+      act(() => navigate('/'))
+      expect(getByTestId('label')).toHaveTextContent('not found')
+    })
+  })
 })
 
 describe('useBasePath', () => {

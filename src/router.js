@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { BasePathContext, PathContext } from './context.js'
 import { isNode, setSsrPath, getSsrPath } from './node'
-import { useLocationChange, getCurrentPath } from './path.js'
+import { useLocationChange, getFormattedPath } from './path.js'
 
 export function useRoutes(
   routes,
@@ -9,13 +9,14 @@ export function useRoutes(
     basePath = '',
     routeProps = {},
     overridePathParams = true,
-    matchTrailingSlash = false
+    matchTrailingSlash = true
   } = {}
 ) {
   // path is the browser url location
-  const [path, setPath] = useState(getCurrentPath(basePath))
+  let [path, setPath] = useState(getFormattedPath)
 
   useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
+
   // Get the current route
   const route = matchRoute(routes, path, {
     routeProps,
@@ -23,7 +24,8 @@ export function useRoutes(
     matchTrailingSlash
   })
   // No match should not return an empty Provider, just null
-  if (!route) return null
+  // console.log('router check', basePath, rootPath)
+  if (!route || path === null) return null
   return (
     <BasePathContext.Provider value={basePath}>
       <PathContext.Provider value={path}>{route}</PathContext.Provider>

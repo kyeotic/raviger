@@ -8,19 +8,31 @@ export function usePath(basePath) {
 
   const contextBasePath = useBasePath() // hooks can't be called conditionally
   basePath = basePath || contextBasePath
-  const [path, setPath] = useState(getCurrentPath(basePath))
+  const [path, setPath] = useState(getCurrentPath())
   useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
 
-  return (
-    (contextPath !== null
-      ? contextPath
-      : path.replace(basePathMatcher(basePath), '')) || '/'
-  )
+  // if (contextPath) return contextPath
+  // return formatPath(basePath, path)
+
+  return contextPath || formatPath(basePath, path)
+
+  // return (
+  //   (contextPath !== null
+  //     ? contextPath
+  //     : path.replace(basePathMatcher(basePath), '')) || '/'
+  // )
   // return path
 }
 
 export function useBasePath() {
   return useContext(BasePathContext)
+}
+
+export function useFullPath() {
+  const [path, setPath] = useState(getCurrentPath())
+  useLocationChange(setPath, { inheritBasePath: false })
+
+  return path || '/'
 }
 
 export function useHash({ stripHash = true } = {}) {
@@ -37,10 +49,25 @@ export function useHash({ stripHash = true } = {}) {
   return stripHash ? hash.substring(1) : hash
 }
 
-export function getCurrentPath(basePath = '') {
-  return isNode
-    ? getSsrPath()
-    : window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
+export function getCurrentPath() {
+  // if (check)
+  //   console.log(
+  //     'path check',
+  //     basePath,
+  //     window.location.pathname,
+  //     window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
+  //   )
+  return isNode ? getSsrPath() : window.location.pathname || '/'
+}
+
+/**
+ * Returns the current path. If basePath is provided it will be removed from the front of the path.
+ * If basePath is provided and the path does not begin with it will return null
+ * @param {string} basePath basePath, if any
+ * @return {string | null} returns path with basePath prefix removed, or null if basePath is provided and missing
+ */
+export function getFormattedPath(basePath) {
+  return formatPath(basePath, getCurrentPath())
 }
 
 export function getCurrentHash() {
@@ -52,12 +79,14 @@ export function getCurrentHash() {
   return window.location.hash
 }
 
-export function useLocationChange(setFn, options = {}) {
+export function useLocationChange(
+  setFn,
+  { inheritBasePath = false, basePath = '', isActive } = {}
+) {
   if (isNode) return
-  let basePath = ''
   const routerBasePath = useBasePath()
-  if (options.inheritBasePath !== false) basePath = routerBasePath
-  if (!basePath && options.basePath) basePath = options.basePath
+  if (inheritBasePath && routerBasePath) basePath = routerBasePath
+  // if (options.inheritBasePath !== false) basePath = routerBasePath
   const setRef = useRef(setFn)
   useEffect(() => {
     // setFn could be an in-render declared callback, making it unstable
@@ -69,14 +98,24 @@ export function useLocationChange(setFn, options = {}) {
   })
   const onPopState = useCallback(() => {
     // No predicate defaults true
-    if (options.isActive !== undefined && !isPredicateActive(options.isActive))
-      return
-    setRef.current(getCurrentPath(basePath))
-  }, [options.isActive, basePath])
+    if (isActive !== undefined && !isPredicateActive(isActive)) return
+    setRef.current(getFormattedPath(basePath))
+  }, [isActive, basePath])
   useEffect(() => {
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
   }, [onPopState])
+}
+
+/**
+ * remove the basePath from the front of path; returns null if basePath is not prefixing path
+ * @param {string} basePath basePath, if any
+ * @param {string} path current path
+ * @return {string | null} returns path with basePath prefix removed, or null
+ */
+function formatPath(basePath, path) {
+  if (basePath && !isPathInBase(basePath, path)) return null
+  return !basePath ? path : path.replace(basePathMatcher(basePath), '') || '/'
 }
 
 function isPredicateActive(predicate) {
@@ -85,4 +124,8 @@ function isPredicateActive(predicate) {
 
 function basePathMatcher(basePath) {
   return new RegExp('^' + basePath, 'i')
+}
+
+function isPathInBase(basePath, path) {
+  return basePath && !path.toLowerCase().startsWith(basePath.toLowerCase())
 }

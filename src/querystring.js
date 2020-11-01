@@ -9,8 +9,7 @@ export function useQueryParams(
 ) {
   const [querystring, setQuerystring] = useState(getQueryString())
   const setQueryParams = useCallback(
-    // TODO: V2 using options param for replace
-    (params, replace = true) => {
+    (params, { replace = true } = {}) => {
       let path = getCurrentPath()
       params = replace ? params : { ...parseFn(querystring), ...params }
       const serialized = serializeFn(params).toString()
