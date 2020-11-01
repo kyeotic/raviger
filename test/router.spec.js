@@ -50,6 +50,7 @@ describe('useRoutes', () => {
     act(() => navigate('/missing'))
     expect(getByTestId('label')).toHaveTextContent('not found')
   })
+
   test('matches updated route', async () => {
     const { getByTestId } = render(<Harness routes={routes} />)
 
@@ -59,12 +60,23 @@ describe('useRoutes', () => {
     act(() => navigate('/about'))
     expect(getByTestId('label')).toHaveTextContent('about')
   })
-  test('does not match trailing slash by default', async () => {
+
+  test('matches trailing slash by default', async () => {
     const { getByTestId } = render(<Harness routes={routes} />)
+    act(() => navigate('/'))
+    act(() => navigate('/about/'))
+    expect(getByTestId('label')).toHaveTextContent('about')
+  })
+
+  test('does not match trailing slash with option', async () => {
+    const { getByTestId } = render(
+      <Harness routes={routes} options={{ matchTrailingSlash: false }} />
+    )
     act(() => navigate('/'))
     act(() => navigate('/about/'))
     expect(getByTestId('label')).toHaveTextContent('not found')
   })
+
   test('matches trailing slash with option', async () => {
     const { getByTestId } = render(
       <Harness routes={routes} options={{ matchTrailingSlash: true }} />
@@ -73,6 +85,7 @@ describe('useRoutes', () => {
     act(() => navigate('/about/'))
     expect(getByTestId('label')).toHaveTextContent('about')
   })
+
   test('matches trailing slash on "/"', async () => {
     const { getByTestId } = render(
       <Harness routes={routes} options={{ matchTrailingSlash: true }} />
@@ -80,18 +93,21 @@ describe('useRoutes', () => {
     act(() => navigate('/'))
     expect(getByTestId('label')).toHaveTextContent('home')
   })
+
   test('matches route with parameters', async () => {
     const { getByTestId } = render(<Harness routes={routes} />)
 
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 1')
   })
+
   test('matches case insensitive rout', async () => {
     const { getByTestId } = render(<Harness routes={routes} />)
 
     act(() => navigate('/About'))
     expect(getByTestId('label')).toHaveTextContent('about')
   })
+
   test('works with lazy routes', async () => {
     let loader = new Promise(resolve => {
       setTimeout(() => resolve({ default: Route }), 50)
@@ -113,6 +129,7 @@ describe('useRoutes', () => {
     act(() => navigate('/lazy'))
     expect(getByTestId('label')).toHaveTextContent('lazy')
   })
+
   test('passes extra route props to route', async () => {
     const { getByTestId } = render(
       <Harness
@@ -123,6 +140,7 @@ describe('useRoutes', () => {
     act(() => navigate('/about'))
     expect(getByTestId('extra')).toHaveTextContent('injected')
   })
+
   test('overrides route props', async () => {
     const { getByTestId } = render(
       <Harness routes={routes} options={{ routeProps: { userId: 4 } }} />
@@ -130,6 +148,7 @@ describe('useRoutes', () => {
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 4')
   })
+
   test('underrides route props', async () => {
     const { getByTestId } = render(
       <Harness
@@ -205,6 +224,9 @@ describe('useRoutes', () => {
       )
 
       act(() => navigate('/'))
+      expect(getByTestId('label')).toHaveTextContent('not found')
+
+      act(() => navigate('/about'))
       expect(getByTestId('label')).toHaveTextContent('not found')
     })
   })

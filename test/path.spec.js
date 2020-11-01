@@ -13,8 +13,8 @@ beforeEach(() => {
 })
 
 describe('useLocationChange', () => {
-  function Route({ onChange, isActive }) {
-    useLocationChange(onChange, { isActive })
+  function Route({ onChange, isActive, basePath }) {
+    useLocationChange(onChange, { isActive, basePath })
     return null
   }
   test('setter gets updated path', async () => {
@@ -32,6 +32,15 @@ describe('useLocationChange', () => {
     act(() => navigate('/foo'))
 
     expect(watcher).not.toBeCalled()
+  })
+  test('setter gets null when provided basePath is missing', async () => {
+    let watcher = jest.fn()
+    render(<Route onChange={watcher} basePath="/home" />)
+
+    act(() => navigate('/foo'))
+    expect(watcher).toBeCalledWith(null)
+    act(() => navigate('/home'))
+    expect(watcher).toBeCalledWith('/')
   })
 })
 
@@ -180,6 +189,18 @@ describe('usePath', () => {
     expect(getByTestId('path')).toHaveTextContent('/')
     expect(homeFn).toHaveBeenCalledTimes(1)
     expect(aboutFn).toHaveBeenCalledTimes(0)
+  })
+
+  test('returns null when provided basePath is missing', async () => {
+    function Route() {
+      let path = usePath('/home')
+      return <span data-testid="path">{path || 'not found'}</span>
+    }
+    act(() => navigate('/'))
+    const { getByTestId } = render(<Route />)
+    act(() => navigate('/about'))
+
+    expect(getByTestId('path')).toHaveTextContent('not found')
   })
 })
 

@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `useRedirect` parameters changed to match properties on `Redirect` component
 ### Added
 - `useFullPath` for getting the full path, ignoring any context-provided `basePath`
+- Support for Node 14
+- ### Removed
+- Support for Node 8
 
 ## [1.6.0] - 2020-10-22
 ### Added

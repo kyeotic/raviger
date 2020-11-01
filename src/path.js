@@ -67,6 +67,7 @@ export function getCurrentPath() {
  * @return {string | null} returns path with basePath prefix removed, or null if basePath is provided and missing
  */
 export function getFormattedPath(basePath) {
+  // console.log('format checl', basePath, getCurrentPath())
   return formatPath(basePath, getCurrentPath())
 }
 
@@ -114,7 +115,15 @@ export function useLocationChange(
  * @return {string | null} returns path with basePath prefix removed, or null
  */
 function formatPath(basePath, path) {
-  if (basePath && !isPathInBase(basePath, path)) return null
+  // console.log(
+  //   'format',
+  //   basePath,
+  //   path,
+  //   path.toLowerCase().startsWith(basePath.toLowerCase()),
+  //   path.replace(basePathMatcher(basePath), '') || '/'
+  // )
+  const baseMissing = basePath && !isPathInBase(basePath, path)
+  if (path === null || baseMissing) return null
   return !basePath ? path : path.replace(basePathMatcher(basePath), '') || '/'
 }
 
@@ -127,5 +136,7 @@ function basePathMatcher(basePath) {
 }
 
 function isPathInBase(basePath, path) {
-  return basePath && !path.toLowerCase().startsWith(basePath.toLowerCase())
+  return (
+    basePath && path && path.toLowerCase().startsWith(basePath.toLowerCase())
+  )
 }

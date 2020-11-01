@@ -8,7 +8,7 @@ beforeEach(() => {
 
 describe('useRedirect', () => {
   function Mock() {
-    useRedirect('/fail', '/catch', { name: 'kyeotic' })
+    useRedirect('/fail', '/catch', { query: { name: 'kyeotic' } })
     useRedirect('/miss', '/catch')
     return <span>Mock</span>
   }
