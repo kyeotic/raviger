@@ -1,7 +1,6 @@
 import React from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
 import { navigate, useQueryParams } from '../src/main.js'
-import { deriveQueryString } from '../src/querystring.js'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -90,34 +89,5 @@ describe('setQueryParams', () => {
     const { getByTestId } = render(<Route replace={false} />)
     act(() => void fireEvent.click(getByTestId('update')))
     expect(document.location.hash).toEqual('#test')
-  })
-})
-
-describe('deriveQueryString', () => {
-  test('merges current and target when merge is true', () => {
-    expect(deriveQueryString({ a: 'a' }, { b: 'b' }, true)).toBe('a=a&b=b')
-    expect(deriveQueryString('a=a', { b: 'b' }, true)).toBe('a=a&b=b')
-    expect(deriveQueryString({ a: 'a' }, 'b=b', true)).toBe('a=a&b=b')
-    expect(deriveQueryString('a=a', 'b=b', true)).toBe('a=a&b=b')
-    expect(
-      deriveQueryString(
-        new URLSearchParams({ a: 'a' }),
-        new URLSearchParams({ b: 'b' }),
-        true
-      )
-    ).toBe('a=a&b=b')
-  })
-  test('returns target when merge is false', () => {
-    expect(deriveQueryString({ a: 'a' }, { b: 'b' }, false)).toBe('b=b')
-    expect(deriveQueryString('a=a', { b: 'b' }, false)).toBe('b=b')
-    expect(deriveQueryString({ a: 'a' }, 'b=b', false)).toBe('b=b')
-    expect(deriveQueryString('a=a', 'b=b', false)).toBe('b=b')
-    expect(
-      deriveQueryString(
-        new URLSearchParams({ a: 'a' }),
-        new URLSearchParams({ b: 'b' }),
-        false
-      )
-    ).toBe('b=b')
   })
 })

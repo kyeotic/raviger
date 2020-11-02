@@ -24,7 +24,6 @@ export function useRoutes(
     matchTrailingSlash
   })
   // No match should not return an empty Provider, just null
-  // console.log('router check', basePath, path, Object.keys(routes))
   if (!route || path === null) return null
   return (
     <BasePathContext.Provider value={basePath}>

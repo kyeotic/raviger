@@ -1,7 +1,12 @@
 import { useEffect } from 'react'
 import { usePath, getCurrentHash } from './path.js'
 import { navigate } from './navigate.js'
-import { useQueryParams, deriveQueryString } from './querystring.js'
+import { useQueryParams } from './querystring.js'
+
+export function Redirect({ to, query, replace = true, merge = true }) {
+  useRedirect(usePath(), to, { query, replace, merge })
+  return null
+}
 
 export function useRedirect(
   predicateUrl,
@@ -12,7 +17,7 @@ export function useRedirect(
   const [currentQuery] = useQueryParams()
   const hash = getCurrentHash()
   let url = targetUrl
-  const targetQuery = deriveQueryString(currentQuery, query, merge)
+  const targetQuery = { ...currentQuery, ...query }
   if (targetQuery) {
     url += '?' + targetQuery
   }
@@ -25,9 +30,4 @@ export function useRedirect(
       navigate(url, undefined, replace)
     }
   }, [predicateUrl, url, undefined, replace, currentPath])
-}
-
-export function Redirect({ to, query, replace = true, merge = true }) {
-  useRedirect(usePath(), to, { query, replace, merge })
-  return null
 }

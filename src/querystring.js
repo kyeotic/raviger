@@ -20,7 +20,11 @@ export function useQueryParams(
     [querystring]
   )
   // Update state when route changes
-  useLocationChange(() => setQuerystring(getQueryString()))
+  const updateQuery = useCallback(
+    () => () => setQuerystring(getQueryString()),
+    [setQueryParams]
+  )
+  useLocationChange(updateQuery)
   return [parseFn(querystring), setQueryParams]
 }
 
@@ -48,17 +52,4 @@ export function getQueryString() {
     return queryIndex === -1 ? '' : ssrPath.substring(queryIndex + 1)
   }
   return location.search
-}
-
-export function deriveQueryString(current, target, merge) {
-  current = queryAsObject(current)
-  target = queryAsObject(target)
-  return merge
-    ? new URLSearchParams({ ...current, ...target }).toString()
-    : new URLSearchParams(target).toString()
-}
-
-function queryAsObject(query) {
-  if (!query) return {}
-  return Object.fromEntries(new URLSearchParams(query).entries())
 }

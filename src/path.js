@@ -11,17 +11,7 @@ export function usePath(basePath) {
   const [path, setPath] = useState(getCurrentPath())
   useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
 
-  // if (contextPath) return contextPath
-  // return formatPath(basePath, path)
-
   return contextPath || formatPath(basePath, path)
-
-  // return (
-  //   (contextPath !== null
-  //     ? contextPath
-  //     : path.replace(basePathMatcher(basePath), '')) || '/'
-  // )
-  // return path
 }
 
 export function useBasePath() {
@@ -50,25 +40,7 @@ export function useHash({ stripHash = true } = {}) {
 }
 
 export function getCurrentPath() {
-  // if (check)
-  //   console.log(
-  //     'path check',
-  //     basePath,
-  //     window.location.pathname,
-  //     window.location.pathname.replace(basePathMatcher(basePath), '') || '/'
-  //   )
   return isNode ? getSsrPath() : window.location.pathname || '/'
-}
-
-/**
- * Returns the current path. If basePath is provided it will be removed from the front of the path.
- * If basePath is provided and the path does not begin with it will return null
- * @param {string} basePath basePath, if any
- * @return {string | null} returns path with basePath prefix removed, or null if basePath is provided and missing
- */
-export function getFormattedPath(basePath) {
-  // console.log('format checl', basePath, getCurrentPath())
-  return formatPath(basePath, getCurrentPath())
 }
 
 export function getCurrentHash() {
@@ -109,19 +81,16 @@ export function useLocationChange(
 }
 
 /**
- * remove the basePath from the front of path; returns null if basePath is not prefixing path
+ * Returns the current path. If basePath is provided it will be removed from the front of the path.
+ * If basePath is provided and the path does not begin with it will return null
  * @param {string} basePath basePath, if any
- * @param {string} path current path
- * @return {string | null} returns path with basePath prefix removed, or null
+ * @return {string | null} returns path with basePath prefix removed, or null if basePath is provided and missing
  */
+export function getFormattedPath(basePath) {
+  return formatPath(basePath, getCurrentPath())
+}
+
 function formatPath(basePath, path) {
-  // console.log(
-  //   'format',
-  //   basePath,
-  //   path,
-  //   path.toLowerCase().startsWith(basePath.toLowerCase()),
-  //   path.replace(basePathMatcher(basePath), '') || '/'
-  // )
   const baseMissing = basePath && !isPathInBase(basePath, path)
   if (path === null || baseMissing) return null
   return !basePath ? path : path.replace(basePathMatcher(basePath), '') || '/'
