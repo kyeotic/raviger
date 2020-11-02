@@ -119,14 +119,13 @@ describe('useNavigate', () => {
     const basePath = '/base'
     const newPath = '/path'
 
-    const { container, debug } = render(
+    const { container } = render(
       <App basePath={basePath} newPath={newPath} replace />
     )
     act(() => navigate(`${basePath}/`))
 
     window.history.replaceState = jest.fn()
     const button = container.querySelector('button')
-    debug()
     act(() => {
       button.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })

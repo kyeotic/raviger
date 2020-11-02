@@ -20,10 +20,9 @@ export function useQueryParams(
     [querystring]
   )
   // Update state when route changes
-  const updateQuery = useCallback(
-    () => () => setQuerystring(getQueryString()),
-    [setQueryParams]
-  )
+  const updateQuery = useCallback(() => setQuerystring(getQueryString()), [
+    setQueryParams
+  ])
   useLocationChange(updateQuery)
   return [parseFn(querystring), setQueryParams]
 }

@@ -17,7 +17,10 @@ export function useRedirect(
   const [currentQuery] = useQueryParams()
   const hash = getCurrentHash()
   let url = targetUrl
-  const targetQuery = { ...currentQuery, ...query }
+  const targetQuery = new URLSearchParams({
+    ...(merge ? currentQuery : {}),
+    ...query
+  }).toString()
   if (targetQuery) {
     url += '?' + targetQuery
   }
