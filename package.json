@@ -8,6 +8,9 @@
     "dist/",
     "types/"
   ],
+  "engines" : { 
+    "node" : ">=10.0.0 <15.0.0" 
+  },
   "types": "types/raviger.d.ts",
   "keywords": [
     "react",
