@@ -129,6 +129,7 @@ describe('usePath', () => {
     expect(getByTestId('path')).toHaveTextContent('/')
   })
 
+  // tracks regression of https://github.com/kyeotic/raviger/issues/64
   test('usePath is not called when unmounting', async () => {
     const homeFn = jest.fn()
     function Home() {
@@ -172,15 +173,22 @@ describe('usePath', () => {
       )
     }
 
+    // console.log('start')
+    // start with about mounted
     act(() => navigate('/about'))
     const { getByTestId } = render(<Harness routes={routes} />)
+
     expect(getByTestId('path')).toHaveTextContent('/about')
     expect(aboutFn).toHaveBeenCalledTimes(1)
+    // console.log('preset')
 
+    // reset
     aboutFn.mockClear()
 
     // console.log('reset')
     // act(() => navigate('/'))
+
+    // go home with async
     act(() => void fireEvent.click(getByTestId('home-btn')))
     // console.log('acted')
     // Wait for the internal setTimeout

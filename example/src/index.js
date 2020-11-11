@@ -1,10 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
+// import App from './App2'
 // import App from './NestedApp.js'
 // eslint-disable-next-line import/no-unresolved
-import whyDidYouRender from 'whyDidYouRender'
+// import whyDidYouRender from 'whyDidYouRender'
 
-whyDidYouRender(React)
+// whyDidYouRender(React)
 
 ReactDOM.render(<App />, document.getElementById('root'))

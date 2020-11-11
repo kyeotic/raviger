@@ -229,6 +229,40 @@ describe('useRoutes', () => {
       act(() => navigate('/about'))
       expect(getByTestId('label')).toHaveTextContent('not found')
     })
+
+    test('nested router with basePath matches after navigation', async () => {
+      const appRoutes = {
+        '/app/:id*': ({ id }) => SubRouter({ id })
+      }
+      function App() {
+        const route = useRoutes(appRoutes)
+        return route || <NotFound />
+      }
+      function SubRouter({ id }) {
+        const subRoutes = React.useMemo(
+          () => ({
+            '/settings': () => <RouteItem id={id} />
+          }),
+          [id]
+        )
+        const route = useRoutes(subRoutes, { basePath: `/app/${id}` })
+        return route || <NotFound />
+      }
+      function RouteItem({ id }) {
+        return <span data-testid="label">{id}</span>
+      }
+
+      function NotFound() {
+        return <span data-testid="label">Not Found</span>
+      }
+      act(() => navigate('/app/1/settings'))
+      const { getByTestId } = render(<App />)
+
+      expect(getByTestId('label')).toHaveTextContent('1')
+
+      act(() => navigate('/app/2/settings'))
+      expect(getByTestId('label')).toHaveTextContent('2')
+    })
   })
 })
 

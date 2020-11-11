@@ -1,17 +1,23 @@
-import { useState, useEffect, useCallback, useRef, useContext } from 'react'
+import {
+  useState,
+  useCallback,
+  useRef,
+  useContext,
+  useLayoutEffect
+} from 'react'
 import { BasePathContext, PathContext } from './context.js'
 import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
 
 export function usePath(basePath) {
   const contextPath = useContext(PathContext)
-
   const contextBasePath = useBasePath() // hooks can't be called conditionally
   basePath = basePath || contextBasePath
-  const [path, setPath] = useState(getCurrentPath())
+
+  const [path, setPath] = useState(getFormattedPath(basePath))
   useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
 
-  return contextPath || formatPath(basePath, path)
+  return contextPath || path
 }
 
 export function useBasePath() {
@@ -31,10 +37,12 @@ export function useHash({ stripHash = true } = {}) {
     if (window.location.hash === hash) return
     setHash(window.location.hash)
   }, [setHash])
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     window.addEventListener('hashchange', handleHash, false)
     return () => window.removeEventListener('hashchange', handleHash)
   }, [handleHash])
+
   useLocationChange(handleHash)
   return stripHash ? hash.substring(1) : hash
 }
@@ -59,9 +67,9 @@ export function useLocationChange(
   if (isNode) return
   const routerBasePath = useBasePath()
   if (inheritBasePath && routerBasePath) basePath = routerBasePath
-  // if (options.inheritBasePath !== false) basePath = routerBasePath
+
   const setRef = useRef(setFn)
-  useEffect(() => {
+  useLayoutEffect(() => {
     // setFn could be an in-render declared callback, making it unstable
     // This is a method of using an often-changing callback from React Hooks
     // https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
@@ -69,15 +77,25 @@ export function useLocationChange(
     // For reducing the useEffect cleanup from setFn changing every render
     setRef.current = setFn
   })
+
   const onPopState = useCallback(() => {
     // No predicate defaults true
     if (isActive !== undefined && !isPredicateActive(isActive)) return
+    // console.log('loc', basePath || 'none', getFormattedPath(basePath))
     setRef.current(getFormattedPath(basePath))
   }, [isActive, basePath])
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
   }, [onPopState])
+
+  // When the basePath changes re-check the path after the render completes
+  // This allows nested contexts to get an up-to-date formatted path
+  useLayoutEffect(() => {
+    if (isActive !== undefined && !isPredicateActive(isActive)) return
+    setRef.current(getFormattedPath(basePath))
+  }, [basePath, isActive])
 }
 
 /**
@@ -87,10 +105,7 @@ export function useLocationChange(
  * @return {string | null} returns path with basePath prefix removed, or null if basePath is provided and missing
  */
 export function getFormattedPath(basePath) {
-  return formatPath(basePath, getCurrentPath())
-}
-
-function formatPath(basePath, path) {
+  const path = getCurrentPath()
   const baseMissing = basePath && !isPathInBase(basePath, path)
   if (path === null || baseMissing) return null
   return !basePath ? path : path.replace(basePathMatcher(basePath), '') || '/'

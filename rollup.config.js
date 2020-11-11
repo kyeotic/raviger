@@ -1,6 +1,7 @@
 const replace = require('rollup-plugin-replace')
 const babel = require('rollup-plugin-babel')
 const packageJson = require('./package.json')
+const { terser } = require('rollup-plugin-terser')
 
 const deps = Object.keys(packageJson.dependencies || []).concat(
   Object.keys(packageJson.peerDependencies)
@@ -36,7 +37,8 @@ module.exports = [
         ],
         sourceMaps: true,
         inputSourceMap: true
-      })
+      }),
+      terser()
     ]
   },
   {
@@ -67,7 +69,8 @@ module.exports = [
         ],
         sourceMaps: true,
         inputSourceMap: true
-      })
+      }),
+      terser()
     ]
   }
 ]

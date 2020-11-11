@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { usePath, getCurrentHash } from './path.js'
 import { navigate } from './navigate.js'
 import { useQueryParams } from './querystring.js'
@@ -16,6 +16,7 @@ export function useRedirect(
   const currentPath = usePath()
   const [currentQuery] = useQueryParams()
   const hash = getCurrentHash()
+
   let url = targetUrl
   const targetQuery = new URLSearchParams({
     ...(merge ? currentQuery : {}),
@@ -28,7 +29,7 @@ export function useRedirect(
     url += hash
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (currentPath === predicateUrl) {
       navigate(url, undefined, replace)
     }
