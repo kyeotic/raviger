@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `useFullPath` for getting the full path, ignoring any context-provided `basePath`
 - Support for Node 14
+- Rollup-plugin-terser for builds
 ### Removed
 - Support for Node 8
 
