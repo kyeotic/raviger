@@ -28,20 +28,13 @@ export function useQueryParams(
 }
 
 function parseQuery(querystring) {
-  return [...new URLSearchParams(querystring)].reduce(
-    (result, [key, value]) => {
-      result[key] = value
-      return result
-    },
-    {}
-  )
+  return Object.fromEntries(new URLSearchParams(querystring).entries())
 }
 
 function serializeQuery(queryParams) {
-  return Object.entries(queryParams).reduce((query, [key, value]) => {
-    if (value !== null) query.append(key, value)
-    return query
-  }, new URLSearchParams())
+  return new URLSearchParams(
+    Object.entries(queryParams).filter(([, v]) => v !== null)
+  )
 }
 
 export function getQueryString() {
