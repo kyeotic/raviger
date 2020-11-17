@@ -1,16 +1,16 @@
 ---
 title: "useHash"
-date: 2020-03-04T20:17:16-08:00
-weight: 9
+permalink: /use-hash/
+nav_order: 9
 ---
 
 A hook for getting the current hash of the page. Will cause re-renders when the hash changes.
 
 ## API
 
-{{< highlight typescript >}}
+```typescript
 export function useHash(options?: { stripHash?: boolean }): string
-{{< /highlight >}}
+```
 
 ## stripHash
 

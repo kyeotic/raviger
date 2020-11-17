@@ -13,3 +13,4 @@ $RECYCLE.BIN/
 /node_modules
 /dist
 /example
+/_site/

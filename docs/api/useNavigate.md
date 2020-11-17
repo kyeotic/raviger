@@ -1,25 +1,25 @@
 ---
 title: "useNavigate"
-date: 2020-10-22T14:27:55-06:00
-weight: 5
+permalink: /use-navigate/
+nav_order: 5
 ---
 
 A hook for imperative route changes that include any configured `basePath`
 
 ## API
 
-{{< highlight typescript >}}
+```typescript
 type NavigateWithReplace = (url: string, replace?: boolean) => void;
 type NavigateWithQuery = (url: string, query?: URLSearchParams, replace?: boolean) => void;
 
 export function useNavigate(optBasePath?: string): NavigateWithReplace & NavigateWithQuery;
-{{< /highlight >}}
+```
 
 The function returned by `useNavigate` has the same signature as the non-hook [navigate function](/api/navigate).  The only difference is that this function considers the `basePath` when navigating.
 
 ## Basic
 
-{{< highlight jsx >}}
+```jsx
 import { useRoutes, useNavigate } from 'raviger'
 
 function Home () {
@@ -44,7 +44,7 @@ const routes = {
 export default function App() {
   return useRoutes(routes, { basePath: '/app' })
 }
-{{< /highlight >}}
+```
 
 ## Outside a Router
 

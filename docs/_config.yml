@@ -1,0 +1,43 @@
+title: Raviger
+description: React routing library with hooks!
+lsi: false
+safe: true
+source: 
+incremental: false
+highlighter: rouge
+# theme: jekyll-theme-architect
+# theme: jekyll-theme-midnight
+remote_theme: pmarsceill/just-the-docs
+gist:
+  noscript: false
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+permalink: pretty
+aux_links:
+  "GitHub Repo":
+    - "//github.com/kyeotic/raviger"
+back_to_top: true
+back_to_top_text: "Back to top"
+heading_anchors: true
+# baseurl: /ea-governance/ea-standards
+# Footer "Edit this page on GitHub" link text
+gh_edit_link: true # show or hide edit this page link
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/kyeotic/raviger"
+gh_edit_branch: "master" # the branch that your docs is served from
+# gh_edit_source: docs # the source that your files originate from
+gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into the editor immediately
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  startings: []
+  blanklines: false
+  profile: false
+  # ignore:
+  #   envs: all
+exclude:
+  - "README.md"
+plugins:
+  - jekyll-relative-links

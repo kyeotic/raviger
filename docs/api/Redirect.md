@@ -1,14 +1,14 @@
 ---
 title: "Redirect"
-date: 2020-03-04T20:17:12-08:00
-weight: 5
+permalink: /redirect/
+nav_order: 5
 ---
 
 A React component for causing a browser redirect
 
 ## API
 
-{{< highlight typescript >}}
+```typescript
 export interface RedirectProps {
   to: string
   query?: QueryParam | URLSearchParams
@@ -16,13 +16,13 @@ export interface RedirectProps {
   merge?: boolean
 }
 export const Redirect: React.FC<RedirectProps>
-{{< /highlight >}}
+```
 
 ## Basic
 
 If rendered this component will force a redirect. Usefult as a route function
 
-{{< highlight jsx>}}
+```jsx
 import { useRoutes, Redirect } from 'raviger'
 
 const routes = {
@@ -39,7 +39,7 @@ export default function App() {
     </div>
   )
 }
-{{< /highlight >}}
+```
 
 By default it will navigate with `replace` and `merge` both `true`.
 
