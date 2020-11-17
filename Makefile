@@ -17,11 +17,5 @@ HELP_FUNC = \
 help:
 	@perl -e '$(HELP_FUNC)' $(MAKEFILE_LIST)
 
-run-docs: ## Run in development mode
-	cd docs && hugo serve -D
-
 docs: ## Build the site
-	cd docs && hugo -t learn -d public --gc --minify --cleanDestinationDir
-
-sync-docs: ## update docs theme submodules
-	git submodule update --init --recursive
+	cd docs && docker-compose up

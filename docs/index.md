@@ -1,9 +1,15 @@
-+++
-title = "Quick Start"
-date = 2019-09-26T19:40:47-07:00
-weight = 1
-chapter = true
-+++
+---
+title: Home
+permalink: /
+nav_order: 1
+---
+
+
+# raviger
+
+**R**eact N**avig**at**or**. A React hook-based router that updates on **all** url changes. Heavily inspired by [hookrouter](https://github.com/Paratron/hookrouter).
+
+Zero dependencies. Tiny footprint.
 
 # Quick Start
 
@@ -19,7 +25,7 @@ npm i raviger
 
 This basic setup shows how to display an `<App>` component that renders a route based on the current path, with links to different routes.
 
-{{< highlight jsx >}}
+```jsx
 import { useRoutes, Link, useQueryParams } from 'raviger'
 import { Home, About, Users } from './Pages.js'
 
@@ -43,4 +49,4 @@ export default function App() {
     </div>
   )
 }
-{{< /highlight>}}
+```
