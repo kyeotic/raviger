@@ -21,14 +21,13 @@ export interface LinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string
   basePath?: string
-  linkRef?: React.RefObject<HTMLAnchorElement>
 }
-export const Link: React.FC<LinkProps>
+export const Link: React.ForwardRefExoticComponent<LinkProps & React.RefAttributes<HTMLAnchorElement>>
 export interface ActiveLinkProps extends LinkProps {
   activeClass?: string
   exactActiveClass?: string
 }
-export const ActiveLink: React.FC<ActiveLinkProps>
+export const ActiveLink: React.ForwardRefExoticComponent<ActiveLinkProps & React.RefAttributes<HTMLAnchorElement>>
 
 export interface RedirectProps {
   to: string
@@ -68,10 +67,14 @@ export interface QueryParam {
   [key: string]: any
 }
 
+export interface setQueryParamsOptions {
+  replace?: boolean
+}
+
 export function useQueryParams(
   parseFn?: (query: string) => QueryParam,
   serializeFn?: (query: QueryParam) => string
-): [QueryParam, (query: QueryParam, replace?: boolean) => void]
+): [QueryParam, (query: QueryParam, options?: setQueryParamsOptions) => void]
 
 export function useQueryParams<T>(
   parseFn?: (query: string) => T,

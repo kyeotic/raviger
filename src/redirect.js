@@ -1,35 +1,37 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { usePath, getCurrentHash } from './path.js'
 import { navigate } from './navigate.js'
-import { useQueryParams, deriveQueryString } from './querystring.js'
+import { useQueryParams } from './querystring.js'
 
-// TODO: V2 replace this signature with one more like the <Redirect /> Component
+export function Redirect({ to, query, replace = true, merge = true }) {
+  useRedirect(usePath(), to, { query, replace, merge })
+  return null
+}
+
 export function useRedirect(
   predicateUrl,
   targetUrl,
-  queryParams = null,
-  replace = true
+  { query, replace = true, merge = true } = {}
 ) {
   const currentPath = usePath()
-  useEffect(() => {
-    if (currentPath === predicateUrl) {
-      navigate(targetUrl, queryParams, replace)
-    }
-  }, [predicateUrl, targetUrl, queryParams, replace, currentPath])
-}
-
-export function Redirect({ to, query, replace = true, merge = true }) {
   const [currentQuery] = useQueryParams()
   const hash = getCurrentHash()
-  const path = usePath()
-  let url = to
-  const targetQuery = deriveQueryString(currentQuery, query, merge)
+
+  let url = targetUrl
+  const targetQuery = new URLSearchParams({
+    ...(merge ? currentQuery : {}),
+    ...query
+  }).toString()
   if (targetQuery) {
     url += '?' + targetQuery
   }
   if (merge && hash && hash.length) {
     url += hash
   }
-  useRedirect(path, url, null, replace)
-  return null
+
+  useLayoutEffect(() => {
+    if (currentPath === predicateUrl) {
+      navigate(url, undefined, replace)
+    }
+  }, [predicateUrl, url, undefined, replace, currentPath])
 }

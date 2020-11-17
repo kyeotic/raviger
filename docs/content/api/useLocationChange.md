@@ -20,7 +20,7 @@ export function useLocationChange(
 ): void
 {{< /highlight >}}
 
-**Note**: `options.inheritBasePath` is treated as `true` unless it is set to `false` (even if `options` is not provided), and takes precedence over `options.basePath` if `true`. If no BasePath is in the context to inherit `options.basePath` will be used as a fallback, if present.
+**Note**: `options.inheritBasePath` defaults to `true` (even if `options` is not provided), and takes precedence over `options.basePath` if `true`. If no BasePath is in the context to inherit `options.basePath` will be used as a fallback, if present. If `basePath` is provided, either by parameter or by context, and is missing from the current path `null` is sent to the `setFn` callback.
 
 ## Basic
 

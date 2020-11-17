@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useLayoutEffect } from 'react'
 import { isNode } from './node.js'
 import { useBasePath } from './path.js'
 
@@ -28,7 +28,7 @@ export function navigate(url, replaceOrQuery, replace) {
 
 export function useNavigationPrompt(predicate = true, prompt = defaultPrompt) {
   if (isNode) return
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handler = e => {
       if (predicate) {
         return e ? cancelNavigation(e, prompt) : prompt

@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { BasePathContext, PathContext } from './context.js'
 import { isNode, setSsrPath, getSsrPath } from './node'
-import { useLocationChange, getCurrentPath } from './path.js'
+import { usePath, getFormattedPath } from './path.js'
 
 export function useRoutes(
   routes,
@@ -9,13 +9,21 @@ export function useRoutes(
     basePath = '',
     routeProps = {},
     overridePathParams = true,
-    matchTrailingSlash = false
+    matchTrailingSlash = true
   } = {}
 ) {
-  // path is the browser url location
-  const [path, setPath] = useState(getCurrentPath(basePath))
+  /*
+    This is a hack to setup a listener for the path while always using this latest path
+    The issue with usePath is that, in order to not re-render nested components when
+    their parent router changes the path, it uses the context's path
+    But since that path has to get _set_ here in useRoutes something has to give
 
-  useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
+    If usePath returns latest it causes render thrashing
+    If useRoutes hacks itself into the latest path nothing bad happens (...afaik)
+  */
+
+  const path = usePath(basePath) && getFormattedPath(basePath)
+
   // Get the current route
   const route = matchRoute(routes, path, {
     routeProps,
@@ -23,7 +31,7 @@ export function useRoutes(
     matchTrailingSlash
   })
   // No match should not return an empty Provider, just null
-  if (!route) return null
+  if (!route || path === null) return null
   return (
     <BasePathContext.Provider value={basePath}>
       <PathContext.Provider value={path}>{route}</PathContext.Provider>
@@ -57,6 +65,7 @@ function matchRoute(
     () => Object.keys(routes).map(createRouteMatcher),
     [hashRoutes(routes)]
   )
+  if (path === null) return null
   // Hacky method for find + map
   let routeMatch
   routeMatchers.find(([routePath, regex, groups]) => {

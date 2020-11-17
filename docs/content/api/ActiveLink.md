@@ -13,7 +13,7 @@ export interface ActiveLinkProps extends LinkProps {
   activeClass?: string
   exactActiveClass?: string
 }
-export const ActiveLink: React.FC<ActiveLinkProps>
+export const ActiveLink: React.ForwardRefExoticComponent<ActiveLinkProps & React.RefAttributes<HTMLAnchorElement>>
 {{< /highlight >}}
 
 ## Basic
@@ -32,3 +32,7 @@ Just like `<Link>`, but with two additional properties for modifying the `classN
   go to foo
 </ActiveLink>
 {{< /highlight >}}
+
+## Ref passing
+
+`ActiveLink` supports the standard [forwardRef](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components) API.

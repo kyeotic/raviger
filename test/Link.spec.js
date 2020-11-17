@@ -69,7 +69,7 @@ describe('Link', () => {
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/')
   })
-  test('passes linkRef to anchor element', async () => {
+  test('passes ref to anchor element', async () => {
     act(() => navigate('/'))
 
     let ref
@@ -77,12 +77,7 @@ describe('Link', () => {
       const linkRef = useRef()
       ref = linkRef
       return (
-        <Link
-          href="/foo"
-          target="_blank"
-          data-testid="linkref"
-          linkRef={linkRef}
-        >
+        <Link href="/foo" target="_blank" data-testid="linkref" ref={linkRef}>
           go to foo
         </Link>
       )

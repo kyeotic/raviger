@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, forwardRef } from 'react'
 import { navigate } from './navigate'
 import { usePath, useBasePath } from './path.js'
 
-export default function Link({ href, basePath, linkRef, ...props }) {
+const Link = forwardRef(({ href, basePath, ...props }, ref) => {
   const contextBasePath = useBasePath()
   basePath = basePath || contextBasePath
   href = getLinkHref(href, basePath)
@@ -21,11 +21,12 @@ export default function Link({ href, basePath, linkRef, ...props }) {
     },
     [basePath, href, props.onClick]
   )
-  // TODO: 2.0 - replace linkRef with forwardRef API
-  return <a {...props} href={href} onClick={onClick} ref={linkRef} />
-}
+  return <a {...props} href={href} onClick={onClick} ref={ref} />
+})
 
-export function ActiveLink(props) {
+export default Link
+
+const ActiveLink = forwardRef((props, ref) => {
   const basePath = useBasePath()
   const path = usePath(basePath)
   const href = getLinkHref(props.href, basePath)
@@ -33,8 +34,10 @@ export function ActiveLink(props) {
   if (!className) className = ''
   if (exactActiveClass && path === href) className += ` ${exactActiveClass}`
   if (activeClass && path.startsWith(href)) className += ` ${activeClass}`
-  return <Link {...rest} className={className} />
-}
+  return <Link {...rest} className={className} ref={ref} />
+})
+
+export { ActiveLink }
 
 function getLinkHref(href, basePath = '') {
   return href.substring(0, 1) === '/' ? basePath + href : href

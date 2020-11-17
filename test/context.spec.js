@@ -35,7 +35,7 @@ describe('useRouter', () => {
       <Harness routes={routes} options={{ basePath: '/home' }} />
     )
 
-    act(() => navigate('/'))
+    act(() => navigate('/home'))
     expect(getByTestId('basePath')).toHaveTextContent('home')
   })
   test('provides path', async () => {
@@ -43,5 +43,13 @@ describe('useRouter', () => {
 
     act(() => navigate('/about'))
     expect(getByTestId('path')).toHaveTextContent('about')
+  })
+  test('provides null path when basePath is missing', async () => {
+    const { getByTestId } = render(
+      <Harness routes={routes} options={{ basePath: '/home' }} />
+    )
+
+    act(() => navigate('/about'))
+    expect(getByTestId('label')).toHaveTextContent('not found')
   })
 })
