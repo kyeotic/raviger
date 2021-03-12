@@ -50,7 +50,6 @@
     "prepublishOnly": "run-s test:ci",
     "release": "np"
   },
-  "dependencies": {},
   "peerDependencies": {
     "react": "^16.8.0"
   },
