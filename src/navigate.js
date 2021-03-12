@@ -5,7 +5,7 @@ import { useBasePath } from './path.js'
 const defaultPrompt = 'Are you sure you want to leave this page?'
 const interceptors = new Set()
 
-export function navigate(url, replaceOrQuery, replace) {
+export function navigate(url, replaceOrQuery, replace, state = null) {
   if (typeof url !== 'string') {
     throw new Error(`"url" must be a string, was provided a(n) ${typeof url}`)
   }
@@ -22,7 +22,7 @@ export function navigate(url, replaceOrQuery, replace) {
   } else if (replace === undefined && replaceOrQuery === undefined) {
     replace = false
   }
-  window.history[`${replace ? 'replace' : 'push'}State`](null, null, url)
+  window.history[`${replace ? 'replace' : 'push'}State`](state, null, url)
   dispatchEvent(new PopStateEvent('popstate', null))
 }
 
