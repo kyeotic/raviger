@@ -43,6 +43,12 @@ export function navigate(
   query?: QueryParam | URLSearchParams,
   replace?: boolean
 ): void
+export function navigate(
+  url: string,
+  query?: QueryParam | URLSearchParams,
+  replace?: boolean,
+  state?: unknown
+): void
 
 export type NavigateWithReplace = (url: string, replace?: boolean) => void;
 export type NavigateWithQuery = (url: string, query?: QueryParam | URLSearchParams, replace?: boolean) => void;
