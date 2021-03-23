@@ -13,7 +13,8 @@ export function navigate(url: string, replace?: boolean): void
 export function navigate(
   url: string,
   query?: QueryParam | URLSearchParams,
-  replace?: boolean
+  replace?: boolean,
+  state?: unknown
 ): void
 ```
 
@@ -54,5 +55,18 @@ import { navigate } from 'raviger'
 export async function createUser () {
   let user = await createUser()
   navigate(`/users/${user.id}` { ref: 'create page' })
+}
+```
+
+## Navigating with History State
+
+By default the `state` is `null`. You can control the `state` passed to `history.pushState | history.replaceState` using the fourth parameter
+
+```jsx
+import { navigate } from 'raviger'
+
+export async function createUser () {
+  let user = await createUser()
+  navigate(`/users/${user.id}`, undefined, undefined, { user: user })
 }
 ```
