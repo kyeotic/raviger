@@ -17,6 +17,12 @@ describe('useLocationChange', () => {
     useLocationChange(onChange, { isActive, basePath })
     return null
   }
+  test("setter doesn't get updated on mount", async () => {
+    let watcher = jest.fn()
+    render(<Route onChange={watcher} />)
+
+    expect(watcher).not.toBeCalled()
+  })
   test('setter gets updated path', async () => {
     let watcher = jest.fn()
     render(<Route onChange={watcher} />)

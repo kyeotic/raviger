@@ -92,9 +92,18 @@ export function useLocationChange(
 
   // When the basePath changes re-check the path after the render completes
   // This allows nested contexts to get an up-to-date formatted path
+  const isFirstRender = useRef(true)
   useLayoutEffect(() => {
-    if (isActive !== undefined && !isPredicateActive(isActive)) return
+    if (
+      isFirstRender.current ||
+      (isActive !== undefined && !isPredicateActive(isActive))
+    )
+      return
     setRef.current(getFormattedPath(basePath))
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+    }
   }, [basePath, isActive])
 }
 
