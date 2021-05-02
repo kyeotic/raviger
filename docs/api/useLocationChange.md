@@ -16,11 +16,14 @@ export function useLocationChange(
     inheritBasePath: boolean
     basePath: string
     isActive: () => boolean | boolean
+    onInitial?: boolean
   }
 ): void
 ```
 
 **Note**: `options.inheritBasePath` defaults to `true` (even if `options` is not provided), and takes precedence over `options.basePath` if `true`. If no BasePath is in the context to inherit `options.basePath` will be used as a fallback, if present. If `basePath` is provided, either by parameter or by context, and is missing from the current path `null` is sent to the `setFn` callback.
+
+By default this hook will not run on the initial mount for the component. You can get the location on the first render (mount) by setting `onInitial: true` in the `options` argument.
 
 ## Basic
 

@@ -13,10 +13,22 @@ beforeEach(() => {
 })
 
 describe('useLocationChange', () => {
-  function Route({ onChange, isActive, basePath }) {
-    useLocationChange(onChange, { isActive, basePath })
+  function Route({ onChange, isActive, basePath, onInitial = false }) {
+    useLocationChange(onChange, { isActive, basePath, onInitial })
     return null
   }
+  test("setter doesn't get updated on mount", async () => {
+    let watcher = jest.fn()
+    render(<Route onChange={watcher} />)
+
+    expect(watcher).not.toBeCalled()
+  })
+  test('setter is updated on mount when onInitial is true', async () => {
+    let watcher = jest.fn()
+    render(<Route onChange={watcher} onInitial />)
+
+    expect(watcher).toBeCalled()
+  })
   test('setter gets updated path', async () => {
     let watcher = jest.fn()
     render(<Route onChange={watcher} />)
