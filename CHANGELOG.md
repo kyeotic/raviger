@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0] - 2021-05-02
 ### Added
--  `options.onInitial` parameter for `useLocationChange` that controls the first render behavior. `default: false`
+-  `options.onInitial` parameter for `useLocationChange` that controls the first render behavior. `default: false`.
+### Fixed
+- `useLocationChange` invoking the setter on initial render. This was not intended and was an unannounced change from the v1 behavior, so reverting it is not considered an API change but a bugfix.
 
 ## [2.0.2] - 2021-03-22
 ### Added
