@@ -6,6 +6,7 @@ import {
   useLayoutEffect
 } from 'react'
 import { BasePathContext, PathContext } from './context.js'
+import { useMountedLayout } from './hooks.js'
 import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
 
@@ -62,7 +63,7 @@ export function getCurrentHash() {
 
 export function useLocationChange(
   setFn,
-  { inheritBasePath = true, basePath = '', isActive } = {}
+  { inheritBasePath = true, basePath = '', isActive, onInitial = false } = {}
 ) {
   if (isNode) return
   const routerBasePath = useBasePath()
@@ -92,10 +93,14 @@ export function useLocationChange(
 
   // When the basePath changes re-check the path after the render completes
   // This allows nested contexts to get an up-to-date formatted path
-  useLayoutEffect(() => {
-    if (isActive !== undefined && !isPredicateActive(isActive)) return
-    setRef.current(getFormattedPath(basePath))
-  }, [basePath, isActive])
+  useMountedLayout(
+    () => {
+      if (isActive !== undefined && !isPredicateActive(isActive)) return
+      setRef.current(getFormattedPath(basePath))
+    },
+    [basePath, isActive],
+    { onInitial }
+  )
 }
 
 /**
