@@ -4,8 +4,10 @@ export const defaultPrompt = 'Are you sure you want to leave this page?'
 
 let hasIntercepted = false
 let hasUserCancelled = false
+let lastScroll = [0, 0]
 
 export function shouldCancelNavigation() {
+  lastScroll = [window.scrollX, window.scrollY]
   if (hasIntercepted) return hasUserCancelled
   // confirm if any interceptors return true
   return Array.from(interceptors).some(interceptor => {
@@ -22,6 +24,10 @@ export function shouldCancelNavigation() {
     }, 5)
     return hasUserCancelled
   })
+}
+
+export function getLastScroll() {
+  return lastScroll
 }
 
 export function addInterceptor(handler) {
