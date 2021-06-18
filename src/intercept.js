@@ -26,10 +26,6 @@ export function shouldCancelNavigation() {
   })
 }
 
-export function getLastScroll() {
-  return lastScroll
-}
-
 export function addInterceptor(handler) {
   window.addEventListener('beforeunload', handler)
   interceptors.add(handler)
@@ -38,4 +34,11 @@ export function addInterceptor(handler) {
 export function removeInterceptor(handler) {
   window.removeEventListener('beforeunload', handler)
   interceptors.delete(handler)
+}
+
+export function undoNavigation(lastPath) {
+  window.history.pushState(null, null, lastPath)
+  setTimeout(() => {
+    window.scrollTo(...lastScroll)
+  }, 0)
 }

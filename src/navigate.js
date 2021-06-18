@@ -6,7 +6,7 @@ import {
   addInterceptor,
   removeInterceptor,
   defaultPrompt,
-  getLastScroll
+  undoNavigation
 } from './intercept'
 
 let lastPath = ''
@@ -39,10 +39,7 @@ export function useNavigationPrompt(predicate = true, prompt = defaultPrompt) {
   useLayoutEffect(() => {
     const onPopStateNavigation = () => {
       if (shouldCancelNavigation()) {
-        window.history.pushState(null, null, lastPath)
-        setTimeout(() => {
-          window.scrollTo(...getLastScroll())
-        }, 0)
+        undoNavigation(lastPath)
       }
     }
     window.addEventListener('popstate', onPopStateNavigation)
