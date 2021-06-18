@@ -17,7 +17,8 @@ module.exports = [
       globals: {
         react: 'React'
       },
-      interop: false
+      interop: false,
+      sourcemap: true
     },
     external: deps,
     plugins: [
@@ -47,6 +48,7 @@ module.exports = [
       file: 'dist/module.js',
       format: 'esm',
       name: 'raviger',
+      sourcemap: true,
       globals: {
         react: 'React'
       }

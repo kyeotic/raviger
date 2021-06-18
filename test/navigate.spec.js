@@ -8,22 +8,26 @@ import {
 } from '../src/main.js'
 
 const originalConfirm = window.confirm
+const originalScrollTo = window.scrollTo
 const originalReplaceState = window.history.replaceState
 const originalPushState = window.history.pushState
 
-beforeEach(() => {
+function restoreWindow() {
   window.confirm = originalConfirm
+  window.scrollTo = originalScrollTo
   window.history.replaceState = originalReplaceState
   window.history.pushState = originalPushState
+}
+
+beforeEach(() => {
+  restoreWindow()
   act(() => navigate('/'))
 })
 
 afterEach(async () => {
-  window.confirm = originalConfirm
-  window.history.replaceState = originalReplaceState
-  window.history.pushState = originalPushState
+  restoreWindow()
   // We must wait for the intercept reset op
-  return new Promise(resolve => setTimeout(() => resolve(), 7))
+  return delay(5)
 })
 
 describe('useNavigate', () => {
@@ -182,6 +186,25 @@ describe('useNavigationPrompt', () => {
     expect(document.location.pathname).toEqual('/')
   })
 
+  test('popstate navigation restores scroll when prompt is declined', async () => {
+    window.confirm = jest.fn().mockImplementation(() => false)
+    window.scrollTo = jest.fn()
+    act(() => navigate('/'))
+    render(<Route block />)
+
+    // Modify scroll to check restoration
+    window.scrollX = 10
+    window.scrollY = 12
+
+    dispatchEvent(new PopStateEvent('popstate', null))
+
+    expect(document.location.pathname).toEqual('/')
+
+    // Wait for scroll restoration
+    await delay(10)
+    expect(window.scrollTo).toHaveBeenCalledWith(10, 12)
+  })
+
   test('navigation is confirmed with custom prompt', async () => {
     window.confirm = jest.fn().mockImplementation(() => false)
     act(() => navigate('/'))
@@ -235,3 +258,7 @@ describe('navigate', () => {
     jest.clearAllMocks()
   })
 })
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(() => resolve(), ms))
+}
