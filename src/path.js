@@ -9,6 +9,7 @@ import { BasePathContext, PathContext } from './context.js'
 import { useMountedLayout } from './hooks.js'
 import { isNode, getSsrPath } from './node.js'
 import { isFunction } from './typeChecks.js'
+import { shouldCancelNavigation } from './intercept'
 
 export function usePath(basePath) {
   const contextPath = useContext(PathContext)
@@ -82,6 +83,7 @@ export function useLocationChange(
   const onPopState = useCallback(() => {
     // No predicate defaults true
     if (isActive !== undefined && !isPredicateActive(isActive)) return
+    if (shouldCancelNavigation()) return
     // console.log('loc', basePath || 'none', getFormattedPath(basePath))
     setRef.current(getFormattedPath(basePath))
   }, [isActive, basePath])

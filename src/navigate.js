@@ -1,9 +1,14 @@
 import { useCallback, useLayoutEffect } from 'react'
 import { isNode } from './node.js'
 import { useBasePath } from './path.js'
+import {
+  shouldCancelNavigation,
+  addInterceptor,
+  removeInterceptor,
+  defaultPrompt
+} from './intercept'
 
-const defaultPrompt = 'Are you sure you want to leave this page?'
-const interceptors = new Set()
+let lastPath = ''
 
 export function navigate(url, replaceOrQuery, replace, state = null) {
   if (typeof url !== 'string') {
@@ -22,12 +27,22 @@ export function navigate(url, replaceOrQuery, replace, state = null) {
   } else if (replace === undefined && replaceOrQuery === undefined) {
     replace = false
   }
+  lastPath = url
   window.history[`${replace ? 'replace' : 'push'}State`](state, null, url)
   dispatchEvent(new PopStateEvent('popstate', null))
 }
 
 export function useNavigationPrompt(predicate = true, prompt = defaultPrompt) {
   if (isNode) return
+  useLayoutEffect(() => {
+    const onPopStateNavigation = () => {
+      if (shouldCancelNavigation()) {
+        window.history.pushState(null, null, lastPath)
+      }
+    }
+    window.addEventListener('popstate', onPopStateNavigation)
+    return () => window.removeEventListener('popstate', onPopStateNavigation)
+  }, [])
   useLayoutEffect(() => {
     const handler = e => {
       if (predicate) {
@@ -37,26 +52,6 @@ export function useNavigationPrompt(predicate = true, prompt = defaultPrompt) {
     addInterceptor(handler)
     return () => removeInterceptor(handler)
   }, [predicate, prompt])
-}
-
-export function shouldCancelNavigation() {
-  // confirm if any interceptors return true
-  return Array.from(interceptors).some(interceptor => {
-    let prompt = interceptor()
-    if (!prompt) return false
-    // cancel navigation if user declines
-    return !window.confirm(prompt) // eslint-disable-line no-alert
-  })
-}
-
-function addInterceptor(handler) {
-  window.addEventListener('beforeunload', handler)
-  interceptors.add(handler)
-}
-
-function removeInterceptor(handler) {
-  window.removeEventListener('beforeunload', handler)
-  interceptors.delete(handler)
 }
 
 function cancelNavigation(event, prompt) {
