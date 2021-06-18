@@ -5,7 +5,8 @@ import {
   shouldCancelNavigation,
   addInterceptor,
   removeInterceptor,
-  defaultPrompt
+  defaultPrompt,
+  undoNavigation
 } from './intercept'
 
 let lastPath = ''
@@ -28,6 +29,7 @@ export function navigate(url, replaceOrQuery, replace, state = null) {
     replace = false
   }
   lastPath = url
+
   window.history[`${replace ? 'replace' : 'push'}State`](state, null, url)
   dispatchEvent(new PopStateEvent('popstate', null))
 }
@@ -37,7 +39,7 @@ export function useNavigationPrompt(predicate = true, prompt = defaultPrompt) {
   useLayoutEffect(() => {
     const onPopStateNavigation = () => {
       if (shouldCancelNavigation()) {
-        window.history.pushState(null, null, lastPath)
+        undoNavigation(lastPath)
       }
     }
     window.addEventListener('popstate', onPopStateNavigation)
