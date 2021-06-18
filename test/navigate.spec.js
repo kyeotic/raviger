@@ -18,10 +18,12 @@ beforeEach(() => {
   act(() => navigate('/'))
 })
 
-afterEach(() => {
+afterEach(async () => {
   window.confirm = originalConfirm
   window.history.replaceState = originalReplaceState
   window.history.pushState = originalPushState
+  // We must wait for the intercept reset op
+  return new Promise(resolve => setTimeout(() => resolve(), 7))
 })
 
 describe('useNavigate', () => {
