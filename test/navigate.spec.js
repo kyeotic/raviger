@@ -9,6 +9,7 @@ import {
 
 const originalConfirm = window.confirm
 const originalScrollTo = window.scrollTo
+const originalAssign = window.location.assign
 const originalReplaceState = window.history.replaceState
 const originalPushState = window.history.pushState
 
@@ -17,6 +18,7 @@ function restoreWindow() {
   window.scrollTo = originalScrollTo
   window.history.replaceState = originalReplaceState
   window.history.pushState = originalPushState
+  window.location.assign = originalAssign
 }
 
 beforeEach(() => {
@@ -256,6 +258,21 @@ describe('navigate', () => {
     navigate(url, {}, false)
     expect(window.history.pushState).toHaveBeenCalled()
     jest.clearAllMocks()
+  })
+
+  test('handles changing origins', async () => {
+    const currentHref = window.location.href
+    window.location.assign = jest.fn()
+    window.history.replaceState = jest.fn()
+    window.history.pushState = jest.fn()
+
+    navigate('http://localhost.new/')
+
+    expect(window.history.pushState).not.toHaveBeenCalled()
+    expect(window.history.replaceState).not.toHaveBeenCalled()
+    expect(window.location.assign).toHaveBeenCalledWith('http://localhost.new/')
+
+    navigate(currentHref)
   })
 })
 

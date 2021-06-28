@@ -30,6 +30,14 @@ export function navigate(url, replaceOrQuery, replace, state = null) {
   }
   lastPath = url
 
+  // if the origin does not match history navigation will fail with
+  // "cannot be created in a document with origin"
+  // When navigating to another domain we must use location instead of history
+  if (isAbsolute(url) && !isCurrentOrigin(url)) {
+    window.location.assign(url)
+    return
+  }
+
   window.history[`${replace ? 'replace' : 'push'}State`](state, null, url)
   dispatchEvent(new PopStateEvent('popstate', null))
 }
@@ -76,4 +84,12 @@ export function useNavigate(optBasePath = '') {
     [basePath, optBasePath]
   )
   return navigateWithBasePath
+}
+
+function isAbsolute(url) {
+  return /^(?:[a-z]+:)?\/\//i.test(url)
+}
+
+function isCurrentOrigin(url) {
+  return window.location.origin === new URL(url).origin
 }
