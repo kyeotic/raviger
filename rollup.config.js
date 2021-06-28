@@ -7,6 +7,10 @@ const deps = Object.keys(packageJson.dependencies || []).concat(
   Object.keys(packageJson.peerDependencies)
 )
 
+const terserConfig = terser({
+  keep_fnames: true
+})
+
 module.exports = [
   {
     input: 'src/main.js',
@@ -39,7 +43,7 @@ module.exports = [
         sourceMaps: true,
         inputSourceMap: true
       }),
-      terser()
+      terserConfig
     ]
   },
   {
@@ -72,7 +76,7 @@ module.exports = [
         sourceMaps: true,
         inputSourceMap: true
       }),
-      terser()
+      terserConfig
     ]
   }
 ]
