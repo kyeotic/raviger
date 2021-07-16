@@ -1,73 +1,37 @@
 import React from 'react'
-import {
-  useRoutes,
-  Link,
-  usePath,
-  useQueryParams,
-  Redirect,
-  navigate
-} from '../../src/main.js'
+import { useRoutes, Redirect } from '../../src/main.js'
 
-const PROJECTS = [
-  'ac2fd99a-495a-498a-843c-b7ddd7f7bf3f',
-  'b986a8e3-3f92-4112-9cda-506a1ca28ef0'
-]
-const BrandingPage = ({ projectId }) => {
-  return React.createElement(
-    'h2',
-    null,
-    'BrandingPage content for project ',
-    projectId
-  )
+// import './styles.css'
+
+const Page = () => {
+  return <div>Hi from /bar/foo</div>
 }
-function ProjectArea({ projectId }) {
-  const match = useRoutes(
-    React.useMemo(
-      () => ({
-        '/settings/branding': () =>
-          React.createElement(BrandingPage, { projectId: projectId })
-      }),
-      [projectId]
-    ),
-    {
-      basePath: `/projects/${projectId}`
-    }
-  )
-  return React.createElement(
-    'div',
-    { style: { display: 'flex', flexDirection: 'column' } },
-    React.createElement('h1', null, 'Raviger issue'),
-    React.createElement(
-      'select',
-      {
-        onChange: React.useCallback(e => {
-          navigate(`/projects/${e.target.value}/settings/branding`)
-        }, []),
-        value: projectId
-      },
-      React.createElement('option', { value: PROJECTS[0] }, PROJECTS[0]),
-      React.createElement('option', { value: PROJECTS[1] }, PROJECTS[1])
-    ),
-    match !== null && match !== void 0
-      ? match
-      : React.createElement('h2', null, '404')
-  )
+
+const routes = {
+  '/bar': () => <Redirect to={'/bar/foo'} />,
+  '/bar/foo': () => <Page />,
+  '*': () => <Redirect to={'/bar/foo'} />
 }
+
 export default function App() {
-  const match = useRoutes(
-    React.useMemo(
-      () => ({
-        '/projects/:projectId*': ({ projectId }) =>
-          React.createElement(ProjectArea, { projectId: projectId })
-      }),
-      []
-    )
+  return (
+    <div>
+      If it works as expected it should say <b>Hi from /bar/foo</b> below the
+      buttons:
+      <br />
+      <button onClick={() => (window.location.href = '/')}>
+        Retry from / (doesn't render Page)
+      </button>
+      <br />
+      <button onClick={() => (window.location.href = '/bar')}>
+        Retry from /bar (doesn't render Page)
+      </button>
+      <br />
+      <button onClick={() => (window.location.href = '/bar/foo')}>
+        Retry from /bar/foo (works)
+      </button>
+      <br />
+      {useRoutes(routes)}
+    </div>
   )
-  React.useLayoutEffect(() => {
-    const index = Math.round(Math.random()) // the initial projectId doesn't matter
-    navigate(`/projects/${PROJECTS[index]}/settings/branding`)
-  }, [])
-  return match !== null && match !== void 0
-    ? match
-    : React.createElement('h2', null, '404')
 }

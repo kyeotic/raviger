@@ -17,7 +17,13 @@ export function usePath(basePath) {
   basePath = basePath || contextBasePath
 
   const [path, setPath] = useState(getFormattedPath(basePath))
-  useLocationChange(setPath, { basePath, inheritBasePath: !basePath })
+  useLocationChange(
+    newPath => {
+      console.log('updating path', newPath)
+      setPath(setPath)
+    },
+    { basePath, inheritBasePath: !basePath }
+  )
 
   return contextPath || path
 }
@@ -82,9 +88,9 @@ export function useLocationChange(
 
   const onPopState = useCallback(() => {
     // No predicate defaults true
+    console.log('loc', basePath || 'none', getFormattedPath(basePath))
     if (isActive !== undefined && !isPredicateActive(isActive)) return
     if (shouldCancelNavigation()) return
-    // console.log('loc', basePath || 'none', getFormattedPath(basePath))
     setRef.current(getFormattedPath(basePath))
   }, [isActive, basePath])
 

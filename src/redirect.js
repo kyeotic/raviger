@@ -33,5 +33,5 @@ export function useRedirect(
     if (currentPath === predicateUrl) {
       navigate(url, undefined, replace)
     }
-  }, [predicateUrl, url, undefined, replace, currentPath])
+  }, [predicateUrl, url, replace, currentPath])
 }

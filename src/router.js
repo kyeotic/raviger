@@ -23,6 +23,7 @@ export function useRoutes(
   */
 
   const path = usePath(basePath) && getFormattedPath(basePath)
+  console.log('router path', path)
 
   // Get the current route
   const route = matchRoute(routes, path, {
