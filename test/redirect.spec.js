@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
-import { useRedirect, navigate, Redirect } from '../src/main.js'
+import { useRedirect, navigate, Redirect, useRoutes } from '../src/main.js'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -73,5 +73,40 @@ describe('Redirect', () => {
     expect(window.location.toString()).toEqual(
       'http://localhost/foo?stuff=junk'
     )
+  })
+  test('redirects from useRoutes', async () => {
+    const Page = () => {
+      return <span data-testid="label">pass</span>
+    }
+    const routes = {
+      '/redirect': () => <Redirect to={'/real/page'} />,
+      '/real/page': () => <Page />,
+      '*': () => <Redirect to={'/real/page'} />
+    }
+
+    function Harness() {
+      const route = useRoutes(routes) || (
+        <span data-testid="label">not found</span>
+      )
+      return route
+    }
+
+    act(() => navigate('/'))
+    const { getByTestId } = render(<Harness />)
+
+    // Home
+    expect(getByTestId('label')).toHaveTextContent('pass')
+
+    // real
+    act(() => navigate('/real/page'))
+    expect(getByTestId('label')).toHaveTextContent('pass')
+
+    // redirect
+    act(() => navigate('/redirect'))
+    expect(getByTestId('label')).toHaveTextContent('pass')
+
+    // catch all redirect
+    act(() => navigate('/fake'))
+    expect(getByTestId('label')).toHaveTextContent('pass')
   })
 })

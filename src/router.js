@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState, useLayoutEffect } from 'react'
 import { BasePathContext, PathContext } from './context.js'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import { usePath, getFormattedPath } from './path.js'
@@ -21,9 +21,10 @@ export function useRoutes(
     If usePath returns latest it causes render thrashing
     If useRoutes hacks itself into the latest path nothing bad happens (...afaik)
   */
-
   const path = usePath(basePath) && getFormattedPath(basePath)
-  console.log('router path', path)
+
+  // Handle potential <Redirect /> use in routes
+  useRedirectDetection(basePath, path)
 
   // Get the current route
   const route = matchRoute(routes, path, {
@@ -113,4 +114,18 @@ function createRouteMatcher(routePath) {
 function hashRoutes(routes) {
   const paths = Object.keys(routes).sort()
   return paths.join(':')
+}
+
+// React appears to suppress parent's re-rendering when a child's
+// useLayoutEffect updates internal state
+// the `navigate` call in useRedirect *does* cause usePath/useLocationChange
+// to fire, but without this hack useRoutes suppresses the update
+// TODO: find a better way to cause a synchronous update from useRoutes
+function useRedirectDetection(basePath, path) {
+  const [, forceRender] = useState(false)
+  useLayoutEffect(() => {
+    if (path !== getFormattedPath(basePath)) {
+      forceRender(s => !s)
+    }
+  }, [basePath, path])
 }
