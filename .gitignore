@@ -4,3 +4,5 @@ node_modules
 .cache
 .parcel-cache
 dist
+junit.xml
+coverage/
