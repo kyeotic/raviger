@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.2] - 2021-07-16
+### Fixed
+- `useRoutes` not updating after an internal `<Redirect />` updates the location
+
+## [2.4.1] - 2021-06-28
+### Changed
+- Rollup build to `keep_fnames` to retain component name checking
+
+## [2.4.0] - 2021-06-28
+### Added
+- `navigate` support for urls with different origins (external navigation)
+
+## [2.3.1] - 2021-06-18
+### Added
+- Sourcemaps to published package
+### Changed
+- `useNavigationPrompt` now restores scroll position after undoing navigation
+
+## [2.3.0] - 2021-06-18
+### Changed
+- `useNavigationPrompt` now intercepts browser back/forward button navigation
+
+## [2.2.0] - 2021-06-07
+### Changed
+- Added support for React@17 in `peerDependencies`
+
 ## [2.1.0] - 2021-05-02
 ### Added
 -  `options.onInitial` parameter for `useLocationChange` that controls the first render behavior. `default: false`.

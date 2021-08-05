@@ -30,7 +30,7 @@
     "check": "npm run style && npm run lint",
     "check:ci": "npm run style:ci && npm run lint",
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsdx build --entry src/main.ts",
     "build:watch": "npm run start",
     "example:build": "NODE_ENV=development rollup -c example/rollup.config.js && npm run example:build:link-react",
     "example:build:watch": "rollup -c example/rollup.config.js --watch",
@@ -53,7 +53,7 @@
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
-    "react": ">=16"
+    "react": "^16.8.0 || ^17.0.0"
   },
   "husky": {
     "hooks": {
@@ -88,7 +88,7 @@
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
     "core-js": "^3.11.0",
-    "husky": "^6.0.0",
+    "prettier": "^2.3.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "size-limit": "^4.10.2",
