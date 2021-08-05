@@ -7,7 +7,7 @@ import {
   useNavigationPrompt,
   QueryParam,
   RouteParams,
-} from '../src/main'
+} from '../src'
 
 const originalConfirm = window.confirm
 const originalReplaceState = window.history.replaceState

@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
-import { useRoutes, navigate } from '../src/main'
+import { useRoutes, navigate } from '../src'
 import { useRouter } from '../src/context'
 import { RouteOptionParams, RouteParams } from '../src/router'
 

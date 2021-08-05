@@ -8,7 +8,7 @@ import {
   useHash,
   LocationChangeSetFn,
   RouteParams,
-} from '../src/main'
+} from '../src'
 
 beforeEach(() => {
   act(() => navigate('/'))

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { navigate, useLocationChange } from './main'
+import { navigate, useLocationChange } from '.'
 import { isNode, getSsrPath } from './node'
 import { getCurrentPath, getCurrentHash } from './path'
 

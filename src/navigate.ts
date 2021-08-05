@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect } from 'react'
-import { useBasePath } from './main'
+import { useBasePath } from '.'
 import { isNode } from './node'
 import type { QueryParam } from './querystring'
 import {
@@ -56,6 +56,7 @@ export function useNavigationPrompt(
   prompt: string = defaultPrompt
 ) {
   if (isNode) return
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useLayoutEffect(() => {
     const onPopStateNavigation = () => {
       if (shouldCancelNavigation()) {
