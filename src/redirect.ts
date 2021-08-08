@@ -23,7 +23,7 @@ export function Redirect({
   query,
   replace = true,
   merge = true,
-}: RedirectProps) {
+}: RedirectProps): JSX.Element | null {
   useRedirect(usePath(), to, { query, replace, merge })
   return null
 }
@@ -36,7 +36,7 @@ export function useRedirect(
     replace = true,
     merge = true,
   }: { query?: QueryParam; replace?: boolean; merge?: boolean } = {}
-) {
+): void {
   const currentPath = usePath()
   const [currentQuery] = useQueryParams()
   const hash = getCurrentHash()

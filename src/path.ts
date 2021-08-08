@@ -11,6 +11,7 @@ import { useMountedLayout } from './hooks'
 import { getSsrPath, isNode } from './node'
 import { shouldCancelNavigation } from './intercept'
 import { isFunction } from './typeChecks'
+
 export interface LocationChangeSetFn {
   (path: string | null): void
 }
@@ -35,23 +36,23 @@ export function usePath(basePath?: string): string | null {
   return contextPath || path
 }
 
-export function useBasePath() {
+export function useBasePath(): string {
   return useContext(BasePathContext)
 }
 
-export function useFullPath() {
+export function useFullPath(): string {
   const [path, setPath] = useState<string | null>(getCurrentPath())
   useLocationChange(setPath, { inheritBasePath: false })
 
   return path || '/'
 }
 
-export function useHash({ stripHash = true } = {}) {
+export function useHash({ stripHash = true } = {}): string {
   const [hash, setHash] = useState(window.location.hash)
   const handleHash = useCallback(() => {
     if (window.location.hash === hash) return
     setHash(window.location.hash)
-  }, [setHash])
+  }, [setHash, hash])
 
   useLayoutEffect(() => {
     window.addEventListener('hashchange', handleHash, false)
@@ -66,10 +67,10 @@ export function getCurrentPath(): string {
   return isNode ? getSsrPath() : window.location.pathname || '/'
 }
 
-export function getCurrentHash() {
+export function getCurrentHash(): string {
   if (isNode) {
-    let path = getSsrPath()
-    let hashIndex = path.indexOf('#')
+    const path = getSsrPath()
+    const hashIndex = path.indexOf('#')
     return path.substring(hashIndex)
   }
   return window.location.hash
@@ -83,8 +84,12 @@ export function useLocationChange(
     isActive,
     onInitial = false,
   }: LocationChangeOptionParams = {}
-) {
+): void {
   if (isNode) return
+
+  // All hooks after this are conditional, but the runtime can't actually change
+  /* eslint-disable react-hooks/rules-of-hooks */
+
   const routerBasePath = useBasePath()
   if (inheritBasePath && routerBasePath) basePath = routerBasePath
 
@@ -120,6 +125,8 @@ export function useLocationChange(
     [basePath, isActive],
     { onInitial }
   )
+
+  /* eslint-enable react-hooks/rules-of-hooks */
 }
 
 /**

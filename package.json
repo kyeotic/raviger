@@ -15,8 +15,8 @@
   "author": "Tim Kye <tyrsius@gmail.com>",
   "license": "MIT",
   "private": false,
-  "main": "dist/index.js",
-  "module": "dist/raviger.esm.js",
+  "main": "dist/main.js",
+  "module": "dist/module.js",
   "typings": "dist/main.d.ts",
   "files": [
     "dist"
@@ -27,25 +27,25 @@
   "scripts": {
     "style": "prettier --config package.json  --write \"{src,test}/**/*.{ts,tsx}\"",
     "style:ci": "prettier --config package.json --check \"{src,test}/**/*.{ts,tsx}\"",
+    "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --ext .js,.ts,.tsx --ignore-pattern node_modules/",
     "check": "npm run style && npm run lint",
     "check:ci": "npm run style:ci && npm run lint",
-    "start": "tsdx watch --entry src/main.ts",
-    "build": "tsdx build --entry src/main.ts",
-    "build:watch": "npm run start",
+    "build:clean": "rimraf dist %% mkdirp dist",
+    "build:compile": "rollup -c",
+    "build": "run-s build:clean build:compile",
+    "build:watch": "rollup -c --watch",
     "example": "npm run start --prefix example",
-    "test": "tsdx test --passWithNoTests",
-    "test:watch": "tsdx test --watch",
-    "test:coverage": "tsdx test --coverage",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "test:coverage:open": "run-s test:coverage coverage:report",
-    "test:unit:ci": "tsdx test --ci --coverage --reporters=default --reporters=jest-junit",
+    "test:unit:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit",
     "coverage:report": "open coverage/lcov-report/index.html",
     "test:ci": "run-s check:ci test:unit:ci size",
     "size": "run-s build size:check",
     "size:check": "size-limit",
     "prepublishOnly": "run-s test:ci",
     "release": "np",
-    "lint": "tsdx lint --entry src/main.ts",
-    "prepare": "tsdx build --entry src/main.ts",
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
@@ -59,35 +59,50 @@
   },
   "size-limit": [
     {
-      "path": "dist/raviger.cjs.production.min.js",
+      "path": "dist/main.js",
       "limit": "2.8kb"
     },
     {
       "webpack": false,
-      "path": "dist/raviger.esm.js",
-      "limit": "6kb"
+      "path": "dist/module.js",
+      "limit": "3.5kb"
     }
   ],
   "np": {
     "yarn": false
   },
   "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "@kyeotic/eslint-config": "^2.0.1",
+    "@rollup/plugin-babel": "^5.3.0",
     "@size-limit/preset-small-lib": "^5.0.2",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
     "core-js": "^3.11.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-config-react-app": "^5.2.1",
-    "eslint-plugin-prettier": "^3.4.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "jest": "^27.0.6",
+    "mkdirp": "^1.0.4",
     "np": "^7.5.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "rimraf": "^2.7.1",
+    "rollup": "^2.56.1",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
     "size-limit": "^5.0.2",
-    "tsdx": "^0.14.1",
+    "ts-jest": "^27.0.4",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
   }

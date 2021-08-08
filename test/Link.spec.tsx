@@ -53,7 +53,7 @@ describe('Link', () => {
   })
 
   test('fires onClick', async () => {
-    let spy = jest.fn()
+    const spy = jest.fn()
     act(() => navigate('/'))
     const { getByTestId } = render(
       <Link href="/foo" className="base" data-testid="link" onClick={spy}>

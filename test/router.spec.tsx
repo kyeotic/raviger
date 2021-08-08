@@ -29,7 +29,7 @@ describe('useRoutes', () => {
   }
 
   function Route({ label, extra }: { label: string; extra?: string }) {
-    let path = usePath()
+    const path = usePath()
     return (
       <div>
         <span data-testid="label">
@@ -115,28 +115,6 @@ describe('useRoutes', () => {
     act(() => navigate('/About'))
     expect(getByTestId('label')).toHaveTextContent('about')
   })
-
-  // test('works with lazy routes', async () => {
-  //     let loader = new Promise(resolve => {
-  //         setTimeout(() => resolve({default: Route}), 50)
-  //     })
-  //     let Lazy = React.lazy(() => loader)
-  //     const routes = {
-  //         '/': () => <Route label="home" />,
-  //         '/lazy': () => (
-  //             <React.Suspense fallback={<span data-testid="label">loading</span>}>
-  //                 <Lazy label="lazy" />
-  //             </React.Suspense>
-  //         ),
-  //     }
-  //     act(() => navigate('/'))
-  //     const {getByTestId} = render(<Harness routes={routes} />)
-  //     act(() => navigate('/lazy'))
-  //     expect(getByTestId('label')).toHaveTextContent('loading')
-  //     await loader
-  //     act(() => navigate('/lazy'))
-  //     expect(getByTestId('label')).toHaveTextContent('lazy')
-  // })
 
   test('passes extra route props to route', async () => {
     const { getByTestId } = render(
@@ -285,7 +263,7 @@ describe('useBasePath', () => {
   }
 
   function Route() {
-    let basePath = useBasePath()
+    const basePath = useBasePath()
     return <span data-testid="basePath">{basePath || 'none'}</span>
   }
 
@@ -319,7 +297,7 @@ describe('useBasePath', () => {
 
 describe('useQueryParams', () => {
   function Route({ label }: { label?: string }) {
-    let [params, setQuery] = useQueryParams()
+    const [params, setQuery] = useQueryParams()
     return (
       <span data-testid="params" onClick={() => setQuery({ name: 'click' })}>
         {label}
@@ -365,7 +343,4 @@ describe('navigate', () => {
     expect(window.location.search).toContain('q=name')
     expect(window.location.search).toContain('env=test')
   })
-  // test('throws when url is an object', async () => {
-  //     expect(() => navigate({})).toThrow(/must be a string/)
-  // })
 })

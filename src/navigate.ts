@@ -80,11 +80,12 @@ export function navigate(
 }
 
 export function useNavigationPrompt(
-  predicate: boolean = true,
+  predicate = true,
   prompt: string = defaultPrompt
-) {
+): void {
   if (isNode) return
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useLayoutEffect(() => {
     const onPopStateNavigation = () => {
       if (shouldCancelNavigation()) {

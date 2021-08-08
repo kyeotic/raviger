@@ -45,7 +45,7 @@ export function useRoutes(
   useRedirectDetection(basePath, path)
 
   // Get the current route
-  const route = matchRoute(routes, path, {
+  const route = useMatchRoute(routes, path, {
     routeProps,
     overridePathParams,
     matchTrailingSlash,
@@ -59,15 +59,16 @@ export function useRoutes(
   )
 }
 
-export function setPath(path: string) {
+export function setPath(path: string): void {
   if (!isNode) {
     throw new Error('This method should only be used in NodeJS environments')
   }
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const url = require('url')
   setSsrPath(url.resolve(getSsrPath(), path))
 }
 
-function matchRoute(
+function useMatchRoute(
   routes: RouteParams,
   path: string | null,
   {
@@ -87,12 +88,13 @@ function matchRoute(
   }
   const routeMatchers = useMemo(
     () => Object.keys(routes).map(createRouteMatcher),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [hashRoutes(routes)]
   )
   if (path === null) return null
   // Hacky method for find + map
   let match: RegExpMatchArray | null = null
-  let routeMatch = routeMatchers.find(({ regex }) => {
+  const routeMatch = routeMatchers.find(({ regex }) => {
     match = (path ?? '').match(regex)
     return !!match
   })

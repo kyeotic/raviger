@@ -214,7 +214,7 @@ describe('useNavigationPrompt', () => {
     window.confirm = jest.fn().mockImplementation(() => false)
     act(() => navigate('/'))
     render(<Route block />)
-    let event = window.document.createEvent('Event')
+    const event = window.document.createEvent('Event')
     event.initEvent('beforeunload', true, true)
     window.dispatchEvent(event)
 

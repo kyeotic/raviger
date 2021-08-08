@@ -6,7 +6,7 @@ const PathContext = createContext<string | null>(null)
 export { BasePathContext }
 export { PathContext }
 
-export function useRouter() {
+export function useRouter(): { basePath: string; path: string | null } {
   const [basePath, path] = [
     useContext(BasePathContext),
     useContext(PathContext),

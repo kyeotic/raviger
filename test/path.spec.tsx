@@ -30,19 +30,19 @@ describe('useLocationChange', () => {
     return null
   }
   test("setter doesn't get updated on mount", async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} />)
 
     expect(watcher).not.toBeCalled()
   })
   test('setter is updated on mount when onInitial is true', async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} onInitial />)
 
     expect(watcher).toBeCalled()
   })
   test('setter gets updated path', async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} />)
 
     act(() => navigate('/foo'))
@@ -51,14 +51,14 @@ describe('useLocationChange', () => {
     expect(watcher).toBeCalledWith('/base')
   })
   test('setter is not updated when isActive is false', async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} isActive={false} />)
     act(() => navigate('/foo'))
 
     expect(watcher).not.toBeCalled()
   })
   test('setter gets null when provided basePath is missing', async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} basePath="/home" />)
 
     act(() => navigate('/foo'))
@@ -70,7 +70,7 @@ describe('useLocationChange', () => {
 
 describe('usePath', () => {
   function Route() {
-    let path = usePath()
+    const path = usePath()
     return <span data-testid="path">{path}</span>
   }
   test('returns original path', async () => {
@@ -245,7 +245,7 @@ describe('usePath', () => {
 
   test('returns null when provided basePath is missing', async () => {
     function Route() {
-      let path = usePath('/home')
+      const path = usePath('/home')
       return <span data-testid="path">{path || 'not found'}</span>
     }
     act(() => navigate('/'))
@@ -258,7 +258,7 @@ describe('usePath', () => {
 
 describe('useHash', () => {
   function Route({ skip }: { skip?: boolean }) {
-    let hash = useHash({ stripHash: skip ? false : undefined })
+    const hash = useHash({ stripHash: skip ? false : undefined })
     return <span data-testid="hash">{hash}</span>
   }
   test('returns original hash', async () => {

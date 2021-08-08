@@ -6,7 +6,7 @@ let hasIntercepted = false
 let hasUserCancelled = false
 let lastScroll = [0, 0] as [number, number]
 
-export function shouldCancelNavigation() {
+export function shouldCancelNavigation(): boolean {
   lastScroll = [window.scrollX, window.scrollY]
   if (hasIntercepted) return hasUserCancelled
 
@@ -31,17 +31,17 @@ export function shouldCancelNavigation() {
   })
 }
 
-export function addInterceptor(handler: () => string | void) {
+export function addInterceptor(handler: () => string | void): void {
   window.addEventListener('beforeunload', handler)
   interceptors.add(handler)
 }
 
-export function removeInterceptor(handler: () => string | void) {
+export function removeInterceptor(handler: () => string | void): void {
   window.removeEventListener('beforeunload', handler)
   interceptors.delete(handler)
 }
 
-export function undoNavigation(lastPath: string) {
+export function undoNavigation(lastPath: string): void {
   window.history.pushState(null, null as unknown as string, lastPath)
   setTimeout(() => {
     window.scrollTo(...lastScroll)

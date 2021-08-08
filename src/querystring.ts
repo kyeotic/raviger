@@ -28,14 +28,11 @@ export function useQueryParams(
 
       navigate(path)
     },
-    [querystring]
+    [querystring, parseFn, serializeFn]
   )
 
   // Update state when route changes
-  const updateQuery = useCallback(
-    () => setQuerystring(getQueryString()),
-    [setQueryParams]
-  )
+  const updateQuery = useCallback(() => setQuerystring(getQueryString()), [])
 
   useLocationChange(updateQuery)
   return [parseFn(querystring), setQueryParams]
@@ -52,10 +49,10 @@ function serializeQuery(queryParams: QueryParam): string {
   ).toString()
 }
 
-export function getQueryString() {
+export function getQueryString(): string {
   if (isNode) {
-    let ssrPath = getSsrPath()
-    let queryIndex = ssrPath.indexOf('?')
+    const ssrPath = getSsrPath()
+    const queryIndex = ssrPath.indexOf('?')
     return queryIndex === -1 ? '' : ssrPath.substring(queryIndex + 1)
   }
   return location.search

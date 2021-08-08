@@ -8,7 +8,7 @@ beforeEach(() => {
 
 describe('useQueryParams', () => {
   function Route() {
-    let [query] = useQueryParams()
+    const [query] = useQueryParams()
     return <span data-testid="label">{JSON.stringify(query)}</span>
   }
   test('parses query', async () => {
@@ -41,7 +41,7 @@ describe('setQueryParams', () => {
     replace?: boolean
     foo?: string | null
   }) {
-    let [query, setQuery] = useQueryParams()
+    const [query, setQuery] = useQueryParams()
     return (
       <button
         data-testid="update"
