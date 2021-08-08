@@ -1,6 +1,6 @@
 {
   "name": "raviger",
-  "version": "3.0.0",
+  "version": "2.4.1",
   "description": "React routing with hooks",
   "keywords": [
     "react",
@@ -16,6 +16,7 @@
   "license": "MIT",
   "private": false,
   "main": "dist/index.js",
+  "module": "dist/raviger.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
@@ -61,7 +62,6 @@
     "singleQuote": true,
     "printWidth": 80
   },
-  "module": "dist/raviger.esm.js",
   "size-limit": [
     {
       "path": "dist/raviger.cjs.production.min.js",
