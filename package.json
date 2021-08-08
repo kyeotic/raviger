@@ -22,7 +22,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "scripts": {
     "style": "prettier --config package.json  --write \"{src,test}/**/*.{ts,tsx}\"",
