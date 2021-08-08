@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.0.0] - Unreleased
 ### Changed
 - `src/` to typescript
+- types are now natively generated from source and provided as declaration files
+- **BREAKING**: Minimum NodeJS version is now 12
 
 ## [2.4.2] - 2021-07-16
 ### Fixed
