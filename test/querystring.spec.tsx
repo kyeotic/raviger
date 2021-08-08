@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
-import { navigate, useQueryParams } from '../src'
+import { navigate, useQueryParams } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))

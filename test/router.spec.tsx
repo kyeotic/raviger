@@ -6,8 +6,9 @@ import {
   usePath,
   useBasePath,
   useQueryParams,
-} from '../src'
-import { RouteOptionParams, RouteParams } from '../src/types'
+  RouteOptionParams,
+  RouteParams,
+} from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -18,7 +19,7 @@ describe('useRoutes', () => {
     routes,
     options,
   }: {
-    routes: RouteParams<string>
+    routes: RouteParams
     options?: RouteOptionParams
   }) {
     const route = useRoutes(routes, options) || (
@@ -38,7 +39,7 @@ describe('useRoutes', () => {
       </div>
     )
   }
-  const routes: RouteParams<string> = {
+  const routes: RouteParams = {
     '/': () => <Route label="home" />,
     '/about': ({ extra }) => <Route label="about" extra={extra} />,
     '/users/:userId': ({ userId }) => <Route label={`User ${userId}`} />,
@@ -236,7 +237,7 @@ describe('useRoutes', () => {
     })
 
     test('nested router with basePath matches after navigation', async () => {
-      const appRoutes: RouteParams<string> = {
+      const appRoutes: RouteParams = {
         '/app/:id*': ({ id }) => SubRouter({ id }),
       }
       function App() {
@@ -276,7 +277,7 @@ describe('useBasePath', () => {
     routes,
     basePath,
   }: {
-    routes: RouteParams<string>
+    routes: RouteParams
     basePath?: string
   }) {
     const route = useRoutes(routes, { basePath })
@@ -288,12 +289,12 @@ describe('useBasePath', () => {
     return <span data-testid="basePath">{basePath || 'none'}</span>
   }
 
-  const nestedRoutes: RouteParams<unknown> = {
+  const nestedRoutes: RouteParams = {
     '/': () => <Route />,
     '/about': () => <Route />,
   }
 
-  const routes: RouteParams<unknown> = {
+  const routes: RouteParams = {
     '/': () => <Route />,
     '/about': () => <Route />,
     '/nested*': () => <Harness basePath="/nested" routes={nestedRoutes} />,
