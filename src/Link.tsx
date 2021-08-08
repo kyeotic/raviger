@@ -7,6 +7,7 @@ export interface LinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string
   basePath?: string
+  children?: React.ReactNode
 }
 export type LinkRef = HTMLAnchorElement | null
 

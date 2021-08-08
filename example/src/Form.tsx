@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigationPrompt, navigate } from '../../src/main.js'
+import { useNavigationPrompt, navigate } from '../../src/main'
 
 export default function Form() {
   const [names, setNames] = useState([])
@@ -8,7 +8,7 @@ export default function Form() {
     !!newName.length,
     'Are you sure you want to leave the name form?'
   )
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     setNames(names.concat(newName))
     setName('')
@@ -25,14 +25,14 @@ export default function Form() {
           <input
             type="text"
             value={newName}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
         </label>
         <button type="submit">Add</button>
         <button onClick={saveAndNavigate}>Save and Leave</button>
       </form>
       <ul>
-        {names.map(name => (
+        {names.map((name) => (
           <li key={name}>{name}</li>
         ))}
       </ul>
