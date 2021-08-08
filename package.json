@@ -17,7 +17,7 @@
   "private": false,
   "main": "dist/index.js",
   "module": "dist/raviger.esm.js",
-  "typings": "dist/index.d.ts",
+  "typings": "dist/main.d.ts",
   "files": [
     "dist"
   ],
@@ -32,11 +32,7 @@
     "start": "tsdx watch --entry src/main.ts",
     "build": "tsdx build --entry src/main.ts",
     "build:watch": "npm run start",
-    "example:build": "NODE_ENV=development rollup -c example/rollup.config.js && npm run example:build:link-react",
-    "example:build:watch": "rollup -c example/rollup.config.js --watch",
-    "example:build:link-react": "mkdir -p example/dist && ln -sf $PWD/node_modules/react/umd/react.development.js example/dist/react.js && ln -sf $PWD/node_modules/react-dom/umd/react-dom.development.js example/dist/react-dom.js && ln -sf $PWD/node_modules/@welldone-software/why-did-you-render/dist/umd/whyDidYouRender.js example/dist/whyDidYouRender.js",
-    "example:serve": "npm run example:build:link-react && http-server example/ -p 8080 --proxy http://localhost:8080?",
-    "example:dev": "run-p example:build:watch example:serve",
+    "example:dev": "npm run start --prefix example",
     "test": "tsdx test --passWithNoTests",
     "test:watch": "tsdx test --watch",
     "test:coverage": "tsdx test --coverage",
@@ -64,12 +60,12 @@
   "size-limit": [
     {
       "path": "dist/raviger.cjs.production.min.js",
-      "limit": "2.5kb"
+      "limit": "2.8kb"
     },
     {
       "webpack": false,
       "path": "dist/raviger.esm.js",
-      "limit": "2.5kb"
+      "limit": "6kb"
     }
   ],
   "np": {
