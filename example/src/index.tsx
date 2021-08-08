@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-// import App from './App'
-import App from './App2'
+import App from './App'
+// import App from './App2'
 // import App from './NestedApp.js'
 // eslint-disable-next-line import/no-unresolved
 // import whyDidYouRender from 'whyDidYouRender'

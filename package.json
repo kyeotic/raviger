@@ -32,7 +32,7 @@
     "start": "tsdx watch --entry src/main.ts",
     "build": "tsdx build --entry src/main.ts",
     "build:watch": "npm run start",
-    "example:dev": "npm run start --prefix example",
+    "example": "npm run start --prefix example",
     "test": "tsdx test --passWithNoTests",
     "test:watch": "tsdx test --watch",
     "test:coverage": "tsdx test --coverage",

@@ -1,5 +1,5 @@
-import React from 'react'
-import { useRoutes, Redirect } from '../../src/main.js'
+import * as React from 'react'
+import { useRoutes, Redirect } from '../../src/main'
 
 // import './styles.css'
 
@@ -10,7 +10,7 @@ const Page = () => {
 const routes = {
   '/bar': () => <Redirect to={'/bar/foo'} />,
   '/bar/foo': () => <Page />,
-  '*': () => <Redirect to={'/bar/foo'} />
+  '*': () => <Redirect to={'/bar/foo'} />,
 }
 
 export default function App() {
