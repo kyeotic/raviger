@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
-import { navigate, Link, ActiveLink } from '../src'
+
+import { navigate, Link, ActiveLink } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -17,6 +18,7 @@ describe('Link', () => {
     act(() => navigate('/'))
     expect(getByTestId('link')).toHaveTextContent('go to foo')
   })
+
   test('navigates to href', async () => {
     act(() => navigate('/'))
     const { getByTestId } = render(
@@ -27,6 +29,7 @@ describe('Link', () => {
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/foo')
   })
+
   test('navigates to href with basePath', async () => {
     act(() => navigate('/'))
     const { getByTestId } = render(
@@ -37,6 +40,7 @@ describe('Link', () => {
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/bar/foo')
   })
+
   test('navigates to href with basePath without root slash', async () => {
     act(() => navigate('/'))
     const { getByTestId } = render(
@@ -47,6 +51,7 @@ describe('Link', () => {
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/bar/foo')
   })
+
   test('fires onClick', async () => {
     let spy = jest.fn()
     act(() => navigate('/'))
@@ -59,6 +64,7 @@ describe('Link', () => {
     expect(document.location.pathname).toEqual('/foo')
     expect(spy).toHaveBeenCalled()
   })
+
   test('doesnt navigate for target=blank', async () => {
     act(() => navigate('/'))
     const { getByTestId } = render(
@@ -69,6 +75,7 @@ describe('Link', () => {
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/')
   })
+
   test('passes ref to anchor element', async () => {
     act(() => navigate('/'))
 
@@ -87,6 +94,7 @@ describe('Link', () => {
     expect(ref?.current).toBeInstanceOf(HTMLAnchorElement)
   })
 })
+
 describe('ActiveLink', () => {
   test('adds active class when active', async () => {
     const { getByTestId } = render(

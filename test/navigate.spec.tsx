@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
+
 import {
   navigate,
   useNavigate,
@@ -10,23 +11,34 @@ import {
 } from '../src/main'
 
 const originalConfirm = window.confirm
+const originalScrollTo = window.scrollTo
+const originalAssign = window.location.assign
 const originalReplaceState = window.history.replaceState
 const originalPushState = window.history.pushState
-const originalAssign = window.location.assign
 
-beforeEach(() => {
+function restoreWindow() {
   window.confirm = originalConfirm
+  window.scrollTo = originalScrollTo
   window.history.replaceState = originalReplaceState
   window.history.pushState = originalPushState
+  // This gets around location read-only error
+  Object.defineProperty(window, 'location', {
+    value: {
+      ...window.location,
+      assign: originalAssign,
+    },
+  })
+}
+
+beforeEach(() => {
+  // restoreWindow()
   act(() => navigate('/'))
 })
 
 afterEach(async () => {
-  window.confirm = originalConfirm
-  window.history.replaceState = originalReplaceState
-  window.history.pushState = originalPushState
+  restoreWindow()
   // We must wait for the intercept reset op
-  return new Promise<void>((resolve) => setTimeout(() => resolve(), 7))
+  return delay(5)
 })
 
 describe('useNavigate', () => {
@@ -153,15 +165,11 @@ describe('useNavigate', () => {
       button?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
-    expect((window.history.replaceState as jest.Mock).mock.calls).toHaveLength(
-      1
-    )
-    expect(
-      (window.history.replaceState as jest.Mock).mock.calls[0]
-    ).toHaveLength(3)
-    expect((window.history.replaceState as jest.Mock).mock.calls[0][2]).toEqual(
-      basePath + newPath
-    )
+    const calls = (window.history.replaceState as jest.Mock).mock.calls
+
+    expect(calls).toHaveLength(1)
+    expect(calls[0]).toHaveLength(3)
+    expect(calls[0][2]).toEqual(basePath + newPath)
     jest.clearAllMocks()
   })
 })
@@ -221,6 +229,31 @@ describe('useNavigationPrompt', () => {
 
     expect(window.confirm).toHaveBeenCalledWith('custom')
   })
+
+  test('popstate navigation restores scroll when prompt is declined', async () => {
+    window.confirm = jest.fn().mockImplementation(() => false)
+    window.scrollTo = jest.fn()
+    act(() => navigate('/'))
+    render(<Route block />)
+
+    // Modify scroll to check restoration
+    Object.defineProperty(window, 'scrollX', {
+      value: 10,
+    })
+    Object.defineProperty(window, 'scrollY', {
+      value: 12,
+    })
+    // window.scrollX = 10
+    // window.scrollY = 12
+
+    dispatchEvent(new PopStateEvent('popstate', undefined))
+
+    expect(document.location.pathname).toEqual('/')
+
+    // Wait for scroll restoration
+    await delay(10)
+    expect(window.scrollTo).toHaveBeenCalledWith(10, 12)
+  })
 })
 
 describe('navigate', () => {
@@ -265,4 +298,22 @@ describe('navigate', () => {
     expect(window.history.pushState).toHaveBeenCalled()
     jest.clearAllMocks()
   })
+  test('handles changing origins', async () => {
+    const currentHref = window.location.href
+    window.history.replaceState = jest.fn()
+    window.history.pushState = jest.fn()
+    window.location.assign = jest.fn()
+
+    navigate('http://localhost.new/')
+
+    expect(window.history.pushState).not.toHaveBeenCalled()
+    expect(window.history.replaceState).not.toHaveBeenCalled()
+    expect(window.location.assign).toHaveBeenCalledWith('http://localhost.new/')
+
+    navigate(currentHref)
+  })
 })
+
+function delay(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(() => resolve(), ms))
+}

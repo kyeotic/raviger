@@ -7,10 +7,10 @@ import {
 } from 'react'
 
 import { BasePathContext, PathContext } from './context'
-import { useMountedLayout } from './hooks.js'
+import { useMountedLayout } from './hooks'
 import { getSsrPath, isNode } from './node'
 import { shouldCancelNavigation } from './intercept'
-import { isFunction } from './typeChecks.js'
+import { isFunction } from './typeChecks'
 export interface LocationChangeSetFn {
   (path: string | null): void
 }

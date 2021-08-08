@@ -19,14 +19,28 @@ describe('useLocationChange', () => {
     onChange,
     isActive,
     basePath,
+    onInitial = false,
   }: {
     onChange: LocationChangeSetFn
     isActive?: boolean
     basePath?: string
+    onInitial?: boolean
   }) {
-    useLocationChange(onChange, { isActive, basePath })
+    useLocationChange(onChange, { isActive, basePath, onInitial })
     return null
   }
+  test("setter doesn't get updated on mount", async () => {
+    let watcher = jest.fn()
+    render(<Route onChange={watcher} />)
+
+    expect(watcher).not.toBeCalled()
+  })
+  test('setter is updated on mount when onInitial is true', async () => {
+    let watcher = jest.fn()
+    render(<Route onChange={watcher} onInitial />)
+
+    expect(watcher).toBeCalled()
+  })
   test('setter gets updated path', async () => {
     let watcher = jest.fn()
     render(<Route onChange={watcher} />)
