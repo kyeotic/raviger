@@ -12,6 +12,7 @@ import {
 const originalConfirm = window.confirm
 const originalReplaceState = window.history.replaceState
 const originalPushState = window.history.pushState
+const originalAssign = window.location.assign
 
 beforeEach(() => {
   window.confirm = originalConfirm

@@ -1,8 +1,13 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
-import { useRoutes, navigate } from '../src/main'
+
+import {
+  useRoutes,
+  navigate,
+  RouteOptionParams,
+  RouteParams,
+} from '../src/main'
 import { useRouter } from '../src/context'
-import { RouteOptionParams, RouteParams } from '../src/router'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -13,7 +18,7 @@ describe('useRouter', () => {
     routes,
     options,
   }: {
-    routes: RouteParams<unknown>
+    routes: RouteParams
     options?: RouteOptionParams
   }) {
     const route = useRoutes(routes, options) || (
@@ -32,7 +37,7 @@ describe('useRouter', () => {
       </div>
     )
   }
-  const routes: RouteParams<unknown> = {
+  const routes: RouteParams = {
     '/': () => <Route label="home" />,
     '/about': () => <Route label="about" />,
   }

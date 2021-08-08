@@ -20,6 +20,7 @@ const Link = forwardRef<LinkRef, LinkProps>(
     const contextBasePath = useBasePath()
     basePath = basePath || contextBasePath
     href = getLinkHref(href, basePath)
+
     const onClick = useCallback<React.MouseEventHandler<HTMLAnchorElement>>(
       (e) => {
         try {
@@ -35,21 +36,25 @@ const Link = forwardRef<LinkRef, LinkProps>(
       },
       [basePath, href, props.onClick]
     )
+
     return <a {...props} href={href} onClick={onClick} ref={ref} />
   }
 )
 
 export default Link
+export { Link }
 
 const ActiveLink = forwardRef<LinkRef, ActiveLinkProps>((props, ref) => {
   const basePath = useBasePath()
   const path = usePath(basePath)
   const href = getLinkHref(props.href, basePath)
   let { className, activeClass, exactActiveClass, ...rest } = props
+
   if (!className) className = ''
   if (exactActiveClass && path === href) className += ` ${exactActiveClass}`
   if (activeClass && (path ?? '').startsWith(href))
     className += ` ${activeClass}`
+
   return <Link {...rest} className={className} ref={ref} />
 })
 
@@ -67,7 +72,7 @@ function shouldTrap(
   return (
     !e.defaultPrevented && // onClick prevented default
     e.button === 0 && // ignore everything but left clicks
-    !(target || target === '_self') && // dont trap target === blank
+    !(target || target === '_self') && // don't trap target === blank
     !(e.metaKey || e.altKey || e.ctrlKey || e.shiftKey)
   )
 }

@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+
 import { navigate, useLocationChange } from './main'
 import { isNode, getSsrPath } from './node'
 import { getCurrentPath, getCurrentHash } from './path'
@@ -21,17 +22,21 @@ export function useQueryParams(
       let path = getCurrentPath()
       params = replace ? params : { ...parseFn(querystring), ...params }
       const serialized = serializeFn(params).toString()
+
       if (serialized) path += '?' + serialized
       if (!replace) path += getCurrentHash()
+
       navigate(path)
     },
     [querystring]
   )
+
   // Update state when route changes
   const updateQuery = useCallback(
     () => setQuerystring(getQueryString()),
     [setQueryParams]
   )
+
   useLocationChange(updateQuery)
   return [parseFn(querystring), setQueryParams]
 }

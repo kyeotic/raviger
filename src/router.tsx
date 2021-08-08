@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useLayoutEffect } from 'react'
+
 import { BasePathContext, PathContext } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import { getFormattedPath, usePath } from './path'
@@ -17,7 +18,7 @@ export interface RouteOptionParams {
 interface RouteMatcher {
   routePath: string
   regex: RegExp
-  groups: string[]
+  props: string[]
 }
 
 export function useRoutes(
@@ -44,7 +45,7 @@ export function useRoutes(
   useRedirectDetection(basePath, path)
 
   // Get the current route
-  const route = useMatchRoute(routes, path, {
+  const route = matchRoute(routes, path, {
     routeProps,
     overridePathParams,
     matchTrailingSlash,
@@ -66,7 +67,7 @@ export function setPath(path: string) {
   setSsrPath(url.resolve(getSsrPath(), path))
 }
 
-function useMatchRoute(
+function matchRoute(
   routes: RouteParams,
   path: string | null,
   {
@@ -98,7 +99,7 @@ function useMatchRoute(
   if (!routeMatch || match === null) return null
   const m = match
 
-  const props = routeMatch.groups.reduce((props: any, prop, i) => {
+  const props = routeMatch.props.reduce((props: any, prop, i) => {
     props[prop] = m[i + 1]
     return props
   }, {})
@@ -120,7 +121,7 @@ function createRouteMatcher(routePath: string): RouteMatcher {
         .replace(/\*/g, '')}${routePath.substr(-1) === '*' ? '' : '$'}`,
       'i'
     ),
-    groups: (routePath.match(/:[a-zA-Z]+/g) ?? []).map((paramName) =>
+    props: (routePath.match(/:[a-zA-Z]+/g) ?? []).map((paramName) =>
       paramName.substr(1)
     ),
   }

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   useState,
   useCallback,
@@ -6,10 +5,12 @@ import {
   useContext,
   useLayoutEffect,
 } from 'react'
+
 import { BasePathContext, PathContext } from './context'
+import { useMountedLayout } from './hooks.js'
 import { getSsrPath, isNode } from './node'
 import { shouldCancelNavigation } from './intercept'
-
+import { isFunction } from './typeChecks.js'
 export interface LocationChangeSetFn {
   (path: string | null): void
 }
@@ -17,6 +18,7 @@ export interface LocationChangeOptionParams {
   inheritBasePath?: boolean
   basePath?: string
   isActive?: boolean | (() => boolean)
+  onInitial?: boolean
 }
 
 export function usePath(basePath?: string): string | null {
@@ -30,7 +32,7 @@ export function usePath(basePath?: string): string | null {
     inheritBasePath: !basePath,
   })
 
-  return contextPath ?? path
+  return contextPath || path
 }
 
 export function useBasePath() {
@@ -79,6 +81,7 @@ export function useLocationChange(
     inheritBasePath = true,
     basePath = '',
     isActive,
+    onInitial = false,
   }: LocationChangeOptionParams = {}
 ) {
   if (isNode) return
@@ -98,7 +101,6 @@ export function useLocationChange(
   const onPopState = useCallback(() => {
     // No predicate defaults true
     if (isActive !== undefined && !isPredicateActive(isActive)) return
-    // console.log('loc', basePath || 'none', getFormattedPath(basePath))
     if (shouldCancelNavigation()) return
     setRef.current(getFormattedPath(basePath))
   }, [isActive, basePath])
@@ -110,10 +112,14 @@ export function useLocationChange(
 
   // When the basePath changes re-check the path after the render completes
   // This allows nested contexts to get an up-to-date formatted path
-  useLayoutEffect(() => {
-    if (isActive !== undefined && !isPredicateActive(isActive)) return
-    setRef.current(getFormattedPath(basePath))
-  }, [basePath, isActive])
+  useMountedLayout(
+    () => {
+      if (isActive !== undefined && !isPredicateActive(isActive)) return
+      setRef.current(getFormattedPath(basePath))
+    },
+    [basePath, isActive],
+    { onInitial }
+  )
 }
 
 /**
@@ -124,15 +130,16 @@ export function useLocationChange(
  */
 export function getFormattedPath(basePath: string): string | null {
   const path = getCurrentPath()
-  if (basePath && !isPathInBase(basePath, path)) return null
+  const baseMissing = basePath && !isPathInBase(basePath, path)
+  if (path === null || baseMissing) return null
   return !basePath ? path : path.replace(basePathMatcher(basePath), '') || '/'
 }
 
 function isPredicateActive(predicate: boolean | (() => boolean)): boolean {
-  return typeof predicate === 'function' ? predicate() : predicate
+  return isFunction(predicate) ? predicate() : predicate
 }
 
-function basePathMatcher(basePath: string) {
+function basePathMatcher(basePath: string): RegExp {
   return new RegExp('^' + basePath, 'i')
 }
 

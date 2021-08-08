@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect } from 'react'
+
 import { useBasePath } from './main'
 import { isNode } from './node'
 import type { QueryParam } from './querystring'
@@ -19,6 +20,25 @@ export interface NavigateWithQuery {
 
 let lastPath = ''
 
+export function navigate(url: string): void
+export function navigate(url: string, replace: boolean): void
+export function navigate(url: string, query: QueryParam | URLSearchParams): void
+export function navigate(
+  url: string,
+  query: QueryParam | URLSearchParams,
+  replace: boolean
+): void
+export function navigate(
+  url: string,
+  queryOrReplace?: QueryParam | URLSearchParams | boolean | null,
+  replace?: boolean
+): void
+export function navigate(
+  url: string,
+  query: QueryParam | URLSearchParams,
+  replace: boolean,
+  state: unknown
+): void
 export function navigate(
   url: string,
   replaceOrQuery?: QueryParam | URLSearchParams | boolean | null,
@@ -43,6 +63,7 @@ export function navigate(
   } else if (replace === undefined && replaceOrQuery === undefined) {
     replace = false
   }
+
   lastPath = url
   // if the origin does not match history navigation will fail with
   // "cannot be created in a document with origin"
@@ -63,6 +84,7 @@ export function useNavigationPrompt(
   prompt: string = defaultPrompt
 ) {
   if (isNode) return
+
   useLayoutEffect(() => {
     const onPopStateNavigation = () => {
       if (shouldCancelNavigation()) {
@@ -72,11 +94,13 @@ export function useNavigationPrompt(
     window.addEventListener('popstate', onPopStateNavigation)
     return () => window.removeEventListener('popstate', onPopStateNavigation)
   }, [])
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useLayoutEffect(() => {
-    const handler = (e?: BeforeUnloadEvent): string => {
-      if (predicate) return e ? cancelNavigation(e, prompt) : prompt
-      return ''
+    const handler = (e?: BeforeUnloadEvent): string | void => {
+      if (predicate) {
+        return e ? cancelNavigation(e, prompt) : prompt
+      }
     }
     addInterceptor(handler)
     return () => removeInterceptor(handler)
