@@ -221,6 +221,29 @@ describe('useNavigationPrompt', () => {
     expect(document.location.pathname).toEqual('/')
   })
 
+  test('popstate navigation restores scroll when prompt is declined', async () => {
+    window.confirm = jest.fn().mockImplementation(() => false)
+    window.scrollTo = jest.fn()
+    act(() => navigate('/'))
+    render(<Route block />)
+
+    // Modify scroll to check restoration
+    Object.defineProperty(window, 'scrollX', {
+      value: 10,
+    })
+    Object.defineProperty(window, 'scrollY', {
+      value: 12,
+    })
+
+    dispatchEvent(new PopStateEvent('popstate', null))
+
+    expect(document.location.pathname).toEqual('/')
+
+    // Wait for scroll restoration
+    await delay(10)
+    expect(window.scrollTo).toHaveBeenCalledWith(10, 12)
+  })
+
   test('navigation is confirmed with custom prompt', async () => {
     window.confirm = jest.fn().mockImplementation(() => false)
     act(() => navigate('/'))

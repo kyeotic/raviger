@@ -82,7 +82,6 @@ describe('Redirect', () => {
       'http://localhost/foo?stuff=junk'
     )
   })
-
   test('redirects from useRoutes', async () => {
     const Page = () => {
       return <span data-testid="label">pass</span>

@@ -19,6 +19,7 @@ const routes = {
   '/users/:userId': ({ userId }) => <span>User: {userId}</span>,
   '/filter': () => <Filter />,
   '/redirect': () => <Redirect to={'/filter'} />,
+  '/redirect-external': () => <Redirect to={'http://example.com'} />,
   '/deep*': () => <Deep />,
   '/*': () => <DisplayPath />,
 }
@@ -43,6 +44,7 @@ const App = () => {
         <Link href="/fallthrough/nested">Fallthrough Nested</Link>
         <Link href="/filter">Filters</Link>
         <Link href="/redirect">Redirect</Link>
+        <Link href="/redirect-external">Redirect External</Link>
       </Nav>
       <div></div>
       <span style={{ display: 'block' }}>Root Path: {path}</span>
