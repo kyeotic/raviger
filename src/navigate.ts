@@ -44,6 +44,13 @@ export function navigate(
     replace = false
   }
   lastPath = url
+  // if the origin does not match history navigation will fail with
+  // "cannot be created in a document with origin"
+  // When navigating to another domain we must use location instead of history
+  if (isAbsolute(url) && !isCurrentOrigin(url)) {
+    window.location.assign(url)
+    return
+  }
 
   if (replace) window.history.replaceState(state, '', url)
   else window.history.pushState(state, '', url)
@@ -104,4 +111,12 @@ export function useNavigate(
     [basePath, optBasePath]
   )
   return navigateWithBasePath
+}
+
+function isAbsolute(url: string) {
+  return /^(?:[a-z]+:)?\/\//i.test(url)
+}
+
+function isCurrentOrigin(url: string) {
+  return window.location.origin === new URL(url).origin
 }

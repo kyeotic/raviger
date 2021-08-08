@@ -55,11 +55,6 @@
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
   "prettier": {
     "tabWidth": 2,
     "semi": false,
@@ -92,7 +87,6 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "size-limit": "^4.10.2",
-    "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
   }
