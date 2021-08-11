@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect } from 'react'
 
-import { useBasePath } from './main'
+import { useBasePath } from './path'
 import { isNode } from './node'
 import type { QueryParam } from './querystring'
 import {

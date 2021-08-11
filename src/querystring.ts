@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react'
 
-import { navigate, useLocationChange } from './main'
+import { navigate } from './navigate'
 import { isNode, getSsrPath } from './node'
-import { getCurrentPath, getCurrentHash } from './path'
+import { getCurrentPath, getCurrentHash, useLocationChange} from './path'
 
 export interface QueryParam {
   [key: string]: any
