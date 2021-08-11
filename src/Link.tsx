@@ -1,5 +1,4 @@
-import React, { useCallback, forwardRef } from 'react'
-import type { Ref } from 'react'
+import React, { useCallback, forwardRef, Ref } from 'react'
 
 import { navigate } from './navigate'
 import { usePath, useBasePath } from './path'
@@ -17,7 +16,10 @@ export interface ActiveLinkProps extends LinkProps {
   exactActiveClass?: string
 }
 
-function Link ({ href, basePath, ...props }: LinkProps, ref?: Ref<HTMLAnchorElement>) {
+function Link(
+  { href, basePath, ...props }: LinkProps,
+  ref?: Ref<HTMLAnchorElement>
+) {
   const contextBasePath = useBasePath()
   basePath = basePath || contextBasePath
   href = getLinkHref(href, basePath)
@@ -43,27 +45,31 @@ function Link ({ href, basePath, ...props }: LinkProps, ref?: Ref<HTMLAnchorElem
   return <a {...props} href={href} onClick={handleClick} ref={ref} />
 }
 
-const RefLink = forwardRef<LinkRef, LinkProps>(Link) as (props: LinkProps & { ref?: React.ForwardedRef<HTMLAnchorElement> }) => ReturnType<typeof Link>
+const RefLink = forwardRef<LinkRef, LinkProps>(Link) as (
+  props: LinkProps & { ref?: React.ForwardedRef<HTMLAnchorElement> }
+) => ReturnType<typeof Link>
 
 export default RefLink
 export { RefLink as Link }
 
-function ActiveLink (props: ActiveLinkProps, ref?: Ref<HTMLAnchorElement>) {
+function ActiveLink(props: ActiveLinkProps, ref?: Ref<HTMLAnchorElement>) {
   const basePath = useBasePath()
   const path = usePath(basePath)
   const href = getLinkHref(props.href, basePath)
   // eslint-disable-next-line prefer-const
   let { className, activeClass, exactActiveClass, ...rest } = props
-  
+
   if (!className) className = ''
   if (exactActiveClass && path === href) className += ` ${exactActiveClass}`
   if (activeClass && (path ?? '').startsWith(href))
     className += ` ${activeClass}`
-  
+
   return <RefLink {...rest} className={className} ref={ref} />
 }
 
-const ActiveLinkRef = forwardRef<LinkRef, ActiveLinkProps>(ActiveLink) as (props: ActiveLinkProps & { ref?: React.ForwardedRef<HTMLAnchorElement> }) => ReturnType<typeof ActiveLink>
+const ActiveLinkRef = forwardRef<LinkRef, ActiveLinkProps>(ActiveLink) as (
+  props: ActiveLinkProps & { ref?: React.ForwardedRef<HTMLAnchorElement> }
+) => ReturnType<typeof ActiveLink>
 
 export { ActiveLinkRef as ActiveLink }
 
