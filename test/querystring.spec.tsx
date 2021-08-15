@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
-import { navigate, useQueryParams } from '../src/main.js'
+import { navigate, useQueryParams } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -8,7 +8,7 @@ beforeEach(() => {
 
 describe('useQueryParams', () => {
   function Route() {
-    let [query] = useQueryParams()
+    const [query] = useQueryParams()
     return <span data-testid="label">{JSON.stringify(query)}</span>
   }
   test('parses query', async () => {
@@ -34,8 +34,14 @@ describe('useQueryParams', () => {
 })
 
 describe('setQueryParams', () => {
-  function Route({ replace, foo = 'bar' }) {
-    let [query, setQuery] = useQueryParams()
+  function Route({
+    replace,
+    foo = 'bar',
+  }: {
+    replace?: boolean
+    foo?: string | null
+  }) {
+    const [query, setQuery] = useQueryParams()
     return (
       <button
         data-testid="update"

@@ -5,9 +5,9 @@ try {
 } catch (e) {} // eslint-disable-line no-empty
 
 export { isNode }
-export function getSsrPath() {
+export function getSsrPath(): string {
   return ssrPath
 }
-export function setSsrPath(path) {
+export function setSsrPath(path: string): void {
   ssrPath = path
 }

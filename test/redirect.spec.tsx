@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
-import { useRedirect, navigate, Redirect, useRoutes } from '../src/main.js'
+import { navigate, useRedirect, Redirect, useRoutes } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -12,6 +12,7 @@ describe('useRedirect', () => {
     useRedirect('/miss', '/catch')
     return <span>Mock</span>
   }
+
   test('route is unchanged when predicate does not match', async () => {
     act(() => navigate('/'))
     render(<Mock />)
@@ -19,6 +20,7 @@ describe('useRedirect', () => {
     act(() => navigate('/test'))
     expect(window.location.toString()).toEqual('http://localhost/test')
   })
+
   test('route is changed when predicate matches', async () => {
     act(() => navigate('/fail'))
     expect(window.location.toString()).toEqual('http://localhost/fail')
@@ -27,6 +29,7 @@ describe('useRedirect', () => {
       'http://localhost/catch?name=kyeotic'
     )
   })
+
   test('route handles empty redirect', async () => {
     act(() => navigate('/'))
     expect(window.location.toString()).toEqual('http://localhost/')
@@ -41,11 +44,13 @@ describe('Redirect', () => {
     render(<Redirect to="/foo" merge={false} />)
     expect(window.location.toString()).toEqual('http://localhost/foo')
   })
+
   test('redirects to "to" without merge and query', async () => {
     act(() => navigate('/?things=act'))
     render(<Redirect to="/foo" merge={false} />)
     expect(window.location.toString()).toEqual('http://localhost/foo')
   })
+
   test('redirects to "to" with merge (default) and query', async () => {
     act(() => navigate('/?things=act'))
     render(<Redirect to="/foo" />)
@@ -53,6 +58,7 @@ describe('Redirect', () => {
       'http://localhost/foo?things=act'
     )
   })
+
   test('redirects to "to" with merge and query/hash', async () => {
     act(() => navigate('/?things=act#test'))
     render(<Redirect to="/foo" merge />)
@@ -60,6 +66,7 @@ describe('Redirect', () => {
       'http://localhost/foo?things=act#test'
     )
   })
+
   test('redirects to "to" with query when merge', async () => {
     act(() => navigate('/?things=act#test'))
     render(<Redirect to="/foo" query={{ stuff: 'junk' }} merge />)
@@ -67,6 +74,7 @@ describe('Redirect', () => {
       'http://localhost/foo?things=act&stuff=junk#test'
     )
   })
+
   test('redirects to "to" with query when not merge', async () => {
     act(() => navigate('/?things=act#test'))
     render(<Redirect to="/foo" query={{ stuff: 'junk' }} merge={false} />)
@@ -81,7 +89,7 @@ describe('Redirect', () => {
     const routes = {
       '/redirect': () => <Redirect to={'/real/page'} />,
       '/real/page': () => <Page />,
-      '*': () => <Redirect to={'/real/page'} />
+      '*': () => <Redirect to={'/real/page'} />,
     }
 
     function Harness() {

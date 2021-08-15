@@ -1,36 +1,48 @@
 import React, { useCallback, useEffect } from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
 import {
-  useRoutes,
-  usePath,
+  navigate,
   useLocationChange,
+  usePath,
+  useRoutes,
   useHash,
-  navigate
-} from '../src/main.js'
+  LocationChangeSetFn,
+  RouteParams,
+} from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
 })
 
 describe('useLocationChange', () => {
-  function Route({ onChange, isActive, basePath, onInitial = false }) {
+  function Route({
+    onChange,
+    isActive,
+    basePath,
+    onInitial = false,
+  }: {
+    onChange: LocationChangeSetFn
+    isActive?: boolean
+    basePath?: string
+    onInitial?: boolean
+  }) {
     useLocationChange(onChange, { isActive, basePath, onInitial })
     return null
   }
   test("setter doesn't get updated on mount", async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} />)
 
     expect(watcher).not.toBeCalled()
   })
   test('setter is updated on mount when onInitial is true', async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} onInitial />)
 
     expect(watcher).toBeCalled()
   })
   test('setter gets updated path', async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} />)
 
     act(() => navigate('/foo'))
@@ -39,14 +51,14 @@ describe('useLocationChange', () => {
     expect(watcher).toBeCalledWith('/base')
   })
   test('setter is not updated when isActive is false', async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} isActive={false} />)
     act(() => navigate('/foo'))
 
     expect(watcher).not.toBeCalled()
   })
   test('setter gets null when provided basePath is missing', async () => {
-    let watcher = jest.fn()
+    const watcher = jest.fn()
     render(<Route onChange={watcher} basePath="/home" />)
 
     act(() => navigate('/foo'))
@@ -58,7 +70,7 @@ describe('useLocationChange', () => {
 
 describe('usePath', () => {
   function Route() {
-    let path = usePath()
+    const path = usePath()
     return <span data-testid="path">{path}</span>
   }
   test('returns original path', async () => {
@@ -77,19 +89,25 @@ describe('usePath', () => {
   })
 
   test('does not include parent router base path', async () => {
-    function Harness({ routes, basePath }) {
+    function Harness({
+      routes,
+      basePath,
+    }: {
+      routes: RouteParams
+      basePath?: string
+    }) {
       const route = useRoutes(routes, { basePath })
       return route
     }
 
     const nestedRoutes = {
       '/': () => <Route />,
-      '/about': () => <Route />
+      '/about': () => <Route />,
     }
     const routes = {
       '/': () => <Route />,
       '/about': () => <Route />,
-      '/nested*': () => <Harness basePath="/nested" routes={nestedRoutes} />
+      '/nested*': () => <Harness basePath="/nested" routes={nestedRoutes} />,
     }
 
     const { getByTestId } = render(<Harness routes={routes} />)
@@ -110,7 +128,13 @@ describe('usePath', () => {
   })
 
   test('has correct path for nested base path', async () => {
-    function Harness({ routes, basePath }) {
+    function Harness({
+      routes,
+      basePath,
+    }: {
+      routes: RouteParams
+      basePath?: string
+    }) {
       const route = useRoutes(routes, { basePath })
       return route
     }
@@ -118,12 +142,14 @@ describe('usePath', () => {
     const nestedRoutes = {
       '/': () => <Route />,
       '/about': () => <Route />,
-      '/info': () => <Route />
+      '/info': () => <Route />,
     }
     const routes = {
       '/': () => <Route />,
       '/about': () => <Route />,
-      '/nested*': () => <Harness basePath="/foo/nested" routes={nestedRoutes} />
+      '/nested*': () => (
+        <Harness basePath="/foo/nested" routes={nestedRoutes} />
+      ),
     }
 
     const { getByTestId } = render(<Harness routes={routes} basePath="/foo" />)
@@ -164,9 +190,15 @@ describe('usePath', () => {
 
     const routes = {
       '/': () => <Home />,
-      '/about': () => <About />
+      '/about': () => <About />,
     }
-    function Harness({ routes, basePath }) {
+    function Harness({
+      routes,
+      basePath,
+    }: {
+      routes: RouteParams
+      basePath?: string
+    }) {
       // console.log('start harness update')
       const route = useRoutes(routes, { basePath })
       const onGoHome = useCallback(
@@ -213,7 +245,7 @@ describe('usePath', () => {
 
   test('returns null when provided basePath is missing', async () => {
     function Route() {
-      let path = usePath('/home')
+      const path = usePath('/home')
       return <span data-testid="path">{path || 'not found'}</span>
     }
     act(() => navigate('/'))
@@ -225,8 +257,8 @@ describe('usePath', () => {
 })
 
 describe('useHash', () => {
-  function Route({ skip }) {
-    let hash = useHash({ stripHash: skip ? false : undefined })
+  function Route({ skip }: { skip?: boolean }) {
+    const hash = useHash({ stripHash: skip ? false : undefined })
     return <span data-testid="hash">{hash}</span>
   }
   test('returns original hash', async () => {
@@ -251,6 +283,6 @@ describe('useHash', () => {
   })
 })
 
-async function delay(ms) {
-  return new Promise(resolve => setTimeout(() => resolve(), ms))
+async function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(() => resolve(), ms))
 }

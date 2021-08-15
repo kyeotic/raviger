@@ -1,11 +1,14 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
+
 import {
-  useNavigationPrompt,
-  useRoutes,
+  navigate,
   useNavigate,
-  navigate
-} from '../src/main.js'
+  useRoutes,
+  useNavigationPrompt,
+  QueryParam,
+  RouteParams,
+} from '../src/main'
 
 const originalConfirm = window.confirm
 const originalScrollTo = window.scrollTo
@@ -18,11 +21,17 @@ function restoreWindow() {
   window.scrollTo = originalScrollTo
   window.history.replaceState = originalReplaceState
   window.history.pushState = originalPushState
-  window.location.assign = originalAssign
+  // This gets around location read-only error
+  Object.defineProperty(window, 'location', {
+    value: {
+      ...window.location,
+      assign: originalAssign,
+    },
+  })
 }
 
 beforeEach(() => {
-  restoreWindow()
+  // restoreWindow()
   act(() => navigate('/'))
 })
 
@@ -33,7 +42,15 @@ afterEach(async () => {
 })
 
 describe('useNavigate', () => {
-  function Route({ newPath, query, replace }) {
+  function Route({
+    newPath,
+    query,
+    replace,
+  }: {
+    newPath: string
+    query?: QueryParam | URLSearchParams
+    replace?: boolean
+  }) {
     const navigateWithBasePath = useNavigate()
     return (
       <button
@@ -46,16 +63,26 @@ describe('useNavigate', () => {
     )
   }
 
-  const routes = {
+  const routes: RouteParams = {
     '/*': ({ newPath, query, replace }) => (
       <Route newPath={newPath} query={query} replace={replace} />
-    )
+    ),
   }
 
-  function App({ basePath, newPath, query, replace }) {
+  function App({
+    basePath,
+    newPath,
+    query,
+    replace,
+  }: {
+    basePath?: string
+    newPath?: any
+    query?: any
+    replace?: boolean
+  }) {
     const route = useRoutes(routes, {
       basePath,
-      routeProps: { newPath, query, replace }
+      routeProps: { newPath, query, replace },
     })
     return route
   }
@@ -69,7 +96,7 @@ describe('useNavigate', () => {
 
     const button = container.querySelector('button')
     act(() => {
-      button.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
     expect(document.location.pathname).toEqual(basePath + newPath)
@@ -83,7 +110,7 @@ describe('useNavigate', () => {
 
     const button = container.querySelector('button')
     act(() => {
-      button.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
     expect(document.location.pathname).toEqual(newPath)
@@ -98,7 +125,7 @@ describe('useNavigate', () => {
 
     const button = container.querySelector('button')
     act(() => {
-      button.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
     expect(document.location.pathname).toEqual(`${basePath}/${newPath}`)
@@ -116,7 +143,7 @@ describe('useNavigate', () => {
 
     const button = container.querySelector('button')
     act(() => {
-      button.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
     expect(document.location.pathname).toEqual(basePath + newPath)
@@ -135,20 +162,26 @@ describe('useNavigate', () => {
     window.history.replaceState = jest.fn()
     const button = container.querySelector('button')
     act(() => {
-      button.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
 
-    expect(window.history.replaceState.mock.calls).toHaveLength(1)
-    expect(window.history.replaceState.mock.calls[0]).toHaveLength(3)
-    expect(window.history.replaceState.mock.calls[0][2]).toEqual(
-      basePath + newPath
-    )
+    const calls = (window.history.replaceState as jest.Mock).mock.calls
+
+    expect(calls).toHaveLength(1)
+    expect(calls[0]).toHaveLength(3)
+    expect(calls[0][2]).toEqual(basePath + newPath)
     jest.clearAllMocks()
   })
 })
 
 describe('useNavigationPrompt', () => {
-  function Route({ block = true, prompt }) {
+  function Route({
+    block = true,
+    prompt,
+  }: {
+    block: boolean
+    prompt?: string
+  }) {
     useNavigationPrompt(block, prompt)
     return null
   }
@@ -181,7 +214,7 @@ describe('useNavigationPrompt', () => {
     window.confirm = jest.fn().mockImplementation(() => false)
     act(() => navigate('/'))
     render(<Route block />)
-    let event = window.document.createEvent('Event')
+    const event = window.document.createEvent('Event')
     event.initEvent('beforeunload', true, true)
     window.dispatchEvent(event)
 
@@ -195,10 +228,14 @@ describe('useNavigationPrompt', () => {
     render(<Route block />)
 
     // Modify scroll to check restoration
-    window.scrollX = 10
-    window.scrollY = 12
+    Object.defineProperty(window, 'scrollX', {
+      value: 10,
+    })
+    Object.defineProperty(window, 'scrollY', {
+      value: 12,
+    })
 
-    dispatchEvent(new PopStateEvent('popstate', null))
+    dispatchEvent(new PopStateEvent('popstate', undefined))
 
     expect(document.location.pathname).toEqual('/')
 
@@ -259,12 +296,11 @@ describe('navigate', () => {
     expect(window.history.pushState).toHaveBeenCalled()
     jest.clearAllMocks()
   })
-
   test('handles changing origins', async () => {
     const currentHref = window.location.href
-    window.location.assign = jest.fn()
     window.history.replaceState = jest.fn()
     window.history.pushState = jest.fn()
+    window.location.assign = jest.fn()
 
     navigate('http://localhost.new/')
 
@@ -276,6 +312,6 @@ describe('navigate', () => {
   })
 })
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(() => resolve(), ms))
+function delay(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(() => resolve(), ms))
 }

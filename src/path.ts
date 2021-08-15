@@ -3,45 +3,56 @@ import {
   useCallback,
   useRef,
   useContext,
-  useLayoutEffect
+  useLayoutEffect,
 } from 'react'
-import { BasePathContext, PathContext } from './context.js'
-import { useMountedLayout } from './hooks.js'
-import { isNode, getSsrPath } from './node.js'
-import { isFunction } from './typeChecks.js'
-import { shouldCancelNavigation } from './intercept'
 
-export function usePath(basePath) {
+import { BasePathContext, PathContext } from './context'
+import { useMountedLayout } from './hooks'
+import { getSsrPath, isNode } from './node'
+import { shouldCancelNavigation } from './intercept'
+import { isFunction } from './typeChecks'
+
+export interface LocationChangeSetFn {
+  (path: string | null): void
+}
+export interface LocationChangeOptionParams {
+  inheritBasePath?: boolean
+  basePath?: string
+  isActive?: boolean | (() => boolean)
+  onInitial?: boolean
+}
+
+export function usePath(basePath?: string): string | null {
   const contextPath = useContext(PathContext)
   const contextBasePath = useBasePath() // hooks can't be called conditionally
   basePath = basePath || contextBasePath
 
   const [path, setPath] = useState(getFormattedPath(basePath))
-  useLocationChange(newPath => setPath(newPath), {
+  useLocationChange((newPath) => setPath(newPath), {
     basePath,
-    inheritBasePath: !basePath
+    inheritBasePath: !basePath,
   })
 
   return contextPath || path
 }
 
-export function useBasePath() {
+export function useBasePath(): string {
   return useContext(BasePathContext)
 }
 
-export function useFullPath() {
-  const [path, setPath] = useState(getCurrentPath())
+export function useFullPath(): string {
+  const [path, setPath] = useState<string | null>(getCurrentPath())
   useLocationChange(setPath, { inheritBasePath: false })
 
   return path || '/'
 }
 
-export function useHash({ stripHash = true } = {}) {
+export function useHash({ stripHash = true } = {}): string {
   const [hash, setHash] = useState(window.location.hash)
   const handleHash = useCallback(() => {
     if (window.location.hash === hash) return
     setHash(window.location.hash)
-  }, [setHash])
+  }, [setHash, hash])
 
   useLayoutEffect(() => {
     window.addEventListener('hashchange', handleHash, false)
@@ -52,28 +63,37 @@ export function useHash({ stripHash = true } = {}) {
   return stripHash ? hash.substring(1) : hash
 }
 
-export function getCurrentPath() {
+export function getCurrentPath(): string {
   return isNode ? getSsrPath() : window.location.pathname || '/'
 }
 
-export function getCurrentHash() {
+export function getCurrentHash(): string {
   if (isNode) {
-    let path = getSsrPath() || ''
-    let hashIndex = path.indexOf('#')
-    return path !== -1 ? path.substring(hashIndex) : ''
+    const path = getSsrPath()
+    const hashIndex = path.indexOf('#')
+    return path.substring(hashIndex)
   }
   return window.location.hash
 }
 
 export function useLocationChange(
-  setFn,
-  { inheritBasePath = true, basePath = '', isActive, onInitial = false } = {}
-) {
+  setFn: LocationChangeSetFn,
+  {
+    inheritBasePath = true,
+    basePath = '',
+    isActive,
+    onInitial = false,
+  }: LocationChangeOptionParams = {}
+): void {
   if (isNode) return
+
+  // All hooks after this are conditional, but the runtime can't actually change
+  /* eslint-disable react-hooks/rules-of-hooks */
+
   const routerBasePath = useBasePath()
   if (inheritBasePath && routerBasePath) basePath = routerBasePath
 
-  const setRef = useRef(setFn)
+  const setRef = useRef<LocationChangeSetFn>(setFn)
   useLayoutEffect(() => {
     // setFn could be an in-render declared callback, making it unstable
     // This is a method of using an often-changing callback from React Hooks
@@ -105,6 +125,8 @@ export function useLocationChange(
     [basePath, isActive],
     { onInitial }
   )
+
+  /* eslint-enable react-hooks/rules-of-hooks */
 }
 
 /**
@@ -113,23 +135,25 @@ export function useLocationChange(
  * @param {string} basePath basePath, if any
  * @return {string | null} returns path with basePath prefix removed, or null if basePath is provided and missing
  */
-export function getFormattedPath(basePath) {
+export function getFormattedPath(basePath: string): string | null {
   const path = getCurrentPath()
   const baseMissing = basePath && !isPathInBase(basePath, path)
   if (path === null || baseMissing) return null
   return !basePath ? path : path.replace(basePathMatcher(basePath), '') || '/'
 }
 
-function isPredicateActive(predicate) {
+function isPredicateActive(predicate: boolean | (() => boolean)): boolean {
   return isFunction(predicate) ? predicate() : predicate
 }
 
-function basePathMatcher(basePath) {
+function basePathMatcher(basePath: string): RegExp {
   return new RegExp('^' + basePath, 'i')
 }
 
-function isPathInBase(basePath, path) {
-  return (
-    basePath && path && path.toLowerCase().startsWith(basePath.toLowerCase())
+function isPathInBase(basePath: string, path: string): boolean {
+  return !!(
+    basePath &&
+    path &&
+    path.toLowerCase().startsWith(basePath.toLowerCase())
   )
 }

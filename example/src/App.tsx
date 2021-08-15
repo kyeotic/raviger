@@ -1,13 +1,15 @@
-import React from 'react'
+import * as React from 'react'
+import {} from 'react-dom'
+
 import {
   useRoutes,
   Link,
   usePath,
   useQueryParams,
-  Redirect
-} from '../../src/main.js'
-import Nav from './Nav.js'
-import Form from './Form.js'
+  Redirect,
+} from '../../src/main'
+import Nav from './Nav'
+import Form from './Form'
 
 const routes = {
   '/': () => <span>Home</span>,
@@ -19,7 +21,7 @@ const routes = {
   '/redirect': () => <Redirect to={'/filter'} />,
   '/redirect-external': () => <Redirect to={'http://example.com'} />,
   '/deep*': () => <Deep />,
-  '/*': () => <DisplayPath />
+  '/*': () => <DisplayPath />,
 }
 
 let renders = 0
@@ -61,7 +63,7 @@ export default App
 const deepRoutes = {
   '/': () => <DisplayPath />,
   '/about': () => <DisplayPath />,
-  '/contact': () => <DisplayPath />
+  '/contact': () => <DisplayPath />,
 }
 
 function Deep() {
@@ -91,7 +93,7 @@ function Filter() {
         type="text"
         placeholder="Enter a query"
         value={name || ''}
-        onChange={e => setQuery({ name: e.target.value }, false)}
+        onChange={(e) => setQuery({ name: e.target.value }, { replace: false })}
       />
     </Nav>
   )

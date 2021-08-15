@@ -1,27 +1,35 @@
 import React from 'react'
 import { render, fireEvent, act } from '@testing-library/react'
 import {
+  navigate,
   useRoutes,
   usePath,
   useBasePath,
   useQueryParams,
-  navigate
-} from '../src/main.js'
+  RouteOptionParams,
+  RouteParams,
+} from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
 })
 
 describe('useRoutes', () => {
-  function Harness({ routes, options }) {
+  function Harness({
+    routes,
+    options,
+  }: {
+    routes: RouteParams
+    options?: RouteOptionParams
+  }) {
     const route = useRoutes(routes, options) || (
       <span data-testid="label">not found</span>
     )
     return route
   }
 
-  function Route({ label, extra }) {
-    let path = usePath()
+  function Route({ label, extra }: { label: string; extra?: string }) {
+    const path = usePath()
     return (
       <div>
         <span data-testid="label">
@@ -31,10 +39,10 @@ describe('useRoutes', () => {
       </div>
     )
   }
-  const routes = {
+  const routes: RouteParams = {
     '/': () => <Route label="home" />,
     '/about': ({ extra }) => <Route label="about" extra={extra} />,
-    '/users/:userId': ({ userId }) => <Route label={`User ${userId}`} />
+    '/users/:userId': ({ userId }) => <Route label={`User ${userId}`} />,
   }
 
   test('matches current route', async () => {
@@ -108,28 +116,6 @@ describe('useRoutes', () => {
     expect(getByTestId('label')).toHaveTextContent('about')
   })
 
-  test('works with lazy routes', async () => {
-    let loader = new Promise(resolve => {
-      setTimeout(() => resolve({ default: Route }), 50)
-    })
-    let Lazy = React.lazy(() => loader)
-    const routes = {
-      '/': () => <Route label="home" />,
-      '/lazy': () => (
-        <React.Suspense fallback={<span data-testid="label">loading</span>}>
-          <Lazy label="lazy" />
-        </React.Suspense>
-      )
-    }
-    act(() => navigate('/'))
-    const { getByTestId } = render(<Harness routes={routes} />)
-    act(() => navigate('/lazy'))
-    expect(getByTestId('label')).toHaveTextContent('loading')
-    await loader
-    act(() => navigate('/lazy'))
-    expect(getByTestId('label')).toHaveTextContent('lazy')
-  })
-
   test('passes extra route props to route', async () => {
     const { getByTestId } = render(
       <Harness
@@ -165,12 +151,10 @@ describe('useRoutes', () => {
       const [myRoutes, setRoutes] = React.useState(routes)
 
       const addNewRoute = () => {
-        setRoutes(prevRoutes => {
-          return {
-            ...prevRoutes,
-            '/new': () => <Route label="new route" />
-          }
-        })
+        setRoutes((prevRoutes) => ({
+          ...prevRoutes,
+          '/new': () => <Route label="new route" />,
+        }))
       }
 
       const route = useRoutes(myRoutes) || (
@@ -201,7 +185,7 @@ describe('useRoutes', () => {
   describe('with basePath', () => {
     const routes = {
       '/': () => <Route label="home" />,
-      '/about': () => <Route label="about" />
+      '/about': () => <Route label="about" />,
     }
 
     test('matches current route', async () => {
@@ -231,24 +215,24 @@ describe('useRoutes', () => {
     })
 
     test('nested router with basePath matches after navigation', async () => {
-      const appRoutes = {
-        '/app/:id*': ({ id }) => SubRouter({ id })
+      const appRoutes: RouteParams = {
+        '/app/:id*': ({ id }) => SubRouter({ id }),
       }
       function App() {
         const route = useRoutes(appRoutes)
         return route || <NotFound />
       }
-      function SubRouter({ id }) {
+      function SubRouter({ id }: { id: string }) {
         const subRoutes = React.useMemo(
           () => ({
-            '/settings': () => <RouteItem id={id} />
+            '/settings': () => <RouteItem id={id} />,
           }),
           [id]
         )
         const route = useRoutes(subRoutes, { basePath: `/app/${id}` })
         return route || <NotFound />
       }
-      function RouteItem({ id }) {
+      function RouteItem({ id }: { id: string }) {
         return <span data-testid="label">{id}</span>
       }
 
@@ -267,25 +251,31 @@ describe('useRoutes', () => {
 })
 
 describe('useBasePath', () => {
-  function Harness({ routes, basePath }) {
+  function Harness({
+    routes,
+    basePath,
+  }: {
+    routes: RouteParams
+    basePath?: string
+  }) {
     const route = useRoutes(routes, { basePath })
     return route
   }
 
   function Route() {
-    let basePath = useBasePath()
+    const basePath = useBasePath()
     return <span data-testid="basePath">{basePath || 'none'}</span>
   }
 
-  const nestedRoutes = {
-    '/': () => <Route />,
-    '/about': () => <Route />
-  }
-
-  const routes = {
+  const nestedRoutes: RouteParams = {
     '/': () => <Route />,
     '/about': () => <Route />,
-    '/nested*': () => <Harness basePath="/nested" routes={nestedRoutes} />
+  }
+
+  const routes: RouteParams = {
+    '/': () => <Route />,
+    '/about': () => <Route />,
+    '/nested*': () => <Harness basePath="/nested" routes={nestedRoutes} />,
   }
   test('returns basePath inside useRoutes', async () => {
     const { getByTestId } = render(<Harness routes={routes} />)
@@ -306,8 +296,8 @@ describe('useBasePath', () => {
 })
 
 describe('useQueryParams', () => {
-  function Route({ label }) {
-    let [params, setQuery] = useQueryParams()
+  function Route({ label }: { label?: string }) {
+    const [params, setQuery] = useQueryParams()
     return (
       <span data-testid="params" onClick={() => setQuery({ name: 'click' })}>
         {label}
@@ -352,8 +342,5 @@ describe('navigate', () => {
     act(() => navigate('/', { q: 'name', env: 'test' }))
     expect(window.location.search).toContain('q=name')
     expect(window.location.search).toContain('env=test')
-  })
-  test('throws when url is an object', async () => {
-    expect(() => navigate({})).toThrow(/must be a string/)
   })
 })

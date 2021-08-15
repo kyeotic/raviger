@@ -1,35 +1,70 @@
 import { useCallback, useLayoutEffect } from 'react'
-import { isNode } from './node.js'
-import { useBasePath } from './path.js'
+
+import { useBasePath } from './path'
+import { isNode } from './node'
+import type { QueryParam } from './querystring'
 import {
   shouldCancelNavigation,
   addInterceptor,
   removeInterceptor,
   defaultPrompt,
-  undoNavigation
+  undoNavigation,
 } from './intercept'
+
+export interface NavigateWithReplace {
+  (url: string, replace?: boolean): void
+}
+export interface NavigateWithQuery {
+  (url: string, query?: QueryParam | URLSearchParams, replace?: boolean): void
+}
 
 let lastPath = ''
 
-export function navigate(url, replaceOrQuery, replace, state = null) {
+export function navigate(url: string): void
+export function navigate(url: string, replace: boolean): void
+export function navigate(url: string, query: QueryParam | URLSearchParams): void
+export function navigate(
+  url: string,
+  query: QueryParam | URLSearchParams,
+  replace: boolean
+): void
+export function navigate(
+  url: string,
+  queryOrReplace?: QueryParam | URLSearchParams | boolean | null,
+  replace?: boolean
+): void
+export function navigate(
+  url: string,
+  query: QueryParam | URLSearchParams,
+  replace: boolean,
+  state: unknown
+): void
+export function navigate(
+  url: string,
+  replaceOrQuery?: QueryParam | URLSearchParams | boolean | null,
+  replace?: boolean,
+  state: unknown = null
+): void {
   if (typeof url !== 'string') {
     throw new Error(`"url" must be a string, was provided a(n) ${typeof url}`)
   }
+
   if (Array.isArray(replaceOrQuery)) {
     throw new Error(
       '"replaceOrQuery" must be boolean, object, or URLSearchParams'
     )
   }
+
   if (shouldCancelNavigation()) return
   if (replaceOrQuery !== null && typeof replaceOrQuery === 'object') {
     url += '?' + new URLSearchParams(replaceOrQuery).toString()
   } else if (replace === undefined && replaceOrQuery !== undefined) {
-    replace = replaceOrQuery
+    replace = replaceOrQuery ?? undefined
   } else if (replace === undefined && replaceOrQuery === undefined) {
     replace = false
   }
-  lastPath = url
 
+  lastPath = url
   // if the origin does not match history navigation will fail with
   // "cannot be created in a document with origin"
   // When navigating to another domain we must use location instead of history
@@ -38,12 +73,19 @@ export function navigate(url, replaceOrQuery, replace, state = null) {
     return
   }
 
-  window.history[`${replace ? 'replace' : 'push'}State`](state, null, url)
-  dispatchEvent(new PopStateEvent('popstate', null))
+  if (replace) window.history.replaceState(state, '', url)
+  else window.history.pushState(state, '', url)
+
+  dispatchEvent(new PopStateEvent('popstate'))
 }
 
-export function useNavigationPrompt(predicate = true, prompt = defaultPrompt) {
+export function useNavigationPrompt(
+  predicate = true,
+  prompt: string = defaultPrompt
+): void {
   if (isNode) return
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useLayoutEffect(() => {
     const onPopStateNavigation = () => {
       if (shouldCancelNavigation()) {
@@ -53,8 +95,10 @@ export function useNavigationPrompt(predicate = true, prompt = defaultPrompt) {
     window.addEventListener('popstate', onPopStateNavigation)
     return () => window.removeEventListener('popstate', onPopStateNavigation)
   }, [])
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useLayoutEffect(() => {
-    const handler = e => {
+    const handler = (e?: BeforeUnloadEvent): string | void => {
       if (predicate) {
         return e ? cancelNavigation(e, prompt) : prompt
       }
@@ -64,7 +108,7 @@ export function useNavigationPrompt(predicate = true, prompt = defaultPrompt) {
   }, [predicate, prompt])
 }
 
-function cancelNavigation(event, prompt) {
+function cancelNavigation(event: BeforeUnloadEvent, prompt: string) {
   // Cancel the event as stated by the standard.
   event.preventDefault()
   // Chrome requires returnValue to be set.
@@ -73,10 +117,18 @@ function cancelNavigation(event, prompt) {
   return prompt
 }
 
-export function useNavigate(optBasePath = '') {
+export function useNavigate(
+  optBasePath = ''
+): NavigateWithReplace & NavigateWithQuery {
   const basePath = useBasePath()
-  const navigateWithBasePath = useCallback(
-    (url, replaceOrQuery, replace) => {
+  const navigateWithBasePath = useCallback<
+    NavigateWithReplace & NavigateWithQuery
+  >(
+    (
+      url: string,
+      replaceOrQuery?: boolean | QueryParam | URLSearchParams,
+      replace?: boolean
+    ) => {
       const base = optBasePath || basePath
       const href = url.startsWith('/') ? base + url : url
       navigate(href, replaceOrQuery, replace)
@@ -86,10 +138,10 @@ export function useNavigate(optBasePath = '') {
   return navigateWithBasePath
 }
 
-function isAbsolute(url) {
+function isAbsolute(url: string) {
   return /^(?:[a-z]+:)?\/\//i.test(url)
 }
 
-function isCurrentOrigin(url) {
+function isCurrentOrigin(url: string) {
   return window.location.origin === new URL(url).origin
 }
