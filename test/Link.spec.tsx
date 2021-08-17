@@ -120,4 +120,25 @@ describe('ActiveLink', () => {
     expect(getByTestId('link')).toHaveClass('extra')
     expect(getByTestId('link')).not.toHaveClass('double')
   })
+
+  test('navigates to href with basePath', async () => {
+    act(() => navigate('/'))
+    const { getByTestId } = render(
+      <ActiveLink
+        href="/foo"
+        basePath="/bar"
+        className="base"
+        activeClass="active"
+        exactActiveClass="exact"
+        data-testid="link"
+      >
+        go to foo
+      </ActiveLink>
+    )
+    act(() => void fireEvent.click(getByTestId('link')))
+    expect(document.location.pathname).toEqual('/bar/foo')
+
+    expect(getByTestId('link')).toHaveClass('active')
+    expect(getByTestId('link')).toHaveClass('exact')
+  })
 })
