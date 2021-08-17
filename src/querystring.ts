@@ -12,10 +12,10 @@ export interface setQueryParamsOptions {
   replace?: boolean
 }
 
-export function useQueryParams(
-  parseFn: (query: string) => QueryParam = parseQuery,
-  serializeFn: (query: QueryParam) => string = serializeQuery
-): [QueryParam, (query: QueryParam, options?: setQueryParamsOptions) => void] {
+export function useQueryParams<T extends QueryParam>(
+  parseFn: (query: string) => T = parseQuery,
+  serializeFn: (query: T) => string = serializeQuery
+): [T, (query: T, options?: setQueryParamsOptions) => void] {
   const [querystring, setQuerystring] = useState(getQueryString())
   const setQueryParams = useCallback(
     (params, { replace = true } = {}) => {
@@ -38,12 +38,12 @@ export function useQueryParams(
   return [parseFn(querystring), setQueryParams]
 }
 
-function parseQuery(querystring: string) {
+function parseQuery<T extends QueryParam>(querystring: string): T {
   const q = new URLSearchParams(querystring)
-  return Object.fromEntries(q.entries())
+  return Object.fromEntries(q.entries()) as T
 }
 
-function serializeQuery(queryParams: QueryParam): string {
+function serializeQuery<T extends QueryParam>(queryParams: T): string {
   return new URLSearchParams(
     Object.entries(queryParams).filter(([, v]) => v !== null)
   ).toString()
