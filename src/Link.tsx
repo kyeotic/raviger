@@ -67,7 +67,7 @@ function ActiveLink(
   const fullPath = useFullPath()
 
   let { href } = props
-  href = absolutePath(getLinkHref(href, basePath))
+  href = absolutePathName(getLinkHref(href, basePath))
 
   if (exactActiveClass && fullPath === href) className += ` ${exactActiveClass}`
   if (activeClass && fullPath.startsWith(href)) className += ` ${activeClass}`
@@ -87,11 +87,9 @@ function getLinkHref(href: string, basePath = '') {
   return href.startsWith('/') ? basePath + href : href
 }
 
-function absolutePath(href: string): string {
+function absolutePathName(href: string): string {
   if (href.startsWith('/')) return href
-  const link = document.createElement('a')
-  link.href = href
-  return link.pathname + link.search + link.hash
+  return new URL(href, document.baseURI).pathname
 }
 
 function shouldTrap(
