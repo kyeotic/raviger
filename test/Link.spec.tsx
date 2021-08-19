@@ -135,8 +135,36 @@ describe('ActiveLink', () => {
         go to foo
       </ActiveLink>
     )
+
+    expect(getByTestId('link')).not.toHaveClass('active')
+    expect(getByTestId('link')).not.toHaveClass('exact')
+
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/bar/foo')
+
+    expect(getByTestId('link')).toHaveClass('active')
+    expect(getByTestId('link')).toHaveClass('exact')
+  })
+
+  test('href without leading slash', async () => {
+    act(() => navigate('/bar/foo'))
+    const { getByTestId } = render(
+      <ActiveLink
+        href="test"
+        className="base"
+        activeClass="active"
+        exactActiveClass="exact"
+        data-testid="link"
+      >
+        go to foo
+      </ActiveLink>
+    )
+
+    expect(getByTestId('link')).not.toHaveClass('active')
+    expect(getByTestId('link')).not.toHaveClass('exact')
+
+    act(() => void fireEvent.click(getByTestId('link')))
+    expect(document.location.pathname).toEqual('/bar/test')
 
     expect(getByTestId('link')).toHaveClass('active')
     expect(getByTestId('link')).toHaveClass('exact')
