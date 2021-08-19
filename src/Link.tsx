@@ -1,7 +1,7 @@
 import React, { useCallback, forwardRef, Ref } from 'react'
 
 import { navigate } from './navigate'
-import { usePath, useBasePath } from './path'
+import { useBasePath, useFullPath } from './path'
 
 export interface LinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -52,19 +52,29 @@ const RefLink = forwardRef<LinkRef, LinkProps>(Link) as (
 export default RefLink
 export { RefLink as Link }
 
-function ActiveLink(props: ActiveLinkProps, ref?: Ref<HTMLAnchorElement>) {
-  const basePath = useBasePath()
-  const path = usePath(basePath)
-  const href = getLinkHref(props.href, basePath)
-  // eslint-disable-next-line prefer-const
-  let { className, activeClass, exactActiveClass, ...rest } = props
+function ActiveLink(
+  {
+    basePath,
+    className,
+    exactActiveClass,
+    activeClass,
+    ...props
+  }: ActiveLinkProps,
+  ref?: Ref<HTMLAnchorElement>
+) {
+  const contextBasePath = useBasePath()
+  basePath = basePath || contextBasePath
+  const fullPath = useFullPath()
 
-  if (!className) className = ''
-  if (exactActiveClass && path === href) className += ` ${exactActiveClass}`
-  if (activeClass && (path ?? '').startsWith(href))
-    className += ` ${activeClass}`
+  let { href } = props
+  href = absolutePathName(getLinkHref(href, basePath))
 
-  return <RefLink {...rest} className={className} ref={ref} />
+  if (exactActiveClass && fullPath === href) className += ` ${exactActiveClass}`
+  if (activeClass && fullPath.startsWith(href)) className += ` ${activeClass}`
+
+  return (
+    <RefLink {...props} basePath={basePath} className={className} ref={ref} />
+  )
 }
 
 const ActiveLinkRef = forwardRef<LinkRef, ActiveLinkProps>(ActiveLink) as (
@@ -74,7 +84,12 @@ const ActiveLinkRef = forwardRef<LinkRef, ActiveLinkProps>(ActiveLink) as (
 export { ActiveLinkRef as ActiveLink }
 
 function getLinkHref(href: string, basePath = '') {
-  return href.substring(0, 1) === '/' ? basePath + href : href
+  return href.startsWith('/') ? basePath + href : href
+}
+
+function absolutePathName(href: string): string {
+  if (href.startsWith('/')) return href
+  return new URL(href, document.baseURI).pathname
 }
 
 function shouldTrap(
