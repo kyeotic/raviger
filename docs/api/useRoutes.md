@@ -103,7 +103,7 @@ export default function App() {
 }
 ```
 
-This can be combined with the `overridePathParams` option to provide a value that is used even if a path parameter would match for the route. IN this example if `maybeGetUserId` returns an ID it will be provided to the `<User>` component instead of the value from the path.
+This can be combined with the `overridePathParams` option to provide a value that is used even if a path parameter would match for the route. In the below example if `maybeGetUserId` returns an ID it will be provided to the `<User>` component instead of the value from the path, otherwise the route param will be used.
 
 ```jsx
 import { useRoutes } from 'raviger'
