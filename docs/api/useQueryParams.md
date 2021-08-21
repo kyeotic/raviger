@@ -4,7 +4,7 @@ permalink: /use-query-params/
 nav_order: 6
 ---
 
-A hook for reading and updating the query string parameters on the page. Updates on all URL changes. Returns an array that, much like React's own [useState](https://reactjs.org/docs/hooks-reference.html#usestate), has a value and a setter function. The value is a parsed querystring object, and the setter takes an object that it will serialize into the query string.
+A hook for reading and updating the query string parameters on the page. Updates on all URL changes. Returns an array that, much like React's own [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate), has a value and a setter function. The value is a parsed querystring object, and the setter takes an object that it will serialize into the query string.
 
 ## API
 
@@ -18,7 +18,7 @@ export function useQueryParams(
 
 ## Basic
 
-The default parse and serialize functions utilized the browser built-in `URLSearchParams`. You can provide custom parse and serialize functions to control this behavior.
+The default parse and serialize functions utilize the browser's built-in `URLSearchParams`. You can provide custom parse and serialize functions to override this behavior.
 
 ```jsx
 import { useQueryParams } from 'raviger'
@@ -42,7 +42,7 @@ function UserList ({ users }) {
 
 ## Updating the Query with merge
 
-The second return value from `useQueryParams` is a function that updates the query string. By default it overwrites the entire query, but it can merge with the query object by setting the second param to `false`.
+The second return value from `useQueryParams` is a function that updates the query string. By default it overwrites the entire query, but it can merge with the query object by setting the second param to `{ replace: false }`.
 
 ```jsx
 import { useQueryParams } from 'raviger'
@@ -50,7 +50,7 @@ import { useQueryParams } from 'raviger'
 function UserList ({ users }) {
   const [{ startsWith }, setQuery] = useQueryParams()
   return (
-    <input value={startsWith || ''} onChange={(e) => setQuery({ startsWith: e.target.value}, false )} />
+    <input value={startsWith || ''} onChange={(e) => setQuery({ startsWith: e.target.value}, { replace: false })} />
   )
 }
 ```
