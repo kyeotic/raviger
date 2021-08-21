@@ -20,7 +20,7 @@ export const Redirect: React.FC<RedirectProps>
 
 ## Basic
 
-If rendered this component will force a redirect. Usefult as a route function
+If rendered this component will force a redirect. Useful as a route function
 
 ```jsx
 import { useRoutes, Redirect } from 'raviger'
