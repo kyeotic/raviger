@@ -42,7 +42,7 @@ function App () {
 }
 ```
 
-You should try to provide the same function (referential-equality) to **useLocationChange** whenever possible. If you are unable to create the function outside the component scope use **useCallback** to get a memoized function.
+You should try to provide the same function (referential-equality) to `useLocationChange` whenever possible. If you are unable to create the function outside the component scope use [`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback) to get a memoized function.
 
 ```jsx
 import { useCallback } from 'react'
@@ -61,7 +61,7 @@ function App () {
 
 ## Conditional Updates
 
-When `options.isActive` is both **defined** and **falsey** the `setFn` will not be invoked during location changes. If it is **undefined** or **truthy** `setFn` will be invoked.
+When `options.isActive` is both **defined** and **falsey** the `setFn` will not be invoked during location changes. If it is **undefined** or **truthy** the `setFn` will be invoked.
 
 ## Re-rendering
 
