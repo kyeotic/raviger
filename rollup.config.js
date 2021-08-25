@@ -1,28 +1,26 @@
 import replace from 'rollup-plugin-replace'
 import packageJson from './package.json'
 import { terser } from 'rollup-plugin-terser'
-import { babel } from '@rollup/plugin-babel'
 import typescript from 'rollup-plugin-typescript2'
-import { DEFAULT_EXTENSIONS } from '@babel/core'
 
 const deps = Object.keys(packageJson.dependencies || []).concat(
   Object.keys(packageJson.peerDependencies)
 )
 
 const terserConfig = terser({
-  keep_fnames: true,
+  ecma: '2019',
+  mangle: {
+    keep_fnames: true,
+    keep_classnames: true,
+  },
+  compress: {
+    keep_fnames: true,
+    keep_classnames: true,
+  },
   output: {
     comments: false,
   },
 })
-
-const babelConfig = {
-  exclude: 'node_modules/**',
-  sourceMaps: true,
-  inputSourceMap: true,
-  babelHelpers: 'bundled',
-  extensions: [...DEFAULT_EXTENSIONS, '.ts', '.tsx'],
-}
 
 const entryFile = 'src/main.ts'
 
@@ -45,18 +43,6 @@ export default [
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       }),
       typescript(),
-      babel({
-        ...babelConfig,
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              targets: { node: '6.10' },
-            },
-          ],
-          '@babel/preset-react',
-        ],
-      }),
       terserConfig,
     ],
   },
@@ -77,18 +63,6 @@ export default [
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       }),
       typescript(),
-      babel({
-        ...babelConfig,
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              targets: '>3%, not ie 11, not dead',
-            },
-          ],
-          '@babel/preset-react',
-        ],
-      }),
       terserConfig,
     ],
   },

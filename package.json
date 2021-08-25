@@ -32,6 +32,7 @@
     "check:ci": "npm run style:ci && npm run lint",
     "build:clean": "rimraf dist %% mkdirp dist",
     "build:compile": "rollup -c",
+    "build:tsc": "tsc",
     "build": "run-s build:clean build:compile",
     "build:watch": "rollup -c --watch",
     "example": "npm run start --prefix example",
@@ -72,11 +73,7 @@
     "yarn": false
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
-    "@babel/preset-react": "^7.14.5",
     "@kyeotic/eslint-config": "^2.0.1",
-    "@rollup/plugin-babel": "^5.3.0",
     "@size-limit/preset-small-lib": "^5.0.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
