@@ -77,27 +77,31 @@ function useMatchRoute(
   if (matchTrailingSlash && path && path[path.length - 1] === '/' && path.length > 1) {
     path = path.substring(0, path.length - 1)
   }
+
   const routeMatchers = useMemo(
     () => Object.keys(routes).map(createRouteMatcher),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hashRoutes(routes)]
   )
+  
   if (path === null) return null
+  
   // Hacky method for find + map
-  let match: RegExpMatchArray | null = null
+  let pathParams: RegExpMatchArray | null = null
   const routeMatch = routeMatchers.find(({ regex }) => {
-    match = (path ?? '').match(regex)
-    return !!match
+    pathParams = (path ?? '').match(regex)
+    return !!pathParams
   })
-  if (!routeMatch || match === null) return null
-  const m = match
+  
+  if (!routeMatch || pathParams === null) return null
 
   const props = routeMatch.props.reduce((props: any, prop, i) => {
-    props[prop] = m[i + 1]
+    // The following `match` can't be null because the above return asserts it
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    props[prop] = pathParams![i + 1]
     return props
   }, {})
 
-  // if (routeMatch === null) return null
   return routes[routeMatch.routePath](
     overridePathParams ? { ...props, ...routeProps } : { ...routeProps, ...props }
   )
