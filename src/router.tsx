@@ -83,16 +83,16 @@ function useMatchRoute(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hashRoutes(routes)]
   )
-  
+
   if (path === null) return null
-  
+
   // Hacky method for find + map
   let pathParams: RegExpMatchArray | null = null
   const routeMatch = routeMatchers.find(({ regex }) => {
     pathParams = (path ?? '').match(regex)
     return !!pathParams
   })
-  
+
   if (!routeMatch || pathParams === null) return null
 
   const props = routeMatch.props.reduce((props: any, prop, i) => {
