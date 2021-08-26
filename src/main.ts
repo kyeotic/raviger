@@ -9,13 +9,7 @@ export { Link, ActiveLink } from './Link'
 export { navigate, useNavigate, useNavigationPrompt } from './navigate'
 export type { NavigateWithReplace, NavigateWithQuery } from './navigate'
 
-export {
-  usePath,
-  useHash,
-  useFullPath,
-  useBasePath,
-  useLocationChange,
-} from './path'
+export { usePath, useHash, useFullPath, useBasePath, useLocationChange } from './path'
 export type { LocationChangeSetFn, LocationChangeOptionParams } from './path'
 
 export { useQueryParams } from './querystring'

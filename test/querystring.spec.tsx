@@ -14,9 +14,7 @@ describe('useQueryParams', () => {
   test('parses query', async () => {
     act(() => navigate('/about', { foo: 'bar' }))
     const { getByTestId } = render(<Route />)
-    expect(getByTestId('label')).toHaveTextContent(
-      JSON.stringify({ foo: 'bar' })
-    )
+    expect(getByTestId('label')).toHaveTextContent(JSON.stringify({ foo: 'bar' }))
   })
   test('navigation updates query', async () => {
     const q1 = { foo: 'bar' }
@@ -34,19 +32,10 @@ describe('useQueryParams', () => {
 })
 
 describe('setQueryParams', () => {
-  function Route({
-    replace,
-    foo = 'bar',
-  }: {
-    replace?: boolean
-    foo?: string | null
-  }) {
+  function Route({ replace, foo = 'bar' }: { replace?: boolean; foo?: string | null }) {
     const [query, setQuery] = useQueryParams()
     return (
-      <button
-        data-testid="update"
-        onClick={() => setQuery({ foo }, { replace })}
-      >
+      <button data-testid="update" onClick={() => setQuery({ foo }, { replace })}>
         Set Query: {query.foo}
       </button>
     )
@@ -63,9 +52,7 @@ describe('setQueryParams', () => {
     const { getByTestId } = render(<Route replace={false} foo={'%100'} />)
 
     act(() => void fireEvent.click(getByTestId('update')))
-    expect(document.location.search).toContain(
-      `foo=${encodeURIComponent('%100')}`
-    )
+    expect(document.location.search).toContain(`foo=${encodeURIComponent('%100')}`)
     expect(getByTestId('update')).toHaveTextContent('Set Query: %100')
   })
   test('merges query', async () => {

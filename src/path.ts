@@ -1,10 +1,4 @@
-import {
-  useState,
-  useCallback,
-  useRef,
-  useContext,
-  useLayoutEffect,
-} from 'react'
+import { useState, useCallback, useRef, useContext, useLayoutEffect } from 'react'
 
 import { BasePathContext, PathContext } from './context'
 import { useMountedLayout } from './hooks'
@@ -151,9 +145,5 @@ function basePathMatcher(basePath: string): RegExp {
 }
 
 function isPathInBase(basePath: string, path: string): boolean {
-  return !!(
-    basePath &&
-    path &&
-    path.toLowerCase().startsWith(basePath.toLowerCase())
-  )
+  return !!(basePath && path && path.toLowerCase().startsWith(basePath.toLowerCase()))
 }

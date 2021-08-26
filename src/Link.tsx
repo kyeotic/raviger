@@ -3,8 +3,7 @@ import React, { useCallback, forwardRef, Ref } from 'react'
 import { navigate } from './navigate'
 import { useBasePath, useFullPath } from './path'
 
-export interface LinkProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string
   basePath?: string
   children?: React.ReactNode
@@ -16,10 +15,7 @@ export interface ActiveLinkProps extends LinkProps {
   exactActiveClass?: string
 }
 
-function Link(
-  { href, basePath, ...props }: LinkProps,
-  ref?: Ref<HTMLAnchorElement>
-) {
+function Link({ href, basePath, ...props }: LinkProps, ref?: Ref<HTMLAnchorElement>) {
   const contextBasePath = useBasePath()
   basePath = basePath || contextBasePath
   href = getLinkHref(href, basePath)
@@ -53,13 +49,7 @@ export default RefLink
 export { RefLink as Link }
 
 function ActiveLink(
-  {
-    basePath,
-    className,
-    exactActiveClass,
-    activeClass,
-    ...props
-  }: ActiveLinkProps,
+  { basePath, className, exactActiveClass, activeClass, ...props }: ActiveLinkProps,
   ref?: Ref<HTMLAnchorElement>
 ) {
   const contextBasePath = useBasePath()
@@ -72,9 +62,7 @@ function ActiveLink(
   if (exactActiveClass && fullPath === href) className += ` ${exactActiveClass}`
   if (activeClass && fullPath.startsWith(href)) className += ` ${activeClass}`
 
-  return (
-    <RefLink {...props} basePath={basePath} className={className} ref={ref} />
-  )
+  return <RefLink {...props} basePath={basePath} className={className} ref={ref} />
 }
 
 const ActiveLinkRef = forwardRef<LinkRef, ActiveLinkProps>(ActiveLink) as (
@@ -92,10 +80,7 @@ function absolutePathName(href: string): string {
   return new URL(href, document.baseURI).pathname
 }
 
-function shouldTrap(
-  e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-  target?: string
-) {
+function shouldTrap(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, target?: string) {
   return (
     !e.defaultPrevented && // onClick prevented default
     e.button === 0 && // ignore everything but left clicks

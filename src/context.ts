@@ -7,9 +7,6 @@ export { BasePathContext }
 export { PathContext }
 
 export function useRouter(): { basePath: string; path: string | null } {
-  const [basePath, path] = [
-    useContext(BasePathContext),
-    useContext(PathContext),
-  ]
+  const [basePath, path] = [useContext(BasePathContext), useContext(PathContext)]
   return useMemo(() => ({ basePath, path }), [basePath, path])
 }

@@ -71,19 +71,10 @@ export function setPath(path: string): void {
 function useMatchRoute(
   routes: RouteParams,
   path: string | null,
-  {
-    routeProps,
-    overridePathParams,
-    matchTrailingSlash,
-  }: Omit<RouteOptionParams, 'basePath'>
+  { routeProps, overridePathParams, matchTrailingSlash }: Omit<RouteOptionParams, 'basePath'>
 ) {
   // path.length > 1 ensure we still match on the root route "/" when matchTrailingSlash is set
-  if (
-    matchTrailingSlash &&
-    path &&
-    path[path.length - 1] === '/' &&
-    path.length > 1
-  ) {
+  if (matchTrailingSlash && path && path[path.length - 1] === '/' && path.length > 1) {
     path = path.substring(0, path.length - 1)
   }
   const routeMatchers = useMemo(
@@ -108,9 +99,7 @@ function useMatchRoute(
 
   // if (routeMatch === null) return null
   return routes[routeMatch.routePath](
-    overridePathParams
-      ? { ...props, ...routeProps }
-      : { ...routeProps, ...props }
+    overridePathParams ? { ...props, ...routeProps } : { ...routeProps, ...props }
   )
 }
 
@@ -123,9 +112,7 @@ function createRouteMatcher(routePath: string): RouteMatcher {
         .replace(/\*/g, '')}${routePath.substr(-1) === '*' ? '' : '$'}`,
       'i'
     ),
-    props: (routePath.match(/:[a-zA-Z]+/g) ?? []).map((paramName) =>
-      paramName.substr(1)
-    ),
+    props: (routePath.match(/:[a-zA-Z]+/g) ?? []).map((paramName) => paramName.substr(1)),
   }
 }
 

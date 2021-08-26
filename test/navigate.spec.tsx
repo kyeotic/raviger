@@ -136,9 +136,7 @@ describe('useNavigate', () => {
     const newPath = '/path'
     const query = { foo: 'bar' }
 
-    const { container } = render(
-      <App basePath={basePath} newPath={newPath} query={query} />
-    )
+    const { container } = render(<App basePath={basePath} newPath={newPath} query={query} />)
     act(() => navigate(`${basePath}/`))
 
     const button = container.querySelector('button')
@@ -154,9 +152,7 @@ describe('useNavigate', () => {
     const basePath = '/base'
     const newPath = '/path'
 
-    const { container } = render(
-      <App basePath={basePath} newPath={newPath} replace />
-    )
+    const { container } = render(<App basePath={basePath} newPath={newPath} replace />)
     act(() => navigate(`${basePath}/`))
 
     window.history.replaceState = jest.fn()
@@ -175,13 +171,7 @@ describe('useNavigate', () => {
 })
 
 describe('useNavigationPrompt', () => {
-  function Route({
-    block = true,
-    prompt,
-  }: {
-    block: boolean
-    prompt?: string
-  }) {
+  function Route({ block = true, prompt }: { block: boolean; prompt?: string }) {
     useNavigationPrompt(block, prompt)
     return null
   }

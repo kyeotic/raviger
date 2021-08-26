@@ -1,12 +1,7 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
 
-import {
-  useRoutes,
-  navigate,
-  RouteOptionParams,
-  RouteParams,
-} from '../src/main'
+import { useRoutes, navigate, RouteOptionParams, RouteParams } from '../src/main'
 import { useRouter } from '../src/context'
 
 beforeEach(() => {
@@ -14,16 +9,8 @@ beforeEach(() => {
 })
 
 describe('useRouter', () => {
-  function Harness({
-    routes,
-    options,
-  }: {
-    routes: RouteParams
-    options?: RouteOptionParams
-  }) {
-    const route = useRoutes(routes, options) || (
-      <span data-testid="label">not found</span>
-    )
+  function Harness({ routes, options }: { routes: RouteParams; options?: RouteOptionParams }) {
+    const route = useRoutes(routes, options) || <span data-testid="label">not found</span>
     return route
   }
 
@@ -43,9 +30,7 @@ describe('useRouter', () => {
   }
 
   test('provides basePath', async () => {
-    const { getByTestId } = render(
-      <Harness routes={routes} options={{ basePath: '/home' }} />
-    )
+    const { getByTestId } = render(<Harness routes={routes} options={{ basePath: '/home' }} />)
 
     act(() => navigate('/home'))
     expect(getByTestId('basePath')).toHaveTextContent('home')
@@ -59,9 +44,7 @@ describe('useRouter', () => {
   })
 
   test('provides null path when basePath is missing', async () => {
-    const { getByTestId } = render(
-      <Harness routes={routes} options={{ basePath: '/home' }} />
-    )
+    const { getByTestId } = render(<Harness routes={routes} options={{ basePath: '/home' }} />)
 
     act(() => navigate('/about'))
     expect(getByTestId('label')).toHaveTextContent('not found')

@@ -15,16 +15,8 @@ beforeEach(() => {
 })
 
 describe('useRoutes', () => {
-  function Harness({
-    routes,
-    options,
-  }: {
-    routes: RouteParams
-    options?: RouteOptionParams
-  }) {
-    const route = useRoutes(routes, options) || (
-      <span data-testid="label">not found</span>
-    )
+  function Harness({ routes, options }: { routes: RouteParams; options?: RouteOptionParams }) {
+    const route = useRoutes(routes, options) || <span data-testid="label">not found</span>
     return route
   }
 
@@ -118,10 +110,7 @@ describe('useRoutes', () => {
 
   test('passes extra route props to route', async () => {
     const { getByTestId } = render(
-      <Harness
-        routes={routes}
-        options={{ routeProps: { extra: 'injected' } }}
-      />
+      <Harness routes={routes} options={{ routeProps: { extra: 'injected' } }} />
     )
     act(() => navigate('/about'))
     expect(getByTestId('extra')).toHaveTextContent('injected')
@@ -137,10 +126,7 @@ describe('useRoutes', () => {
 
   test('underrides route props', async () => {
     const { getByTestId } = render(
-      <Harness
-        routes={routes}
-        options={{ routeProps: { userId: 4 }, overridePathParams: false }}
-      />
+      <Harness routes={routes} options={{ routeProps: { userId: 4 }, overridePathParams: false }} />
     )
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 1')
@@ -157,9 +143,7 @@ describe('useRoutes', () => {
         }))
       }
 
-      const route = useRoutes(myRoutes) || (
-        <span data-testid="label">not found</span>
-      )
+      const route = useRoutes(myRoutes) || <span data-testid="label">not found</span>
 
       return (
         <>
@@ -191,9 +175,7 @@ describe('useRoutes', () => {
     test('matches current route', async () => {
       act(() => navigate('/foo'))
       const options = { basePath: '/foo' }
-      const { getByTestId } = render(
-        <Harness routes={routes} options={options} />
-      )
+      const { getByTestId } = render(<Harness routes={routes} options={options} />)
 
       // act(() => navigate('/foo'))
       expect(getByTestId('label')).toHaveTextContent('home')
@@ -203,9 +185,7 @@ describe('useRoutes', () => {
 
     test('does not match current route', async () => {
       const options = { basePath: '/foo' }
-      const { getByTestId } = render(
-        <Harness routes={routes} options={options} />
-      )
+      const { getByTestId } = render(<Harness routes={routes} options={options} />)
 
       act(() => navigate('/'))
       expect(getByTestId('label')).toHaveTextContent('not found')
@@ -251,13 +231,7 @@ describe('useRoutes', () => {
 })
 
 describe('useBasePath', () => {
-  function Harness({
-    routes,
-    basePath,
-  }: {
-    routes: RouteParams
-    basePath?: string
-  }) {
+  function Harness({ routes, basePath }: { routes: RouteParams; basePath?: string }) {
     const route = useRoutes(routes, { basePath })
     return route
   }

@@ -89,13 +89,7 @@ describe('usePath', () => {
   })
 
   test('does not include parent router base path', async () => {
-    function Harness({
-      routes,
-      basePath,
-    }: {
-      routes: RouteParams
-      basePath?: string
-    }) {
+    function Harness({ routes, basePath }: { routes: RouteParams; basePath?: string }) {
       const route = useRoutes(routes, { basePath })
       return route
     }
@@ -128,13 +122,7 @@ describe('usePath', () => {
   })
 
   test('has correct path for nested base path', async () => {
-    function Harness({
-      routes,
-      basePath,
-    }: {
-      routes: RouteParams
-      basePath?: string
-    }) {
+    function Harness({ routes, basePath }: { routes: RouteParams; basePath?: string }) {
       const route = useRoutes(routes, { basePath })
       return route
     }
@@ -147,9 +135,7 @@ describe('usePath', () => {
     const routes = {
       '/': () => <Route />,
       '/about': () => <Route />,
-      '/nested*': () => (
-        <Harness basePath="/foo/nested" routes={nestedRoutes} />
-      ),
+      '/nested*': () => <Harness basePath="/foo/nested" routes={nestedRoutes} />,
     }
 
     const { getByTestId } = render(<Harness routes={routes} basePath="/foo" />)
@@ -192,13 +178,7 @@ describe('usePath', () => {
       '/': () => <Home />,
       '/about': () => <About />,
     }
-    function Harness({
-      routes,
-      basePath,
-    }: {
-      routes: RouteParams
-      basePath?: string
-    }) {
+    function Harness({ routes, basePath }: { routes: RouteParams; basePath?: string }) {
       // console.log('start harness update')
       const route = useRoutes(routes, { basePath })
       const onGoHome = useCallback(

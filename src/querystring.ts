@@ -44,9 +44,7 @@ function parseQuery<T extends QueryParam>(querystring: string): T {
 }
 
 function serializeQuery<T extends QueryParam>(queryParams: T): string {
-  return new URLSearchParams(
-    Object.entries(queryParams).filter(([, v]) => v !== null)
-  ).toString()
+  return new URLSearchParams(Object.entries(queryParams).filter(([, v]) => v !== null)).toString()
 }
 
 export function getQueryString(): string {

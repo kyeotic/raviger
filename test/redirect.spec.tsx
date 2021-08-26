@@ -25,9 +25,7 @@ describe('useRedirect', () => {
     act(() => navigate('/fail'))
     expect(window.location.toString()).toEqual('http://localhost/fail')
     render(<Mock />)
-    expect(window.location.toString()).toEqual(
-      'http://localhost/catch?name=kyeotic'
-    )
+    expect(window.location.toString()).toEqual('http://localhost/catch?name=kyeotic')
   })
 
   test('route handles empty redirect', async () => {
@@ -54,33 +52,25 @@ describe('Redirect', () => {
   test('redirects to "to" with merge (default) and query', async () => {
     act(() => navigate('/?things=act'))
     render(<Redirect to="/foo" />)
-    expect(window.location.toString()).toEqual(
-      'http://localhost/foo?things=act'
-    )
+    expect(window.location.toString()).toEqual('http://localhost/foo?things=act')
   })
 
   test('redirects to "to" with merge and query/hash', async () => {
     act(() => navigate('/?things=act#test'))
     render(<Redirect to="/foo" merge />)
-    expect(window.location.toString()).toEqual(
-      'http://localhost/foo?things=act#test'
-    )
+    expect(window.location.toString()).toEqual('http://localhost/foo?things=act#test')
   })
 
   test('redirects to "to" with query when merge', async () => {
     act(() => navigate('/?things=act#test'))
     render(<Redirect to="/foo" query={{ stuff: 'junk' }} merge />)
-    expect(window.location.toString()).toEqual(
-      'http://localhost/foo?things=act&stuff=junk#test'
-    )
+    expect(window.location.toString()).toEqual('http://localhost/foo?things=act&stuff=junk#test')
   })
 
   test('redirects to "to" with query when not merge', async () => {
     act(() => navigate('/?things=act#test'))
     render(<Redirect to="/foo" query={{ stuff: 'junk' }} merge={false} />)
-    expect(window.location.toString()).toEqual(
-      'http://localhost/foo?stuff=junk'
-    )
+    expect(window.location.toString()).toEqual('http://localhost/foo?stuff=junk')
   })
   test('redirects from useRoutes', async () => {
     const Page = () => {
@@ -93,9 +83,7 @@ describe('Redirect', () => {
     }
 
     function Harness() {
-      const route = useRoutes(routes) || (
-        <span data-testid="label">not found</span>
-      )
+      const route = useRoutes(routes) || <span data-testid="label">not found</span>
       return route
     }
 

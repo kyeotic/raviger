@@ -23,11 +23,7 @@ let lastPath = ''
 export function navigate(url: string): void
 export function navigate(url: string, replace: boolean): void
 export function navigate(url: string, query: QueryParam | URLSearchParams): void
-export function navigate(
-  url: string,
-  query: QueryParam | URLSearchParams,
-  replace: boolean
-): void
+export function navigate(url: string, query: QueryParam | URLSearchParams, replace: boolean): void
 export function navigate(
   url: string,
   queryOrReplace?: QueryParam | URLSearchParams | boolean | null,
@@ -50,9 +46,7 @@ export function navigate(
   }
 
   if (Array.isArray(replaceOrQuery)) {
-    throw new Error(
-      '"replaceOrQuery" must be boolean, object, or URLSearchParams'
-    )
+    throw new Error('"replaceOrQuery" must be boolean, object, or URLSearchParams')
   }
 
   if (shouldCancelNavigation()) return
@@ -79,10 +73,7 @@ export function navigate(
   dispatchEvent(new PopStateEvent('popstate'))
 }
 
-export function useNavigationPrompt(
-  predicate = true,
-  prompt: string = defaultPrompt
-): void {
+export function useNavigationPrompt(predicate = true, prompt: string = defaultPrompt): void {
   if (isNode) return
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -117,18 +108,10 @@ function cancelNavigation(event: BeforeUnloadEvent, prompt: string) {
   return prompt
 }
 
-export function useNavigate(
-  optBasePath = ''
-): NavigateWithReplace & NavigateWithQuery {
+export function useNavigate(optBasePath = ''): NavigateWithReplace & NavigateWithQuery {
   const basePath = useBasePath()
-  const navigateWithBasePath = useCallback<
-    NavigateWithReplace & NavigateWithQuery
-  >(
-    (
-      url: string,
-      replaceOrQuery?: boolean | QueryParam | URLSearchParams,
-      replace?: boolean
-    ) => {
+  const navigateWithBasePath = useCallback<NavigateWithReplace & NavigateWithQuery>(
+    (url: string, replaceOrQuery?: boolean | QueryParam | URLSearchParams, replace?: boolean) => {
       const base = optBasePath || basePath
       const href = url.startsWith('/') ? base + url : url
       navigate(href, replaceOrQuery, replace)
