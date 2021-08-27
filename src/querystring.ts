@@ -53,5 +53,5 @@ export function getQueryString(): string {
     const queryIndex = ssrPath.indexOf('?')
     return queryIndex === -1 ? '' : ssrPath.substring(queryIndex + 1)
   }
-  return location.search
+  return window.location.search
 }
