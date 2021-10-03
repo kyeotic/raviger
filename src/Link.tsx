@@ -16,8 +16,7 @@ export interface ActiveLinkProps extends LinkProps {
 }
 
 function Link({ href, basePath, ...props }: LinkProps, ref?: Ref<HTMLAnchorElement>) {
-  const contextBasePath = useBasePath()
-  basePath = basePath || contextBasePath
+  basePath = useLinkBasePath(basePath)
   href = getLinkHref(href, basePath)
 
   const { onClick, target } = props
@@ -52,8 +51,7 @@ function ActiveLink(
   { basePath, className, exactActiveClass, activeClass, ...props }: ActiveLinkProps,
   ref?: Ref<HTMLAnchorElement>
 ) {
-  const contextBasePath = useBasePath()
-  basePath = basePath || contextBasePath
+  basePath = useLinkBasePath(basePath)
   const fullPath = useFullPath()
 
   let { href } = props
@@ -70,6 +68,12 @@ const ActiveLinkRef = forwardRef<LinkRef, ActiveLinkProps>(ActiveLink) as (
 ) => ReturnType<typeof ActiveLink>
 
 export { ActiveLinkRef as ActiveLink }
+
+function useLinkBasePath(basePath?: string): string {
+  const contextBasePath = useBasePath()
+  if (basePath === '/') return ''
+  return basePath || contextBasePath
+}
 
 function getLinkHref(href: string, basePath = '') {
   return href.startsWith('/') ? basePath + href : href
