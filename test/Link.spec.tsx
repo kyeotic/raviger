@@ -43,23 +43,27 @@ describe('Link', () => {
 
   test('allows basePath to be overridden for absolute links', async () => {
     // act(() => navigate('/'))
-    
+
     act(() => navigate('/top'))
-    function Host () {
+    function Host() {
       return (
         <>
-          <Link href='/nested' basePath='/' data-testid="nested">nested</Link>
+          <Link href="/nested" basePath="/" data-testid="nested">
+            nested
+          </Link>
         </>
       )
     }
-    function App () {
-      return useRoutes({
-        '/': () => <Host />,
-      }, { basePath: '/top'})
+    function App() {
+      return useRoutes(
+        {
+          '/': () => <Host />,
+        },
+        { basePath: '/top' }
+      )
     }
 
-
-    const { getByTestId } = render(<App /> )
+    const { getByTestId } = render(<App />)
     act(() => void fireEvent.click(getByTestId('nested')))
 
     expect(document.location.pathname).toEqual('/nested')

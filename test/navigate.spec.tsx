@@ -273,4 +273,3 @@ describe('navigate', () => {
     navigate(currentHref)
   })
 })
-
