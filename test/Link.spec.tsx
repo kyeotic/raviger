@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
 
-import { navigate, Link, ActiveLink } from '../src/main'
+import { useRoutes, navigate, Link, ActiveLink } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -39,6 +39,34 @@ describe('Link', () => {
     )
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/bar/foo')
+  })
+
+  test('allows basePath to be overridden for absolute links', async () => {
+    // act(() => navigate('/'))
+
+    act(() => navigate('/top'))
+    function Host() {
+      return (
+        <>
+          <Link href="/nested" basePath="/" data-testid="nested">
+            nested
+          </Link>
+        </>
+      )
+    }
+    function App() {
+      return useRoutes(
+        {
+          '/': () => <Host />,
+        },
+        { basePath: '/top' }
+      )
+    }
+
+    const { getByTestId } = render(<App />)
+    act(() => void fireEvent.click(getByTestId('nested')))
+
+    expect(document.location.pathname).toEqual('/nested')
   })
 
   test('navigates to href with basePath without root slash', async () => {

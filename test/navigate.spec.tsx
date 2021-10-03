@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, act } from '@testing-library/react'
+import { mockNavigation, delay } from './utils'
 
 import {
   navigate,
@@ -10,36 +11,7 @@ import {
   RouteParams,
 } from '../src/main'
 
-const originalConfirm = window.confirm
-const originalScrollTo = window.scrollTo
-const originalAssign = window.location.assign
-const originalReplaceState = window.history.replaceState
-const originalPushState = window.history.pushState
-
-function restoreWindow() {
-  window.confirm = originalConfirm
-  window.scrollTo = originalScrollTo
-  window.history.replaceState = originalReplaceState
-  window.history.pushState = originalPushState
-  // This gets around location read-only error
-  Object.defineProperty(window, 'location', {
-    value: {
-      ...window.location,
-      assign: originalAssign,
-    },
-  })
-}
-
-beforeEach(() => {
-  // restoreWindow()
-  act(() => navigate('/'))
-})
-
-afterEach(async () => {
-  restoreWindow()
-  // We must wait for the intercept reset op
-  return delay(5)
-})
+mockNavigation()
 
 describe('useNavigate', () => {
   function Route({
@@ -301,7 +273,3 @@ describe('navigate', () => {
     navigate(currentHref)
   })
 })
-
-function delay(ms: number) {
-  return new Promise<void>((resolve) => setTimeout(() => resolve(), ms))
-}

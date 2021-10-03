@@ -14,7 +14,7 @@ export interface setQueryParamsOptions {
 
 export function useQueryParams<T extends QueryParam>(
   parseFn: (query: string) => T = parseQuery,
-  serializeFn: (query: T) => string = serializeQuery
+  serializeFn: (query: Partial<T>) => string = serializeQuery
 ): [T, (query: T, options?: setQueryParamsOptions) => void] {
   const [querystring, setQuerystring] = useState(getQueryString())
   const setQueryParams = useCallback(

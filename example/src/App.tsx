@@ -60,14 +60,23 @@ const App = () => {
 
 export default App
 
+const DeepAbout = () => (
+  <Nav>
+    <Link href="/contact">Deep Contact</Link>
+    <Link href="/contact" basePath="/">
+      Root Contact
+    </Link>
+  </Nav>
+);
+
 const deepRoutes = {
   '/': () => <DisplayPath />,
-  '/about': () => <DisplayPath />,
+  "/about": () => <DeepAbout />,
   '/contact': () => <DisplayPath />,
 }
 
 function Deep() {
-  let route = useRoutes(deepRoutes, { basePath: '/deep' })
+  const route = useRoutes(deepRoutes, { basePath: '/deep' })
   return (
     <div>
       <Nav>
@@ -81,7 +90,7 @@ function Deep() {
 }
 
 function Filter() {
-  let [{ type, name }, setQuery] = useQueryParams()
+  const [{ type, name }, setQuery] = useQueryParams()
   return (
     <Nav>
       <Link href="/filter?type=projects">Filter Projects</Link>
@@ -100,6 +109,6 @@ function Filter() {
 }
 
 function DisplayPath() {
-  let path = usePath()
+  const path = usePath()
   return <span>Path: {path}</span>
 }
