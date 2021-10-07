@@ -14,8 +14,8 @@ function useRoutes(
   options?: {
     basePath?: string
     routeProps?: { [k: string]: any }
-    overridePathParams?: boolean
-    matchTrailingSlash?: boolean
+    overridePathParams?: boolean // default true
+    matchTrailingSlash?: boolean // default true
   }
 ): JSX.Element
 ```
@@ -56,6 +56,8 @@ export default function App() {
   )
 }
 ```
+
+If `matchTrailingSlash` is true (which it is by default) a route with a `/` on the end will still match a defined route without a trialing slash. For example, `'/about': () => <About />` would match the path `/about/`. If `matchTrailingSlash` is false then a trailing slash will cause a match failure unless the defined route also has a trailing slash.
 
 ## Using a Base Path
 
