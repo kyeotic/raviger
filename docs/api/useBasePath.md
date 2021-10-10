@@ -4,6 +4,8 @@ permalink: /use-base-path/
 nav_order: 8
 ---
 
+# `useBasePath`
+
 Get the `basePath` set by a parent `useRoutes` component (empty string if none)
 
 ## API

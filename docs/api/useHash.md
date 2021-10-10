@@ -4,6 +4,8 @@ permalink: /use-hash/
 nav_order: 9
 ---
 
+# `useHash`
+
 A hook for getting the current hash of the page. Will cause re-renders when the hash changes.
 
 ## API

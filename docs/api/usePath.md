@@ -4,6 +4,8 @@ permalink: /use-path/
 nav_order: 8
 ---
 
+# `usePath`
+
 Get the current path of the page. If `basePath` is provided and missing from the current path `null` is returned.
 
 ## API

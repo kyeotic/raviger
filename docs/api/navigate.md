@@ -4,6 +4,8 @@ permalink: /navigate/
 nav_order: 5
 ---
 
+# `navigate`
+
 This function causes programmatic navigation and causes all **raviger** hooks to re-render. Internally it used by the `<Link>` component.
 
 ## API
@@ -32,7 +34,6 @@ export async function createUser () {
   navigate(`/users/${user.id}`)
 }
 ```
-
 
 Normal navigation adds an entry to the browsers **history** stack, enabling the **back button** to return to the previous location. To instead change the page without adding to the history stack use the `replace` option. This is sometimes desirable when creating objects as the creation-page form may no longer be a valid location
 

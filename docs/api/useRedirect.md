@@ -4,6 +4,8 @@ permalink: /use-redirect/
 nav_order: 2
 ---
 
+# `useRedirect`
+
 This hook causes a browser redirect to occur if its `predicateUrl` matches.
 
 ## API

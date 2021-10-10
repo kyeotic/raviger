@@ -4,6 +4,8 @@ permalink: /redirect/
 nav_order: 5
 ---
 
+# `<Redirect />`
+
 A React component for causing a browser redirect
 
 ## API
