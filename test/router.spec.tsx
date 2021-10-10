@@ -9,7 +9,7 @@ import {
   RouteOptionParams,
   RouteParams,
   useMatch,
-  usePathParams
+  usePathParams,
 } from '../src/main'
 
 beforeEach(() => {
@@ -322,15 +322,11 @@ describe('navigate', () => {
   })
 })
 
-describe('useMatch', () =>  {
+describe('useMatch', () => {
   test('matches on single path', async () => {
     function Route() {
       const matched = useMatch('/about')
-      return (
-        <span data-testid="params">
-          {matched.toString()}
-        </span>
-      )
+      return <span data-testid="params">{matched.toString()}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
@@ -344,11 +340,7 @@ describe('useMatch', () =>  {
   test('matches on multiple paths', async () => {
     function Route() {
       const matched = useMatch(['/', '/about'])
-      return (
-        <span data-testid="params">
-          {matched}
-        </span>
-      )
+      return <span data-testid="params">{matched}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
@@ -361,15 +353,11 @@ describe('useMatch', () =>  {
   })
 })
 
-describe('usePathParams', () =>  {
+describe('usePathParams', () => {
   test('matches on single path without params', async () => {
     function Route() {
       const [matched, props] = usePathParams('/about')
-      return (
-        <span data-testid="params">
-          {JSON.stringify({ matched, props })}
-        </span>
-      )
+      return <span data-testid="params">{JSON.stringify({ matched, props })}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
@@ -383,11 +371,7 @@ describe('usePathParams', () =>  {
   test('matches on single path with params', async () => {
     function Route() {
       const [matched, props] = usePathParams('/user/:userId')
-      return (
-        <span data-testid="params">
-          {JSON.stringify({ matched, props })}
-        </span>
-      )
+      return <span data-testid="params">{JSON.stringify({ matched, props })}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
@@ -401,11 +385,7 @@ describe('usePathParams', () =>  {
   test('matches on multiple paths without params', async () => {
     function Route() {
       const [matched, props] = usePathParams(['/contact', '/about'])
-      return (
-        <span data-testid="params">
-          {JSON.stringify({ matched, props })}
-        </span>
-      )
+      return <span data-testid="params">{JSON.stringify({ matched, props })}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
@@ -422,11 +402,7 @@ describe('usePathParams', () =>  {
   test('matches on multiple paths with params', async () => {
     function Route() {
       const [matched, props] = usePathParams(['/user/:userId'])
-      return (
-        <span data-testid="params">
-          {JSON.stringify({ matched, props })}
-        </span>
-      )
+      return <span data-testid="params">{JSON.stringify({ matched, props })}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
@@ -434,6 +410,8 @@ describe('usePathParams', () =>  {
     expect(getByTestId('params')).toHaveTextContent('{"matched":null,"props":null}')
 
     act(() => navigate('/user/tester'))
-    expect(getByTestId('params')).toHaveTextContent('{"matched":"/user/:userId","props":{"userId":"tester"}}')
+    expect(getByTestId('params')).toHaveTextContent(
+      '{"matched":"/user/:userId","props":{"userId":"tester"}}'
+    )
   })
 })

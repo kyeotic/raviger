@@ -59,11 +59,14 @@ export function useRoutes(
   )
 }
 
-
 function useMatchRoute(
   routes: RouteParams,
   path: string | null,
-  { routeProps, overridePathParams, matchTrailingSlash }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean}
+  {
+    routeProps,
+    overridePathParams,
+    matchTrailingSlash,
+  }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean }
 ) {
   path = trailingMatch(path, matchTrailingSlash)
   const routeMatchers = useMatchers(Object.keys(routes))
@@ -93,9 +96,18 @@ function useMatchRoute(
 
 const emptyPathResult: [null, null] = [null, null]
 
-export function usePathParams<T extends Record<string, unknown>>(route: string, options?: PathParamOptions): [boolean, T | null]
-export function usePathParams<T extends Record<string, unknown>>(routes: string[], options?: PathParamOptions): [string, T] | [null, null]
-export function usePathParams<T extends Record<string, unknown>>(routeOrRoutes: string | string[], options: PathParamOptions = {}): [boolean, T | null] | [string, T]| [null, null] {
+export function usePathParams<T extends Record<string, unknown>>(
+  route: string,
+  options?: PathParamOptions
+): [boolean, T | null]
+export function usePathParams<T extends Record<string, unknown>>(
+  routes: string[],
+  options?: PathParamOptions
+): [string, T] | [null, null]
+export function usePathParams<T extends Record<string, unknown>>(
+  routeOrRoutes: string | string[],
+  options: PathParamOptions = {}
+): [boolean, T | null] | [string, T] | [null, null] {
   const [isSingle, path, matchers] = usePathOptions(routeOrRoutes, options)
   const emptyResult: [boolean, null] | [null, null] = isSingle ? [false, null] : emptyPathResult
 
@@ -104,12 +116,15 @@ export function usePathParams<T extends Record<string, unknown>>(routeOrRoutes: 
   const [routeMatch, props] = getMatchParams(path, matchers)
 
   if (!routeMatch) return emptyResult
-  return isSingle ? [true, props as T] : [routeMatch.path, props] as [string, T]
+  return isSingle ? [true, props as T] : ([routeMatch.path, props] as [string, T])
 }
 
 export function useMatch(route: string, options?: PathParamOptions): boolean
 export function useMatch(routes: string[], options?: PathParamOptions): string | null
-export function useMatch(routeOrRoutes: string | string[], options: PathParamOptions = {}): boolean | string | null {
+export function useMatch(
+  routeOrRoutes: string | string[],
+  options: PathParamOptions = {}
+): boolean | string | null {
   const [isSingle, path, matchers] = usePathOptions(routeOrRoutes, options)
 
   const match = matchers.find(({ regex }) => path?.match(regex))
@@ -117,7 +132,10 @@ export function useMatch(routeOrRoutes: string | string[], options: PathParamOpt
   return isSingle ? !!match : match?.path ?? null
 }
 
-function usePathOptions(routeOrRoutes: string | string[], { basePath, matchTrailingSlash = true }: PathParamOptions): [boolean, string | null, RouteMatcher[]] {
+function usePathOptions(
+  routeOrRoutes: string | string[],
+  { basePath, matchTrailingSlash = true }: PathParamOptions
+): [boolean, string | null, RouteMatcher[]] {
   const isSingle = !Array.isArray(routeOrRoutes)
   const routes = (isSingle ? [routeOrRoutes] : routeOrRoutes) as string[]
 
@@ -132,7 +150,10 @@ function useMatchers(routes: string[]): RouteMatcher[] {
   return useMemo(() => routes.map(createRouteMatcher), [hashParams(routes)])
 }
 
-function getMatchParams(path: string, routeMatchers: RouteMatcher[]): [RouteMatcher, Record<string, unknown>] | [null, null] {
+function getMatchParams(
+  path: string,
+  routeMatchers: RouteMatcher[]
+): [RouteMatcher, Record<string, unknown>] | [null, null] {
   // Hacky method for find + map
   let pathParams: RegExpMatchArray | null = null
   const routeMatch = routeMatchers.find(({ regex }) => {
