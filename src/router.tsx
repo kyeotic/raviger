@@ -7,16 +7,16 @@ import { getFormattedPath, usePath } from './path'
 export interface RouteParams {
   [key: string]: (...props: any) => JSX.Element
 }
-
-export interface RouteOptionParams {
+export interface PathParamOptions {
   basePath?: string
-  routeProps?: { [k: string]: any }
-  overridePathParams?: boolean
   matchTrailingSlash?: boolean
 }
-
+export interface RouteOptionParams extends PathParamOptions {
+  routeProps?: { [k: string]: any }
+  overridePathParams?: boolean
+}
 interface RouteMatcher {
-  routePath: string
+  path: string
   regex: RegExp
   props: string[]
 }
@@ -59,30 +59,14 @@ export function useRoutes(
   )
 }
 
-export function setPath(path: string): void {
-  if (!isNode) {
-    throw new Error('This method should only be used in NodeJS environments')
-  }
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const url = require('url')
-  setSsrPath(url.resolve(getSsrPath(), path))
-}
 
 function useMatchRoute(
   routes: RouteParams,
   path: string | null,
-  { routeProps, overridePathParams, matchTrailingSlash }: Omit<RouteOptionParams, 'basePath'>
+  { routeProps, overridePathParams, matchTrailingSlash }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean}
 ) {
-  // path.length > 1 ensure we still match on the root route "/" when matchTrailingSlash is set
-  if (matchTrailingSlash && path && path[path.length - 1] === '/' && path.length > 1) {
-    path = path.substring(0, path.length - 1)
-  }
-
-  const routeMatchers = useMemo(
-    () => Object.keys(routes).map(createRouteMatcher),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [hashRoutes(routes)]
-  )
+  path = trailingMatch(path, matchTrailingSlash)
+  const routeMatchers = useMatchers(Object.keys(routes))
 
   if (path === null) return null
 
@@ -102,30 +86,100 @@ function useMatchRoute(
     return props
   }, {})
 
-  return routes[routeMatch.routePath](
+  return routes[routeMatch.path](
     overridePathParams ? { ...props, ...routeProps } : { ...routeProps, ...props }
   )
 }
 
-function createRouteMatcher(routePath: string): RouteMatcher {
+const emptyPathResult: [null, null] = [null, null]
+
+export function usePathParams<T extends Record<string, unknown>>(route: string, options: PathParamOptions): T | null
+export function usePathParams<T extends Record<string, unknown>>(routes: string[], options: PathParamOptions): [string, T] | [null, null]
+export function usePathParams<T extends Record<string, unknown>>(routeOrRoutes: string | string[], options: PathParamOptions): T | null | [string, T]| [null, null] {
+  const [isSingle, path, matchers] = usePathOptions(routeOrRoutes, options)
+  const emptyResult = isSingle ? null : emptyPathResult
+
+  if (path === null) return emptyResult
+
+  const [routeMatch, props] = getMatchParams(path, matchers)
+
+  if (!routeMatch) return emptyResult
+  return isSingle ? props as T : [routeMatch.path, props] as [string, T]
+}
+
+export function useMatch(route: string, options: PathParamOptions): boolean
+export function useMatch(routes: string[], options: PathParamOptions): string | null
+export function useMatch(routeOrRoutes: string | string[], options: PathParamOptions = {}): boolean | string | null {
+  const [isSingle, path, matchers] = usePathOptions(routeOrRoutes, options)
+
+  const match = matchers.find(({ regex }) => path?.match(regex))
+
+  return isSingle ? !!match : match?.path ?? null
+}
+
+function usePathOptions(routeOrRoutes: string | string[], { basePath, matchTrailingSlash = true }: PathParamOptions): [boolean, string | null, RouteMatcher[]] {
+  const isSingle = !Array.isArray(routeOrRoutes)
+  const routes = (isSingle ? [routeOrRoutes] : routeOrRoutes) as string[]
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const matchers = useMatchers(routes)
+
+  return [isSingle, trailingMatch(usePath(basePath), matchTrailingSlash), matchers]
+}
+
+function useMatchers(routes: string[]): RouteMatcher[] {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => routes.map(createRouteMatcher), [hashParams(routes)])
+}
+
+function getMatchParams(path: string, routeMatchers: RouteMatcher[]): [RouteMatcher, Record<string, unknown>] | [null, null] {
+  // Hacky method for find + map
+  let pathParams: RegExpMatchArray | null = null
+  const routeMatch = routeMatchers.find(({ regex }) => {
+    pathParams = path.match(regex)
+    return !!pathParams
+  })
+
+  if (!routeMatch || pathParams === null) return emptyPathResult
+
+  const props = routeMatch.props.reduce((props: any, prop, i) => {
+    // The following `match` can't be null because the above return asserts it
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    props[prop] = pathParams![i + 1]
+    return props
+  }, {})
+
+  return [routeMatch, props]
+}
+
+function createRouteMatcher(path: string): RouteMatcher {
   return {
-    routePath,
+    path,
     regex: new RegExp(
-      `${routePath.substr(0, 1) === '*' ? '' : '^'}${routePath
+      `${path.substr(0, 1) === '*' ? '' : '^'}${path
         .replace(/:[a-zA-Z]+/g, '([^/]+)')
-        .replace(/\*/g, '')}${routePath.substr(-1) === '*' ? '' : '$'}`,
+        .replace(/\*/g, '')}${path.substr(-1) === '*' ? '' : '$'}`,
       'i'
     ),
-    props: (routePath.match(/:[a-zA-Z]+/g) ?? []).map((paramName) => paramName.substr(1)),
+    props: (path.match(/:[a-zA-Z]+/g) ?? []).map((paramName) => paramName.substr(1)),
   }
+}
+
+export function setPath(path: string): void {
+  if (!isNode) {
+    throw new Error('This method should only be used in NodeJS environments')
+  }
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const url = require('url')
+  setSsrPath(url.resolve(getSsrPath(), path))
 }
 
 // React doesn't like when the hook dependency array changes size
 // >> Warning: The final argument passed to useMemo changed size between renders. The order and size of this array must remain constant.
 // It is recommended to use a hashing function to produce a single, stable value
 // https://github.com/facebook/react/issues/14324#issuecomment-441489421
-function hashRoutes(routes: RouteParams): string {
-  return Object.keys(routes).sort().join(':')
+function hashParams(params: string[]): string {
+  return [...params].sort().join(':')
 }
 
 // React appears to suppress parent's re-rendering when a child's
@@ -140,4 +194,13 @@ function useRedirectDetection(basePath: string, path: string | null) {
       forceRender((s) => !s)
     }
   }, [basePath, path])
+}
+
+function trailingMatch(path: string | null, matchTrailingSlash: boolean): string | null {
+  if (path === null) return path
+  // path.length > 1 ensure we still match on the root route "/" when matchTrailingSlash is set
+  if (matchTrailingSlash && path && path[path.length - 1] === '/' && path.length > 1) {
+    path = path.substring(0, path.length - 1)
+  }
+  return path
 }

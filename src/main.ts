@@ -1,5 +1,5 @@
-export { useRoutes } from './router'
-export type { RouteParams, RouteOptionParams } from './router'
+export { useRoutes, useMatch, usePathParams } from './router'
+export type { RouteParams, RouteOptionParams, PathParamOptions } from './router'
 
 export { useRedirect, Redirect } from './redirect'
 export type { RedirectProps, UseRedirectProps } from './redirect'
