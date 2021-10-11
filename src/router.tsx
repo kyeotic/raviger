@@ -5,7 +5,7 @@ import { isNode, setSsrPath, getSsrPath } from './node'
 import { getFormattedPath, usePath } from './path'
 
 export interface RouteParams {
-  [key: string]: (...props: any) => JSX.Element
+  [key: string]: (params?: Record<string, string>) => JSX.Element
 }
 export interface PathParamOptions {
   basePath?: string
@@ -96,15 +96,15 @@ function useMatchRoute(
 
 const emptyPathResult: [null, null] = [null, null]
 
-export function usePathParams<T extends Record<string, unknown>>(
+export function usePathParams<T extends Record<string, string>>(
   route: string,
   options?: PathParamOptions
 ): [boolean, T | null]
-export function usePathParams<T extends Record<string, unknown>>(
+export function usePathParams<T extends Record<string, string>>(
   routes: string[],
   options?: PathParamOptions
 ): [string, T] | [null, null]
-export function usePathParams<T extends Record<string, unknown>>(
+export function usePathParams<T extends Record<string, string>>(
   routeOrRoutes: string | string[],
   options: PathParamOptions = {}
 ): [boolean, T | null] | [string, T] | [null, null] {
