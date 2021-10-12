@@ -379,7 +379,9 @@ describe('usePathParams', () => {
     expect(getByTestId('params')).toHaveTextContent('{"matched":null,"props":null}')
 
     act(() => navigate('/user/tester'))
-    expect(getByTestId('params')).toHaveTextContent('{"matched":"/user/:userId","props":{"userId":"tester"}}')
+    expect(getByTestId('params')).toHaveTextContent(
+      '{"matched":"/user/:userId","props":{"userId":"tester"}}'
+    )
   })
 
   test('matches on multiple paths without params', async () => {

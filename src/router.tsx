@@ -116,7 +116,7 @@ export function usePathParams<T extends Record<string, string>>(
   const [routeMatch, props] = getMatchParams(path, matchers)
 
   if (!routeMatch) return emptyResult
-  return ([routeMatch.path, props] as [string, T])
+  return [routeMatch.path, props] as [string, T]
 }
 
 export function useMatch(route: string, options?: PathParamOptions): string | null
