@@ -99,7 +99,7 @@ const emptyPathResult: [null, null] = [null, null]
 export function usePathParams<T extends Record<string, string>>(
   route: string,
   options?: PathParamOptions
-): [boolean, T | null]
+): [string, T | null]
 export function usePathParams<T extends Record<string, string>>(
   routes: string[],
   options?: PathParamOptions
@@ -108,41 +108,40 @@ export function usePathParams<T extends Record<string, string>>(
   routeOrRoutes: string | string[],
   options: PathParamOptions = {}
 ): [boolean, T | null] | [string, T] | [null, null] {
-  const [isSingle, path, matchers] = usePathOptions(routeOrRoutes, options)
-  const emptyResult: [boolean, null] | [null, null] = isSingle ? [false, null] : emptyPathResult
+  const [path, matchers] = usePathOptions(routeOrRoutes, options)
+  const emptyResult: [boolean, null] | [null, null] = emptyPathResult
 
   if (path === null) return emptyResult
 
   const [routeMatch, props] = getMatchParams(path, matchers)
 
   if (!routeMatch) return emptyResult
-  return isSingle ? [true, props as T] : ([routeMatch.path, props] as [string, T])
+  return ([routeMatch.path, props] as [string, T])
 }
 
-export function useMatch(route: string, options?: PathParamOptions): boolean
+export function useMatch(route: string, options?: PathParamOptions): string | null
 export function useMatch(routes: string[], options?: PathParamOptions): string | null
 export function useMatch(
   routeOrRoutes: string | string[],
   options: PathParamOptions = {}
-): boolean | string | null {
-  const [isSingle, path, matchers] = usePathOptions(routeOrRoutes, options)
+): string | null {
+  const [path, matchers] = usePathOptions(routeOrRoutes, options)
 
   const match = matchers.find(({ regex }) => path?.match(regex))
 
-  return isSingle ? !!match : match?.path ?? null
+  return match?.path ?? null
 }
 
 function usePathOptions(
   routeOrRoutes: string | string[],
   { basePath, matchTrailingSlash = true }: PathParamOptions
-): [boolean, string | null, RouteMatcher[]] {
-  const isSingle = !Array.isArray(routeOrRoutes)
-  const routes = (isSingle ? [routeOrRoutes] : routeOrRoutes) as string[]
+): [string | null, RouteMatcher[]] {
+  const routes = (!Array.isArray(routeOrRoutes) ? [routeOrRoutes] : routeOrRoutes) as string[]
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const matchers = useMatchers(routes)
 
-  return [isSingle, trailingMatch(usePath(basePath), matchTrailingSlash), matchers]
+  return [trailingMatch(usePath(basePath), matchTrailingSlash), matchers]
 }
 
 function useMatchers(routes: string[]): RouteMatcher[] {

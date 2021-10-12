@@ -326,15 +326,15 @@ describe('useMatch', () => {
   test('matches on single path', async () => {
     function Route() {
       const matched = useMatch('/about')
-      return <span data-testid="params">{matched.toString()}</span>
+      return <span data-testid="params">{matched ?? 'null'}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
 
-    expect(getByTestId('params')).toHaveTextContent('false')
+    expect(getByTestId('params')).toHaveTextContent('null')
 
     act(() => navigate('/about'))
-    expect(getByTestId('params')).toHaveTextContent('true')
+    expect(getByTestId('params')).toHaveTextContent('/about')
   })
 
   test('matches on multiple paths', async () => {
@@ -362,10 +362,10 @@ describe('usePathParams', () => {
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
 
-    expect(getByTestId('params')).toHaveTextContent('{"matched":false,"props":null}')
+    expect(getByTestId('params')).toHaveTextContent('{"matched":null,"props":null}')
 
     act(() => navigate('/about'))
-    expect(getByTestId('params')).toHaveTextContent('{"matched":true,"props":{}}')
+    expect(getByTestId('params')).toHaveTextContent('{"matched":"/about","props":{}}')
   })
 
   test('matches on single path with params', async () => {
@@ -376,10 +376,10 @@ describe('usePathParams', () => {
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
 
-    expect(getByTestId('params')).toHaveTextContent('{"matched":false,"props":null}')
+    expect(getByTestId('params')).toHaveTextContent('{"matched":null,"props":null}')
 
     act(() => navigate('/user/tester'))
-    expect(getByTestId('params')).toHaveTextContent('{"matched":true,"props":{"userId":"tester"}}')
+    expect(getByTestId('params')).toHaveTextContent('{"matched":"/user/:userId","props":{"userId":"tester"}}')
   })
 
   test('matches on multiple paths without params', async () => {
