@@ -11,8 +11,7 @@ A hook for detecting whether a provided path or array of paths is currently acti
 This can be useful for implementing components that have route-conditional logic, such as Navigation Bars that hide menus on certain pages.
 
 ```ts
-function useMatch(route: string, options?: PathParamOptions): boolean
-function useMatch(routes: string[], options?: PathParamOptions): string | null
+function useMatch(routes: string | string[], options?: PathParamOptions): string | null
 
 interface PathParamOptions {
   basePath?: string
@@ -22,18 +21,21 @@ interface PathParamOptions {
 
 > If no `basePath` is provided the hook will inherit it from the context of any active `useRoutes` ancestor.
 
+* `basePath`: Override the `basePath` from the context, if any is present. (`'/'` can be used to clear any inherited `basePath`)
+* If `matchTrailingSlash` is true (which it is by default) a route with a `/` on the end will still match a defined route without a trialing slash. For example, `'/about': () => <About />` would match the path `/about/`. If `matchTrailingSlash` is false then a trailing slash will cause a match failure unless the defined route also has a trailing slash.
+
 ## Matching a single path
 
-When called with a string as the first parameter `useMatch` returns a boolean if the current path matches
+`useMatch` either returns `null` if the path-pattern does not match the current path, or it returns the matching path.
 
 ```tsx
 function NavBar () {
-  const isHome = useMatch('/home')
+  const match = useMatch('/home') // returns "/home"
 
   return {
     <>
       <Link href="/contact">Contact</Link>
-      { isHome && <Link href="/home">Go Back</Link>}
+      { !!match && <Link href="/home">Go Back</Link>}
     </>
   }
 }
@@ -41,7 +43,7 @@ function NavBar () {
 
 ## Matching an array of paths
 
-When called with an array of strings as the first parameter `useMatch` returns either `null` if none of them match the path, or it returns the matching path.
+`useMatch` returns either `null` if none of them match the path, or it returns the matching path.
 
 ```tsx
 function Page () {

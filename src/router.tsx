@@ -97,36 +97,20 @@ function useMatchRoute(
 const emptyPathResult: [null, null] = [null, null]
 
 export function usePathParams<T extends Record<string, string>>(
-  route: string,
-  options?: PathParamOptions
-): [string, T | null]
-export function usePathParams<T extends Record<string, string>>(
-  routes: string[],
-  options?: PathParamOptions
-): [string, T] | [null, null]
-export function usePathParams<T extends Record<string, string>>(
-  routeOrRoutes: string | string[],
+  routes: string | string[],
   options: PathParamOptions = {}
-): [boolean, T | null] | [string, T] | [null, null] {
-  const [path, matchers] = usePathOptions(routeOrRoutes, options)
-  const emptyResult: [boolean, null] | [null, null] = emptyPathResult
-
-  if (path === null) return emptyResult
+): [string, T] | [null, null] {
+  const [path, matchers] = usePathOptions(routes, options)
+  if (path === null) return emptyPathResult
 
   const [routeMatch, props] = getMatchParams(path, matchers)
 
-  if (!routeMatch) return emptyResult
+  if (!routeMatch) return emptyPathResult
   return [routeMatch.path, props] as [string, T]
 }
 
-export function useMatch(route: string, options?: PathParamOptions): string | null
-export function useMatch(routes: string[], options?: PathParamOptions): string | null
-export function useMatch(
-  routeOrRoutes: string | string[],
-  options: PathParamOptions = {}
-): string | null {
-  const [path, matchers] = usePathOptions(routeOrRoutes, options)
-
+export function useMatch(routes: string | string[], options: PathParamOptions = {}): string | null {
+  const [path, matchers] = usePathOptions(routes, options)
   const match = matchers.find(({ regex }) => path?.match(regex))
 
   return match?.path ?? null
