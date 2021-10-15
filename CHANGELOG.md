@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `useRoutes` props type to `string`
 
-## [2.6.0] - Unreleased
+## [2.6.0] - 2021-10-15
 ### Added
 - `useMatch` hook
 - `usePathParams` hook
