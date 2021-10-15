@@ -1,13 +1,7 @@
 import * as React from 'react'
 import {} from 'react-dom'
 
-import {
-  useRoutes,
-  Link,
-  usePath,
-  useQueryParams,
-  Redirect,
-} from '../../src/main'
+import { useRoutes, Link, usePath, useQueryParams, Redirect } from '../../src/main'
 import Nav from './Nav'
 import Form from './Form'
 
@@ -16,7 +10,8 @@ const routes = {
   '/about': () => <span>about</span>,
   '/contact': () => <span>contact</span>,
   '/form': () => <Form />,
-  '/users/:userId': ({ userId }) => <span>User: {userId}</span>,
+  '/weird (route)': () => <span>Weird Route</span>,
+  '/users/:userId': ({ userId }: { userId: string }) => <span>User: {userId}</span>,
   '/filter': () => <Filter />,
   '/redirect': () => <Redirect to={'/filter'} />,
   '/redirect-external': () => <Redirect to={'http://example.com'} />,
@@ -27,8 +22,8 @@ const routes = {
 let renders = 0
 const App = () => {
   renders++
-  let route = useRoutes(routes)
-  let path = usePath()
+  const route = useRoutes(routes)
+  const path = usePath()
   // console.log('rendered', renders)
   return (
     <div>
@@ -37,6 +32,7 @@ const App = () => {
         <Link href="/about">About</Link>
         <Link href="/contact">Contact</Link>
         <Link href="/form">Form</Link>
+        <Link href={`/${encodeURIComponent('weird (route)')}`}>Weird (Route)</Link>
         <Link href="/users/1">Tom</Link>
         <Link href="/users/2">Jane</Link>
         <Link href="/deep">Deep Root</Link>
@@ -67,11 +63,11 @@ const DeepAbout = () => (
       Root Contact
     </Link>
   </Nav>
-);
+)
 
 const deepRoutes = {
   '/': () => <DisplayPath />,
-  "/about": () => <DeepAbout />,
+  '/about': () => <DeepAbout />,
   '/contact': () => <DisplayPath />,
 }
 
@@ -110,5 +106,5 @@ function Filter() {
 
 function DisplayPath() {
   const path = usePath()
-  return <span>Path: {path}</span>
+  return <span>Star Path: {path}</span>
 }

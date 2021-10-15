@@ -7,7 +7,7 @@ import { getFormattedPath, usePath } from './path'
 const emptyPathResult: [null, null] = [null, null]
 
 export interface RouteParams {
-  [key: string]: (...props: any) => JSX.Element
+  [key: string]: (params?: Record<string, string>) => JSX.Element
 }
 export interface PathParamOptions {
   basePath?: string
@@ -147,7 +147,7 @@ function createRouteMatcher(path: string): RouteMatcher {
   return {
     path,
     regex: new RegExp(
-      `${path.substr(0, 1) === '*' ? '' : '^'}${path
+      `${path.substr(0, 1) === '*' ? '' : '^'}${escapeRegExp(path)
         .replace(/:[a-zA-Z]+/g, '([^/]+)')
         .replace(/\*/g, '')}${path.substr(-1) === '*' ? '' : '$'}`,
       'i'
@@ -194,4 +194,10 @@ function trailingMatch(path: string | null, matchTrailingSlash: boolean): string
     path = path.substring(0, path.length - 1)
   }
   return path
+}
+
+// Taken from: https://stackoverflow.com/a/3561711
+// modified to NOT ESCAPE "/" and "*" since we use those as path parts
+function escapeRegExp(string: string): string {
+  return string.replace(/[-\\^$+?.()|[\]{}]/g, '\\$&')
 }
