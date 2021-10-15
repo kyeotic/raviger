@@ -8,13 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **BREAKING**:`usePath` returns `decodeURIComponent`-ed path
 - **BREAKING**:`useRoutes` matches paths that have been `decodeURIComponent`-ed (e.g. `/weird (route)` will match if provided as a key to `useRoutes`)
+### Fixed
+- `useRoutes` props type to `string`
 
 ## [2.6.0] - Unreleased
 ### Added
 - `useMatch` hook
 - `usePathParams` hook
-### Fixed
-- `useRoutes` props type to `string`
 
 ## [2.5.5] - 2021-10-03
 ### Fixed
