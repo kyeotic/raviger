@@ -4,6 +4,8 @@ permalink: /use-navigate/
 nav_order: 5
 ---
 
+# `useNavigate`
+
 A hook for imperative route changes that include any configured `basePath`
 
 ## API

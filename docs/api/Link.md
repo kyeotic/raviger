@@ -3,6 +3,7 @@ title: "Link"
 permalink: /link/
 nav_order: 3
 ---
+# `<Link />`
 
 A React component for rendering a `<a>` that uses *history* navigation for local URLs. Supports `ref` forwarding.
 

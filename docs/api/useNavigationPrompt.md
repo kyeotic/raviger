@@ -4,6 +4,8 @@ permalink: /use-navigation-prompt/
 date: 2019-10-26T11:32:24-07:00
 ---
 
+# `useNavigationPrompt`
+
 This hook causes a confirmation to block navigation.
 
 ## API

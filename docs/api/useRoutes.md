@@ -4,6 +4,8 @@ permalink: /use-routes/
 nav_order: 1
 ---
 
+# `useRoutes`
+
 This hook is the main entry point for an application using raviger.
 
 ## API
@@ -19,8 +21,6 @@ function useRoutes(
   }
 ): JSX.Element
 ```
-
-
 
 ## Basic
 

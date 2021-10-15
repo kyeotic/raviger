@@ -4,6 +4,8 @@ permalink: /use-query-params/
 nav_order: 6
 ---
 
+# `useQueryParams`
+
 A hook for reading and updating the query string parameters on the page. Updates on all URL changes. Returns an array that, much like React's own [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate), has a value and a setter function. The value is a parsed querystring object, and the setter takes an object that it will serialize into the query string.
 
 ## API

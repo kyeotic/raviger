@@ -4,6 +4,7 @@ permalink: /use-location-change/
 nav_order: 10
 ---
 
+# `useLocationChange`
 
 This hook invokes a setter whenever the page location is updated.
 

@@ -4,6 +4,8 @@ permalink: /active-link/
 nav_order: 4
 ---
 
+# `<ActiveLink />`
+
 Like the standard [Link](/api/link) component, but with built-in `className` transformation when a matching path is detected.
 
 ## API
