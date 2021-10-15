@@ -8,8 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `useMatch` hook
 - `usePathParams` hook
-### Fixed
-- `useRoutes` props type to `string`
 
 ## [2.5.5] - 2021-10-03
 ### Fixed

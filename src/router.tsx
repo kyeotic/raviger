@@ -7,7 +7,7 @@ import { getFormattedPath, usePath } from './path'
 const emptyPathResult: [null, null] = [null, null]
 
 export interface RouteParams {
-  [key: string]: (params?: Record<string, string>) => JSX.Element
+  [key: string]: (...props: any) => JSX.Element
 }
 export interface PathParamOptions {
   basePath?: string
