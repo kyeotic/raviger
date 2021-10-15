@@ -26,9 +26,8 @@ describe('useRoutes', () => {
     const path = usePath()
     return (
       <div>
-        <span data-testid="label">
-          {label} {path}
-        </span>
+        <span data-testid="label">{label}</span>
+        <span data-testid="path">{path}</span>
         <span data-testid="extra">{extra}</span>
       </div>
     )
@@ -37,6 +36,8 @@ describe('useRoutes', () => {
     '/': () => <Route label="home" />,
     '/about': ({ extra }) => <Route label="about" extra={extra} />,
     '/users/:userId': ({ userId }) => <Route label={`User ${userId}`} />,
+    '/weird (route)': () => <Route label="weird1" />,
+    '/weird (route+2)': () => <Route label="weird2" />,
   }
 
   test('matches current route', async () => {
@@ -132,6 +133,25 @@ describe('useRoutes', () => {
     )
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 1')
+  })
+
+  test('matches routes with encoded characters', async () => {
+    const { getByTestId } = render(<Harness routes={routes} />)
+    act(() => navigate('/weird (route)'))
+    expect(getByTestId('label')).toHaveTextContent('weird1')
+    expect(getByTestId('path')).toHaveTextContent('/weird (route)')
+
+    act(() => navigate(`/${encodeURIComponent('weird (route)')}`))
+    expect(getByTestId('label')).toHaveTextContent('weird1')
+    expect(getByTestId('path')).toHaveTextContent('/weird (route)')
+
+    act(() => navigate('/weird (route+2)'))
+    expect(getByTestId('label')).toHaveTextContent('weird2')
+    expect(getByTestId('path')).toHaveTextContent('/weird (route+2)')
+
+    act(() => navigate(`/${encodeURIComponent('weird (route+2)')}`))
+    expect(getByTestId('label')).toHaveTextContent('weird2')
+    expect(getByTestId('path')).toHaveTextContent('/weird (route+2)')
   })
 
   test('handles dynamic routes', async () => {

@@ -124,7 +124,7 @@ export function useLocationChange(
 }
 
 /**
- * Returns the current path. If basePath is provided it will be removed from the front of the path.
+ * Returns the current path after decoding. If basePath is provided it will be removed from the front of the path.
  * If basePath is provided and the path does not begin with it will return null
  * @param {string} basePath basePath, if any
  * @return {string | null} returns path with basePath prefix removed, or null if basePath is provided and missing
@@ -133,7 +133,7 @@ export function getFormattedPath(basePath: string): string | null {
   const path = getCurrentPath()
   const baseMissing = basePath && !isPathInBase(basePath, path)
   if (path === null || baseMissing) return null
-  return !basePath ? path : path.replace(basePathMatcher(basePath), '') || '/'
+  return decodeURIComponent(!basePath ? path : path.replace(basePathMatcher(basePath), '') || '/')
 }
 
 function isPredicateActive(predicate: boolean | (() => boolean)): boolean {

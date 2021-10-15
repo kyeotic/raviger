@@ -4,6 +4,8 @@ import { BasePathContext, PathContext } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import { getFormattedPath, usePath } from './path'
 
+const emptyPathResult: [null, null] = [null, null]
+
 export interface RouteParams {
   [key: string]: (params?: Record<string, string>) => JSX.Element
 }
@@ -69,32 +71,17 @@ function useMatchRoute(
   }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean }
 ) {
   path = trailingMatch(path, matchTrailingSlash)
-  const routeMatchers = useMatchers(Object.keys(routes))
+  const matchers = useMatchers(Object.keys(routes))
 
   if (path === null) return null
+  const [routeMatch, props] = getMatchParams(path, matchers)
 
-  // Hacky method for find + map
-  let pathParams: RegExpMatchArray | null = null
-  const routeMatch = routeMatchers.find(({ regex }) => {
-    pathParams = (path ?? '').match(regex)
-    return !!pathParams
-  })
-
-  if (!routeMatch || pathParams === null) return null
-
-  const props = routeMatch.props.reduce((props: any, prop, i) => {
-    // The following `match` can't be null because the above return asserts it
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    props[prop] = pathParams![i + 1]
-    return props
-  }, {})
+  if (!routeMatch) return null
 
   return routes[routeMatch.path](
     overridePathParams ? { ...props, ...routeProps } : { ...routeProps, ...props }
   )
 }
-
-const emptyPathResult: [null, null] = [null, null]
 
 export function usePathParams<T extends Record<string, string>>(
   routes: string | string[],
@@ -137,15 +124,15 @@ function getMatchParams(
   path: string,
   routeMatchers: RouteMatcher[]
 ): [RouteMatcher, Record<string, unknown>] | [null, null] {
-  // Hacky method for find + map
   let pathParams: RegExpMatchArray | null = null
+
+  // Hacky method for find + map
   const routeMatch = routeMatchers.find(({ regex }) => {
     pathParams = path.match(regex)
     return !!pathParams
   })
 
   if (!routeMatch || pathParams === null) return emptyPathResult
-
   const props = routeMatch.props.reduce((props: any, prop, i) => {
     // The following `match` can't be null because the above return asserts it
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -160,7 +147,7 @@ function createRouteMatcher(path: string): RouteMatcher {
   return {
     path,
     regex: new RegExp(
-      `${path.substr(0, 1) === '*' ? '' : '^'}${path
+      `${path.substr(0, 1) === '*' ? '' : '^'}${escapeRegExp(path)
         .replace(/:[a-zA-Z]+/g, '([^/]+)')
         .replace(/\*/g, '')}${path.substr(-1) === '*' ? '' : '$'}`,
       'i'
@@ -207,4 +194,10 @@ function trailingMatch(path: string | null, matchTrailingSlash: boolean): string
     path = path.substring(0, path.length - 1)
   }
   return path
+}
+
+// Taken from: https://stackoverflow.com/a/3561711
+// modified to NOT ESCAPE "/" and "*" since we use those as path parts
+function escapeRegExp(string: string): string {
+  return string.replace(/[-\\^$+?.()|[\]{}]/g, '\\$&')
 }
