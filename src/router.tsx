@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useLayoutEffect } from 'react'
 
-import { BasePathContext, PathContext } from './context'
+import { RouterProvider } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import { getFormattedPath, usePath } from './path'
 
@@ -52,12 +52,13 @@ export function useRoutes(
     overridePathParams,
     matchTrailingSlash,
   })
+
   // No match should not return an empty Provider, just null
   if (!route || path === null) return null
   return (
-    <BasePathContext.Provider value={basePath}>
-      <PathContext.Provider value={path}>{route}</PathContext.Provider>
-    </BasePathContext.Provider>
+    <RouterProvider basePath={basePath} path={path}>
+      {route}
+    </RouterProvider>
   )
 }
 
@@ -91,8 +92,8 @@ export function usePathParams<T extends Record<string, string>>(
   if (path === null) return emptyPathResult
 
   const [routeMatch, props] = getMatchParams(path, matchers)
-
   if (!routeMatch) return emptyPathResult
+
   return [routeMatch.path, props] as [string, T]
 }
 
@@ -109,7 +110,6 @@ function usePathOptions(
 ): [string | null, RouteMatcher[]] {
   const routes = (!Array.isArray(routeOrRoutes) ? [routeOrRoutes] : routeOrRoutes) as string[]
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const matchers = useMatchers(routes)
 
   return [trailingMatch(usePath(basePath), matchTrailingSlash), matchers]
