@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `RouterProvider`
 - generic overload for `useRoutes` that allows returning custom results
+- `excludeProviders` option to `useRoutes`
 ### Fixed
 - `useRoutes` function-values to use props type `string` (was `any`)
 

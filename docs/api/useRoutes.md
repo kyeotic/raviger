@@ -18,6 +18,7 @@ function useRoutes(
     routeProps?: { [k: string]: any }
     overridePathParams?: boolean // default true
     matchTrailingSlash?: boolean // default true
+    excludeProviders?: boolean // default false
   }
 ): JSX.Element
 ```
@@ -127,3 +128,38 @@ export default function App() {
 }
 ```
 
+## Custom Route Results
+
+It is possible to supply routes that return _anything_. By default any match will be wrapped in React Context providers for BasePath and Path, but you can change this with the [`excludeProviders`](#excludeProviders) option. Doing so will make any result safe to invoke by `useRoutes`, allowing for some special use-cases.
+
+```js
+const match = useRoutes({
+  // The returned data could be anything!
+  "/foo": () => ({ element: <Foo />, useSpecialLayout: true }),
+  "/bar": () => ({ element: <Bar />, useSpecialLayout: false }),
+  "/baz": () => ({ element: <Baz />, useSpecialLayout: false }),
+}, { excludeProviders: true });
+```
+
+To make this work with typescript there is a generic overload for `useRoutes` that takes uses the generic-type as the return type from the function. Here is a working example
+
+```ts
+import { useRoutes, CustomRoutes } from 'raviger'
+
+interface RouteResult {
+  element: ReactNode
+  useSpecialLayout: boolean
+}
+const routes = {
+  // The returned data could be anything!
+  "/foo": () => ({ element: <Foo />, useSpecialLayout: true }),
+  "/bar": () => ({ element: <Bar />, useSpecialLayout: false }),
+  "/baz": () => ({ element: <Baz />, useSpecialLayout: false }),
+} as CustomRoutes<RouteResult>
+
+const match = useRoutes<RouteResult>(routes, { excludeProviders: true });
+```
+
+## excludeProviders
+
+By default `useRoutes` returns either `null` for no match or the provided route-function-result wrapped in React Context providers for BasePath and Path. If you don't want these providers, perhaps because you are using [custom route results](#custom-route-results), you can omit them by setting `excludeProviders: true`
