@@ -6,9 +6,13 @@ import { getFormattedPath, usePath } from './path'
 
 const emptyPathResult: [null, null] = [null, null]
 
-export interface RouteParams {
+export interface Routes {
   [key: string]: (params?: Record<string, string>) => JSX.Element
 }
+export interface CustomRoutes<T> {
+  [key: string]: (params?: Record<string, string>) => T
+}
+
 export interface PathParamOptions {
   basePath?: string
   matchTrailingSlash?: boolean
@@ -16,6 +20,7 @@ export interface PathParamOptions {
 export interface RouteOptionParams extends PathParamOptions {
   routeProps?: { [k: string]: any }
   overridePathParams?: boolean
+  excludeProviders?: boolean
 }
 interface RouteMatcher {
   path: string
@@ -23,13 +28,16 @@ interface RouteMatcher {
   props: string[]
 }
 
+export function useRoutes(routes: Routes, options: RouteOptionParams): JSX.Element | null
+export function useRoutes<T>(routes: CustomRoutes<T>, options: RouteOptionParams): T | null
 export function useRoutes(
-  routes: RouteParams,
+  routes: Routes,
   {
     basePath = '',
     routeProps = {},
     overridePathParams = true,
     matchTrailingSlash = true,
+    excludeProviders = false,
   }: RouteOptionParams = {}
 ): JSX.Element | null {
   /*
@@ -55,6 +63,7 @@ export function useRoutes(
 
   // No match should not return an empty Provider, just null
   if (!route || path === null) return null
+  if (excludeProviders) return route
   return (
     <RouterProvider basePath={basePath} path={path}>
       {route}
@@ -63,7 +72,7 @@ export function useRoutes(
 }
 
 function useMatchRoute(
-  routes: RouteParams,
+  routes: Routes,
   path: string | null,
   {
     routeProps,
