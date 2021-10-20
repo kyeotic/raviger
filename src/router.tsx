@@ -6,12 +6,9 @@ import { getFormattedPath, usePath } from './path'
 
 const emptyPathResult: [null, null] = [null, null]
 
-export interface Routes {
-  [key: string]: (params?: Record<string, string>) => JSX.Element
-}
-export interface CustomRoutes<T> {
-  [key: string]: (params?: Record<string, string>) => T
-}
+// export interface Routes {
+//   [key: string]: (params?: Record<string, string>) => JSX.Element
+// }
 
 export interface PathParamOptions {
   basePath?: string
@@ -20,7 +17,6 @@ export interface PathParamOptions {
 export interface RouteOptionParams extends PathParamOptions {
   routeProps?: { [k: string]: any }
   overridePathParams?: boolean
-  excludeProviders?: boolean
 }
 interface RouteMatcher {
   path: string
@@ -28,16 +24,43 @@ interface RouteMatcher {
   props: string[]
 }
 
-export function useRoutes(routes: Routes, options: RouteOptionParams): JSX.Element | null
-export function useRoutes<T>(routes: CustomRoutes<T>, options: RouteOptionParams): T | null
-export function useRoutes(
-  routes: Routes,
+type EmptyRecord = Record<string | number | symbol, never>
+
+type NonEmptyRecord<Params> = Params extends EmptyRecord
+  ? undefined
+  : { [Key in keyof Params]: Params[Key] } // Mapped type is used to simplify the output (cleaner autocomplete)
+
+type Split<
+  Value extends string,
+  Separator extends string
+> = Value extends `${infer Head}${Separator}${infer Tail}`
+  ? [Head, ...Split<Tail, Separator>]
+  : Value extends Separator
+  ? []
+  : [Value]
+
+type ExtractPathParams<Path extends string, Parts = Split<Path, '/'>> = Parts extends [
+  infer Head,
+  ...infer Tail
+]
+  ? Head extends `:${infer Name}`
+    ? { [N in Name]: string } & ExtractPathParams<Path, Tail>
+    : ExtractPathParams<Path, Tail>
+  : unknown
+
+export type Routes<Path extends string> = {
+  [P in Path]: (
+    params: NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+  ) => JSX.Element
+}
+
+export function useRoutes<Path extends string>(
+  routes: Routes<Path>,
   {
     basePath = '',
     routeProps = {},
     overridePathParams = true,
     matchTrailingSlash = true,
-    excludeProviders = false,
   }: RouteOptionParams = {}
 ): JSX.Element | null {
   /*
@@ -63,7 +86,6 @@ export function useRoutes(
 
   // No match should not return an empty Provider, just null
   if (!route || path === null) return null
-  if (excludeProviders) return route
   return (
     <RouterProvider basePath={basePath} path={path}>
       {route}
@@ -72,7 +94,7 @@ export function useRoutes(
 }
 
 function useMatchRoute(
-  routes: Routes,
+  routes: { [key: string]: (...props: any) => JSX.Element },
   path: string | null,
   {
     routeProps,
