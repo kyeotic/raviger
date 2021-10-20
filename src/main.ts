@@ -1,5 +1,5 @@
 export { useRoutes, useMatch, usePathParams } from './router'
-export type { Routes, CustomRoutes, RouteOptionParams, PathParamOptions } from './router'
+export type { Routes, RouteOptionParams, PathParamOptions } from './router'
 
 export { RouterProvider } from './context'
 
