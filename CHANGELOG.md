@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING**:`usePath` returns `decodeURIComponent`-ed path
 - **BREAKING**:`useRoutes`, `useMatch`, and `usePathParams` match paths that have been `decodeURIComponent`-ed (e.g. `/weird (route)` will match a path of `/weird%20(route)`)
 - **BREAKING**: type `RouteParams` renamed to `Routes`
+- **BREAKING**: `usePathParams` return type now depends on the input params. When a string it returns just the props, when an array it returns `[path, props]`
 ### Added
 - `RouterProvider`
 - generic overload for `useRoutes` that allows returning custom results

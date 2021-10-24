@@ -3,12 +3,9 @@ import React, { useMemo, useState, useLayoutEffect } from 'react'
 import { RouterProvider } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import { getFormattedPath, usePath } from './path'
+import type { NonEmptyRecord, Split, ValueOf } from './types'
 
 const emptyPathResult: [null, null] = [null, null]
-
-// export interface Routes {
-//   [key: string]: (params?: Record<string, string>) => JSX.Element
-// }
 
 export interface PathParamOptions {
   basePath?: string
@@ -23,21 +20,6 @@ interface RouteMatcher {
   regex: RegExp
   props: string[]
 }
-
-type EmptyRecord = Record<string | number | symbol, never>
-
-type NonEmptyRecord<Params> = Params extends EmptyRecord
-  ? undefined
-  : { [Key in keyof Params]: Params[Key] } // Mapped type is used to simplify the output (cleaner autocomplete)
-
-type Split<
-  Value extends string,
-  Separator extends string
-> = Value extends `${infer Head}${Separator}${infer Tail}`
-  ? [Head, ...Split<Tail, Separator>]
-  : Value extends Separator
-  ? []
-  : [Value]
 
 type ExtractPathParams<Path extends string, Parts = Split<Path, '/'>> = Parts extends [
   infer Head,
@@ -115,17 +97,61 @@ function useMatchRoute(
   )
 }
 
-export function usePathParams<T extends Record<string, string>>(
-  routes: string | string[],
+export function usePathParams<Path extends string>(
+  route: Path,
+  options?: PathParamOptions
+): NonEmptyRecord<ExtractPathParams<Path extends `${infer P1}*` ? P1 : Path>> | null
+export function usePathParams<Path extends string>(
+  routes: ReadonlyArray<Path>,
+  options?: PathParamOptions
+):
+  | ValueOf<
+      {
+        [P in typeof routes[number]]: [
+          P,
+          NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+        ]
+      }
+    >
+  | [null, null]
+export function usePathParams<Params extends ReadonlyArray<string> | string>(
+  routes: Params,
   options: PathParamOptions = {}
-): [string, T] | [null, null] {
-  const [path, matchers] = usePathOptions(routes, options)
-  if (path === null) return emptyPathResult
+): Params extends ReadonlyArray<string>
+  ?
+      | ValueOf<
+          {
+            [P in typeof routes[number]]: [
+              P,
+              NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+            ]
+          }
+        >
+      | [null, null]
+  : Params extends string
+  ? NonEmptyRecord<ExtractPathParams<Params extends `${infer P1}*` ? P1 : Params>> | null
+  : never {
+  const isSingle = !Array.isArray(routes)
+  const [path, matchers] = usePathOptions(routes as string | string[], options)
+
+  // @ts-expect-error inference is not carried forward and I don't know how to resolve this type
+  if (path === null) return isSingle ? null : emptyPathResult
 
   const [routeMatch, props] = getMatchParams(path, matchers)
-  if (!routeMatch) return emptyPathResult
+  // @ts-expect-error inference is not carried forward and I don't know how to resolve this type
+  if (!routeMatch) return isSingle ? null : emptyPathResult
 
-  return [routeMatch.path, props] as [string, T]
+  // @ts-expect-error inference is not carried forward and I don't know how to resolve this type
+  return isSingle
+    ? props
+    : ([routeMatch.path, props] as ValueOf<
+        {
+          [P in typeof routes[number]]: [
+            P,
+            NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+          ]
+        }
+      >)
 }
 
 export function useMatch(routes: string | string[], options: PathParamOptions = {}): string | null {

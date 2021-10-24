@@ -7,7 +7,7 @@ import {
   useBasePath,
   useQueryParams,
   RouteOptionParams,
-  RouteParams,
+  Routes,
   useMatch,
   usePathParams,
 } from '../src/main'
@@ -17,7 +17,13 @@ beforeEach(() => {
 })
 
 describe('useRoutes', () => {
-  function Harness({ routes, options }: { routes: RouteParams; options?: RouteOptionParams }) {
+  function Harness<Path extends string>({
+    routes,
+    options,
+  }: {
+    routes: Routes<Path>
+    options?: RouteOptionParams
+  }) {
     const route = useRoutes(routes, options) || <span data-testid="label">not found</span>
     return route
   }
@@ -32,9 +38,9 @@ describe('useRoutes', () => {
       </div>
     )
   }
-  const routes: RouteParams = {
+  const routes = {
     '/': () => <Route label="home" />,
-    '/about': ({ extra }) => <Route label="about" extra={extra} />,
+    '/about': ({ extra }: { extra?: string }) => <Route label="about" extra={extra} />,
     '/users/:userId': ({ userId }) => <Route label={`User ${userId}`} />,
     '/weird (route)': () => <Route label="weird1" />,
     '/weird (route+2)': () => <Route label="weird2" />,
@@ -217,7 +223,7 @@ describe('useRoutes', () => {
     })
 
     test('nested router with basePath matches after navigation', async () => {
-      const appRoutes: RouteParams = {
+      const appRoutes = {
         '/app/:id*': ({ id }) => SubRouter({ id }),
       }
       function App() {
@@ -253,7 +259,13 @@ describe('useRoutes', () => {
 })
 
 describe('useBasePath', () => {
-  function Harness({ routes, basePath }: { routes: RouteParams; basePath?: string }) {
+  function Harness<Path extends string>({
+    routes,
+    basePath,
+  }: {
+    routes: Routes<Path>
+    basePath?: string
+  }) {
     const route = useRoutes(routes, { basePath })
     return route
   }
@@ -263,12 +275,12 @@ describe('useBasePath', () => {
     return <span data-testid="basePath">{basePath || 'none'}</span>
   }
 
-  const nestedRoutes: RouteParams = {
+  const nestedRoutes = {
     '/': () => <Route />,
     '/about': () => <Route />,
   }
 
-  const routes: RouteParams = {
+  const routes = {
     '/': () => <Route />,
     '/about': () => <Route />,
     '/nested*': () => <Harness basePath="/nested" routes={nestedRoutes} />,
@@ -376,32 +388,46 @@ describe('useMatch', () => {
 describe('usePathParams', () => {
   test('matches on single path without params', async () => {
     function Route() {
-      const [matched, props] = usePathParams('/about')
-      return <span data-testid="params">{JSON.stringify({ matched, props })}</span>
+      const props = usePathParams('/about')
+      return <span data-testid="params">{JSON.stringify({ matched: !!props, props })}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
 
-    expect(getByTestId('params')).toHaveTextContent('{"matched":null,"props":null}')
+    expect(getByTestId('params')).toHaveTextContent('{"matched":false,"props":null}')
 
     act(() => navigate('/about'))
-    expect(getByTestId('params')).toHaveTextContent('{"matched":"/about","props":{}}')
+    expect(getByTestId('params')).toHaveTextContent('{"matched":true,"props":{}}')
   })
 
   test('matches on single path with params', async () => {
     function Route() {
-      const [matched, props] = usePathParams('/user/:userId')
-      return <span data-testid="params">{JSON.stringify({ matched, props })}</span>
+      const props = usePathParams('/user/:userId')
+      return <span data-testid="params">{JSON.stringify({ matched: !!props, props })}</span>
     }
     act(() => navigate('/'))
     const { getByTestId } = render(<Route />)
 
-    expect(getByTestId('params')).toHaveTextContent('{"matched":null,"props":null}')
+    expect(getByTestId('params')).toHaveTextContent('{"matched":false,"props":null}')
 
     act(() => navigate('/user/tester'))
-    expect(getByTestId('params')).toHaveTextContent(
-      '{"matched":"/user/:userId","props":{"userId":"tester"}}'
-    )
+    expect(getByTestId('params')).toHaveTextContent('{"matched":true,"props":{"userId":"tester"}}')
+  })
+
+  test('strongly types params for string', async () => {
+    function Route() {
+      const props = usePathParams('/user/:userId/child/:childId')
+      return (
+        <span data-testid="params">
+          {JSON.stringify(props ? { user: props.userId, child: props.childId } : null)}
+        </span>
+      )
+    }
+    act(() => navigate('/'))
+    const { getByTestId } = render(<Route />)
+
+    act(() => navigate('/user/tester/child/qa'))
+    expect(getByTestId('params')).toHaveTextContent('{"user":"tester","child":"qa"}')
   })
 
   test('matches on multiple paths without params', async () => {
@@ -434,6 +460,34 @@ describe('usePathParams', () => {
     act(() => navigate('/user/tester'))
     expect(getByTestId('params')).toHaveTextContent(
       '{"matched":"/user/:userId","props":{"userId":"tester"}}'
+    )
+  })
+
+  test('strongly types params for array', async () => {
+    function Route() {
+      const [path, props] = usePathParams(['/user/:userId/child/:childId', '/users'])
+      // The props here don't seem to be strongly typed
+      // though that appears to be an artifact of the test setup,
+      // as they are strongly typed when used directly :shrug:
+
+      if (path === '/user/:userId/child/:childId') {
+        return (
+          <span data-testid="params">
+            {JSON.stringify(props ? { path, user: props.userId, child: props.childId } : null)}
+          </span>
+        )
+      } else if (path === '/users') {
+        return <span data-testid="params">{JSON.stringify(props)}</span>
+      }
+      return <span data-testid="params">{JSON.stringify(null)}</span>
+    }
+    act(() => navigate('/users'))
+    const { getByTestId } = render(<Route />)
+    expect(getByTestId('params')).toHaveTextContent('{}')
+
+    act(() => navigate('/user/tester/child/qa'))
+    expect(getByTestId('params')).toHaveTextContent(
+      '{"path":"/user/:userId/child/:childId","user":"tester","child":"qa"}'
     )
   })
 })
