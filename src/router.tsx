@@ -1,14 +1,12 @@
 import React, { useMemo, useState, useLayoutEffect } from 'react'
 
-import { BasePathContext, PathContext } from './context'
+import { RouterProvider } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
 import { getFormattedPath, usePath } from './path'
+import type { NonEmptyRecord, Split, ValueOf } from './types'
 
 const emptyPathResult: [null, null] = [null, null]
 
-export interface RouteParams {
-  [key: string]: (...props: any) => JSX.Element
-}
 export interface PathParamOptions {
   basePath?: string
   matchTrailingSlash?: boolean
@@ -23,8 +21,23 @@ interface RouteMatcher {
   props: string[]
 }
 
-export function useRoutes(
-  routes: RouteParams,
+type ExtractPathParams<Path extends string, Parts = Split<Path, '/'>> = Parts extends [
+  infer Head,
+  ...infer Tail
+]
+  ? Head extends `:${infer Name}`
+    ? { [N in Name]: string } & ExtractPathParams<Path, Tail>
+    : ExtractPathParams<Path, Tail>
+  : unknown
+
+export type Routes<Path extends string> = {
+  [P in Path]: (
+    params: NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+  ) => JSX.Element
+}
+
+export function useRoutes<Path extends string>(
+  routes: Routes<Path>,
   {
     basePath = '',
     routeProps = {},
@@ -52,17 +65,18 @@ export function useRoutes(
     overridePathParams,
     matchTrailingSlash,
   })
+
   // No match should not return an empty Provider, just null
   if (!route || path === null) return null
   return (
-    <BasePathContext.Provider value={basePath}>
-      <PathContext.Provider value={path}>{route}</PathContext.Provider>
-    </BasePathContext.Provider>
+    <RouterProvider basePath={basePath} path={path}>
+      {route}
+    </RouterProvider>
   )
 }
 
 function useMatchRoute(
-  routes: RouteParams,
+  routes: { [key: string]: (...props: any) => JSX.Element },
   path: string | null,
   {
     routeProps,
@@ -83,17 +97,61 @@ function useMatchRoute(
   )
 }
 
-export function usePathParams<T extends Record<string, string>>(
-  routes: string | string[],
+export function usePathParams<Path extends string>(
+  route: Path,
+  options?: PathParamOptions
+): NonEmptyRecord<ExtractPathParams<Path extends `${infer P1}*` ? P1 : Path>> | null
+export function usePathParams<Path extends string>(
+  routes: ReadonlyArray<Path>,
+  options?: PathParamOptions
+):
+  | ValueOf<
+      {
+        [P in typeof routes[number]]: [
+          P,
+          NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+        ]
+      }
+    >
+  | [null, null]
+export function usePathParams<Params extends ReadonlyArray<string> | string>(
+  routes: Params,
   options: PathParamOptions = {}
-): [string, T] | [null, null] {
-  const [path, matchers] = usePathOptions(routes, options)
-  if (path === null) return emptyPathResult
+): Params extends ReadonlyArray<string>
+  ?
+      | ValueOf<
+          {
+            [P in typeof routes[number]]: [
+              P,
+              NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+            ]
+          }
+        >
+      | [null, null]
+  : Params extends string
+  ? NonEmptyRecord<ExtractPathParams<Params extends `${infer P1}*` ? P1 : Params>> | null
+  : never {
+  const isSingle = !Array.isArray(routes)
+  const [path, matchers] = usePathOptions(routes as string | string[], options)
+
+  // @ts-expect-error inference is not carried forward and I don't know how to resolve this type
+  if (path === null) return isSingle ? null : emptyPathResult
 
   const [routeMatch, props] = getMatchParams(path, matchers)
+  // @ts-expect-error inference is not carried forward and I don't know how to resolve this type
+  if (!routeMatch) return isSingle ? null : emptyPathResult
 
-  if (!routeMatch) return emptyPathResult
-  return [routeMatch.path, props] as [string, T]
+  // @ts-expect-error inference is not carried forward and I don't know how to resolve this type
+  return isSingle
+    ? props
+    : ([routeMatch.path, props] as ValueOf<
+        {
+          [P in typeof routes[number]]: [
+            P,
+            NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+          ]
+        }
+      >)
 }
 
 export function useMatch(routes: string | string[], options: PathParamOptions = {}): string | null {
@@ -109,7 +167,6 @@ function usePathOptions(
 ): [string | null, RouteMatcher[]] {
   const routes = (!Array.isArray(routeOrRoutes) ? [routeOrRoutes] : routeOrRoutes) as string[]
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const matchers = useMatchers(routes)
 
   return [trailingMatch(usePath(basePath), matchTrailingSlash), matchers]
@@ -147,7 +204,7 @@ function createRouteMatcher(path: string): RouteMatcher {
   return {
     path,
     regex: new RegExp(
-      `${path.substr(0, 1) === '*' ? '' : '^'}${path
+      `${path.substr(0, 1) === '*' ? '' : '^'}${escapeRegExp(path)
         .replace(/:[a-zA-Z]+/g, '([^/]+)')
         .replace(/\*/g, '')}${path.substr(-1) === '*' ? '' : '$'}`,
       'i'
@@ -194,4 +251,10 @@ function trailingMatch(path: string | null, matchTrailingSlash: boolean): string
     path = path.substring(0, path.length - 1)
   }
   return path
+}
+
+// Taken from: https://stackoverflow.com/a/3561711
+// modified to NOT ESCAPE "/" and "*" since we use those as path parts
+function escapeRegExp(string: string): string {
+  return string.replace(/[-\\^$+?.()|[\]{}]/g, '\\$&')
 }

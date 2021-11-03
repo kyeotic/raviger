@@ -11,10 +11,12 @@ A hook for extracting the path parameters from a path or array of paths. It uses
 In most use cases `useRoutes` is a better way to provide components with their path parameters as it centralizes the routing knowledge in your application and reduces the dependency of individual pages on the url structure. `usePathParams` also does not establish React Contexts for `usePath` and `useBasePath` like `useRoutes` does; it is not a *routing* hook, it is a *path* hook.
 
 ```ts
-function usePathParams<T extends Record<string, unknown>>(
-  routes: string | string[],
+// This is a simplified type contract, the real one is quite complex
+// It is not valid, but it concisely conveys the real input and ouput types 
+function usePathParams<T extends string | string[]>(
+  routes: T,
   options?: PathParamOption
-): [string, T] | [null, null]
+): T extends string[] ? [string, ExtractPathParams<T[keyof T]>] : ExtractPathParams<T>
 
 interface PathParamOptions {
   basePath?: string
@@ -27,23 +29,53 @@ interface PathParamOptions {
 * `basePath`: Override the `basePath` from the context, if any is present. (`'/'` can be used to clear any inherited `basePath`)
 * If `matchTrailingSlash` is true (which it is by default) a route with a `/` on the end will still match a defined route without a trialing slash. For example, `'/about': () => <About />` would match the path `/about/`. If `matchTrailingSlash` is false then a trailing slash will cause a match failure unless the defined route also has a trailing slash.
 
-## Matching paths
+## Matching a single path
 
-`usePathParams` accepts either a single string or an array of strings as the first parameter. In either case it returns an array of either `[null, null]` when no path matched, or `[path: string, props: T]` when a match was found.
-
-* `path` is `null` when the path did not match, and the path-pattern string when the path did match.
-* `props` is `null` when the path did not match, and an object containing the URL props when the path did match.
+When called with a single path pattern `usePathParams` returns either `null`, if the path didn't match, or an object with the extracted path parameters, if the path did match.
 
 ```tsx
-function NavBar () {
-  const [path, props] = useMatch(['/', '/user/:userId'])
+// with path = /home
+const props = useMatch('/users') // props === null
 
-  return {
-    <>
-      <Link href="/contact">Contact</Link>
-      { path !== '/' && <Link href="/home">Go Back</Link>}
-      { path === '/user/:userId' && <UserProfile id={props.userId}>}
-    </>
-  }
+// with path = /users
+const props = useMatch('/users') // props === {}
+
+// with path = /users/tester
+const props = useMatch('/users/:userId') // props === { userId: 'tester' }
+```
+
+## Matching multiple paths
+
+When called with an array of path patterns `usePathParams` returns `[null, null]`, if the path didn't math, or `[string, ExtractPathParams<T[keyof T]>]`, if the path did match. The path-matching return is the literal path-pattern that matched and the extracted path parameters.
+
+```tsx
+// with path = /home
+const [path, props] = useMatch(['/users']) // [null, null]
+
+// with path = /users
+const [path, props] = useMatch(['/users']) // ['/users', {}]
+
+// with path = /users/tester
+const [path, props] = useMatch('/users/:userId') // ['/users/:userId', { userId: 'tester' }]
+```
+
+## Community Contributions
+
+The `props` returned from either mode are strongly typed using the parameter names of the input. If you are using typescript you can get type checking by discriminating the `null` value, or the `path` when using the array input.
+
+```ts
+const params = usePathParams([
+  "/groups",
+  "/groups/:groupId",
+]);
+
+if (params[0] === "/groups") {
+  const props = params[1]; // {}
+}
+if (params[0] === "/groups/:groupId") {
+  const props = params[1]; // { groupId: string }
 }
 ```
+
+These typescript typings were contributed by [zoontek](https://github.com/kyeotic/raviger/pull/109#issuecomment-950228780). I am incredibly grateful for them.
+

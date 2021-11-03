@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - Unreleased
+### Changed
+- **BREAKING**:`usePath` returns `decodeURIComponent`-ed path
+- **BREAKING**:`useRoutes`, `useMatch`, and `usePathParams` match paths that have been `decodeURIComponent`-ed (e.g. `/weird (route)` will match a path of `/weird%20(route)`)
+- **BREAKING**: type `RouteParams` renamed to `Routes`
+- **BREAKING**: `usePathParams` return type now depends on the input params. When a string it returns just the props, when an array it returns `[path, props]`
+### Added
+- `RouterProvider`
+- generic overload for `useRoutes` that allows returning custom results
+- `excludeProviders` option to `useRoutes`
+### Fixed
+- `useRoutes` function-values to use props type `string` (was `any`)
+
 ## [2.6.0] - 2021-10-15
 ### Added
 - `useMatch` hook

@@ -6,7 +6,7 @@ nav_order: 1
 
 # `useRoutes`
 
-This hook is the main entry point for an application using raviger.
+This hook is the main entry point for an application using raviger. Returns the result of matching against a route (wrapped in a [RouterProvider]/router-provider), or `null` of no match was found.
 
 ## API
 
@@ -126,4 +126,3 @@ export default function App() {
   )
 }
 ```
-
