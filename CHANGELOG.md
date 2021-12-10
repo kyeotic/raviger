@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING**: `usePathParams` return type now depends on the input params. When a string it returns just the props, when an array it returns `[path, props]`
 ### Added
 - `RouterProvider`
-- `excludeProviders` option to `useRoutes`
 ### Fixed
 - `useRoutes` function-values to use props type `string` (was `any`)
 
