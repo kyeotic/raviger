@@ -14,48 +14,32 @@ import {
 export interface NavigateWithReplace {
   (url: string, replace?: boolean): void
 }
-export interface NavigateWithQuery {
-  (url: string, query?: QueryParam | URLSearchParams, replace?: boolean): void
+
+export interface NavigateOptions {
+  /**
+   * Use a `replace` instead of `push` for navigation
+   * @default false */
+  replace?: boolean
+  /** Values to serialize as a querystring, which will be appended to the `url` */
+  query?: QueryParam | URLSearchParams
+  /**  value to pass as the state/data to history push/replace*/
+  state?: unknown
 }
 
 let lastPath = ''
 
-export function navigate(url: string): void
-export function navigate(url: string, replace: boolean): void
-export function navigate(url: string, query: QueryParam | URLSearchParams): void
-export function navigate(url: string, query: QueryParam | URLSearchParams, replace: boolean): void
-export function navigate(
-  url: string,
-  queryOrReplace?: QueryParam | URLSearchParams | boolean | null,
-  replace?: boolean
-): void
-export function navigate(
-  url: string,
-  query: QueryParam | URLSearchParams,
-  replace: boolean,
-  state: unknown
-): void
-export function navigate(
-  url: string,
-  replaceOrQuery?: QueryParam | URLSearchParams | boolean | null,
-  replace?: boolean,
-  state: unknown = null
-): void {
+export function navigate(url: string, options?: NavigateOptions): void {
   if (typeof url !== 'string') {
     throw new Error(`"url" must be a string, was provided a(n) ${typeof url}`)
   }
 
-  if (Array.isArray(replaceOrQuery)) {
-    throw new Error('"replaceOrQuery" must be boolean, object, or URLSearchParams')
+  if (Array.isArray(options?.query)) {
+    throw new Error('"query" a serializable object or URLSearchParams')
   }
 
   if (shouldCancelNavigation()) return
-  if (replaceOrQuery !== null && typeof replaceOrQuery === 'object') {
-    url += '?' + new URLSearchParams(replaceOrQuery).toString()
-  } else if (replace === undefined && replaceOrQuery !== undefined) {
-    replace = replaceOrQuery ?? undefined
-  } else if (replace === undefined && replaceOrQuery === undefined) {
-    replace = false
+  if (options?.query) {
+    url += '?' + new URLSearchParams(options.query).toString()
   }
 
   lastPath = url
@@ -67,8 +51,8 @@ export function navigate(
     return
   }
 
-  if (replace) window.history.replaceState(state, '', url)
-  else window.history.pushState(state, '', url)
+  if (options?.replace) window.history.replaceState(options?.state, '', url)
+  else window.history.pushState(options?.state, '', url)
 
   const event = new PopStateEvent('popstate')
   // Tag the event so navigation can be filtered out from browser events
@@ -111,13 +95,13 @@ function cancelNavigation(event: BeforeUnloadEvent, prompt: string) {
   return prompt
 }
 
-export function useNavigate(optBasePath = ''): NavigateWithReplace & NavigateWithQuery {
+export function useNavigate(optBasePath = ''): typeof navigate {
   const basePath = useBasePath()
-  const navigateWithBasePath = useCallback<NavigateWithReplace & NavigateWithQuery>(
-    (url: string, replaceOrQuery?: boolean | QueryParam | URLSearchParams, replace?: boolean) => {
+  const navigateWithBasePath = useCallback<typeof navigate>(
+    (url: string, options?: NavigateOptions) => {
       const base = optBasePath || basePath
       const href = url.startsWith('/') ? base + url : url
-      navigate(href, replaceOrQuery, replace)
+      navigate(href, options)
     },
     [basePath, optBasePath]
   )
