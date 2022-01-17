@@ -74,4 +74,4 @@ export async function createUser () {
 
 ## Detecting `navigate` events
 
-`navigate` has two modes: intra-domain navigation and extra-domain navigation. When navigating outside the current origin navigation is done directly, and no `popstate` event is dispatched. When navigating to the current origin a custom `popstate` event is dispatched. a `__tag: 'raviger:navigation'` property is attached to help programmatically distinguish these events from `popstate` events dispatched from other sources, such as the browser **back button**.
+`navigate` has two modes: intra-domain navigation and extra-domain navigation. When navigating outside the current origin navigation is done directly, and no `popstate` event is dispatched. When navigating to the current origin a custom `popstate` event is dispatched. The event has a `__tag: 'raviger:navigation'` property is attached to help programmatically distinguish these events from `popstate` events dispatched from other sources, such as the browser **back button**.
