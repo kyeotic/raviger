@@ -272,4 +272,19 @@ describe('navigate', () => {
 
     navigate(currentHref)
   })
+  test('navigate dispatches custom event', () => {
+    window.history.replaceState = jest.fn()
+    window.history.pushState = jest.fn()
+
+    const listen = jest.fn()
+
+    window.addEventListener('popstate', listen)
+
+    navigate('/foo')
+
+    window.removeEventListener('popstate', listen)
+
+    expect(listen).toHaveBeenCalledWith(expect.objectContaining({ __tag: 'raviger:navigation' }))
+    jest.clearAllMocks()
+  })
 })

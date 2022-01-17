@@ -70,7 +70,10 @@ export function navigate(
   if (replace) window.history.replaceState(state, '', url)
   else window.history.pushState(state, '', url)
 
-  dispatchEvent(new PopStateEvent('popstate'))
+  const event = new PopStateEvent('popstate')
+  // Tag the event so navigation can be filtered out from browser events
+  ;(event as any).__tag = 'raviger:navigation'
+  dispatchEvent(event)
 }
 
 export function useNavigationPrompt(predicate = true, prompt: string = defaultPrompt): void {
