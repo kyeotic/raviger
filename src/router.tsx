@@ -2,7 +2,7 @@ import React, { useMemo, useState, useLayoutEffect } from 'react'
 
 import { RouterProvider } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
-import { getFormattedPath, usePath } from './path'
+import { getFormattedPath, usePath } from './location'
 import type { NonEmptyRecord, Split, ValueOf } from './types'
 
 const emptyPathResult: [null, null] = [null, null]

@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react'
 
-import { getCurrentHash, usePath } from './path'
+import { getCurrentHash, usePath } from './location'
 import { navigate } from './navigate'
 import { QueryParam, useQueryParams } from './querystring'
 

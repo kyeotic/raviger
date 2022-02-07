@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 
 import { navigate } from './navigate'
 import { isNode, getSsrPath } from './node'
-import { getCurrentPath, getCurrentHash, useLocationChange } from './path'
+import { getCurrentPath, getCurrentHash, usePathChange } from './location'
 
 export interface QueryParam {
   [key: string]: any
@@ -34,7 +34,7 @@ export function useQueryParams<T extends QueryParam>(
   // Update state when route changes
   const updateQuery = useCallback(() => setQuerystring(getQueryString()), [])
 
-  useLocationChange(updateQuery)
+  usePathChange(updateQuery)
   return [parseFn(querystring), setQueryParams]
 }
 

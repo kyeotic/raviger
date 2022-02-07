@@ -6,9 +6,29 @@ import { getSsrPath, isNode } from './node'
 import { shouldCancelNavigation } from './intercept'
 import { isFunction } from './typeChecks'
 
+export interface RavigerLocation {
+  pathname: string | null
+  basePath?: string
+  search: string
+  host: string
+  hostname: string
+  href: string
+  origin: string
+}
+
+export interface RavigerHistory {
+  scrollRestoration: 'auto' | 'manual'
+  state: unknown
+}
+
 export interface LocationChangeSetFn {
+  (path: RavigerLocation): void
+}
+
+export interface PathChangeSetFn {
   (path: string | null): void
 }
+
 export interface LocationChangeOptionParams {
   inheritBasePath?: boolean
   basePath?: string
@@ -21,13 +41,20 @@ export function usePath(basePath?: string): string | null {
   const contextBasePath = useBasePath() // hooks can't be called conditionally
   basePath = basePath || contextBasePath
 
-  const [path, setPath] = useState(getFormattedPath(basePath))
-  useLocationChange((newPath) => setPath(newPath), {
+  // Don't bother tracking the actual path, it can get out of sync
+  // due to React parent/child render ordering, especially with onmount navigation
+  // See issues:
+  // https://github.com/kyeotic/raviger/issues/116
+  // https://github.com/kyeotic/raviger/issues/64
+  //
+  // This is just used to force a re-render
+  const [, setPath] = useState(getFormattedPath(basePath))
+  usePathChange((newPath) => setPath(newPath), {
     basePath,
     inheritBasePath: !basePath,
   })
 
-  return contextPath || path
+  return contextPath || getFormattedPath(basePath)
 }
 
 export function useBasePath(): string {
@@ -36,7 +63,7 @@ export function useBasePath(): string {
 
 export function useFullPath(): string {
   const [path, setPath] = useState<string | null>(getCurrentPath())
-  useLocationChange(setPath, { inheritBasePath: false })
+  usePathChange(setPath, { inheritBasePath: false })
 
   return path || '/'
 }
@@ -53,7 +80,7 @@ export function useHash({ stripHash = true } = {}): string {
     return () => window.removeEventListener('hashchange', handleHash)
   }, [handleHash])
 
-  useLocationChange(handleHash)
+  usePathChange(handleHash)
   return stripHash ? hash.substring(1) : hash
 }
 
@@ -68,6 +95,16 @@ export function getCurrentHash(): string {
     return path.substring(hashIndex)
   }
   return window.location.hash
+}
+
+export function usePathChange(
+  setFn: PathChangeSetFn,
+  options: LocationChangeOptionParams = {}
+): void {
+  useLocationChange(
+    useCallback((location: RavigerLocation) => setFn(location.pathname), [setFn]),
+    options
+  )
 }
 
 export function useLocationChange(
@@ -101,7 +138,7 @@ export function useLocationChange(
     // No predicate defaults true
     if (isActive !== undefined && !isPredicateActive(isActive)) return
     if (shouldCancelNavigation()) return
-    setRef.current(getFormattedPath(basePath))
+    setRef.current(getFormattedLocation(basePath))
   }, [isActive, basePath])
 
   useLayoutEffect(() => {
@@ -114,13 +151,25 @@ export function useLocationChange(
   useMountedLayout(
     () => {
       if (isActive !== undefined && !isPredicateActive(isActive)) return
-      setRef.current(getFormattedPath(basePath))
+      setRef.current(getFormattedLocation(basePath))
     },
     [basePath, isActive],
     { onInitial }
   )
+}
 
-  /* eslint-enable react-hooks/rules-of-hooks */
+export function useHistory(): RavigerHistory {
+  const [history, setHistory] = useState(getRavigerHistory())
+  useLocationChange(useCallback(() => setHistory(getRavigerHistory()), [setHistory]))
+  return history
+}
+
+function getRavigerHistory(): RavigerHistory {
+  if (isNode) return { scrollRestoration: 'manual', state: null }
+  return {
+    scrollRestoration: window.history.scrollRestoration,
+    state: window.history.state,
+  }
 }
 
 /**
@@ -134,6 +183,18 @@ export function getFormattedPath(basePath: string): string | null {
   const baseMissing = basePath && !isPathInBase(basePath, path)
   if (path === null || baseMissing) return null
   return decodeURIComponent(!basePath ? path : path.replace(basePathMatcher(basePath), '') || '/')
+}
+
+function getFormattedLocation(basePath: string): RavigerLocation {
+  return {
+    basePath,
+    pathname: getFormattedPath(basePath),
+    search: window.location.search,
+    host: window.location.host,
+    hostname: window.location.hostname,
+    href: window.location.href,
+    origin: window.location.origin,
+  }
 }
 
 function isPredicateActive(predicate: boolean | (() => boolean)): boolean {

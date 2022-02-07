@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect } from 'react'
 
-import { useBasePath } from './path'
+import { useBasePath } from './location'
 import { isNode } from './node'
 import type { QueryParam } from './querystring'
 import {
@@ -10,10 +10,6 @@ import {
   defaultPrompt,
   undoNavigation,
 } from './intercept'
-
-export interface NavigateWithReplace {
-  (url: string, replace?: boolean): void
-}
 
 export interface NavigateOptions {
   /**
