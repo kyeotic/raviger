@@ -7,7 +7,6 @@ import {
   useRoutes,
   useHash,
   PathChangeSetFn,
-  LocationChangeSetFn,
   RouteParams,
 } from '../src/main'
 
