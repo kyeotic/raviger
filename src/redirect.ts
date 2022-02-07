@@ -55,7 +55,7 @@ export function useRedirect(
 
   useLayoutEffect(() => {
     if (currentPath === predicateUrl) {
-      navigate(url, undefined, replace)
+      navigate(url, { replace })
     }
   }, [predicateUrl, url, replace, currentPath])
 }
