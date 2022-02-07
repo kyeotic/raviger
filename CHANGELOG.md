@@ -4,14 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - Unreleased
+### Added
+- `useHistory`
+- **BREAKING**: `useLocationChange` is a new hook that uses a `window.location`-like object instead of the _path_
+- `usePath`
+### Changed
+- **BREAKING**: `navigate` now has `options` object instead of overloads
+- **BREAKING**: `useNavigate` uses updated `navigate` params
+- **BREAKING**: `useLocationChange` has been renamed to `usePath`### Fixed
+### Fixed
+-  `usePath` getting an old path if `navigate` was called during the initial render
+
 ## [3.1.0] - 2022-01-17
 ### Added
 - `__tag` to the PopState events dispatched by `navigate`
 
 ## [3.0.0] - 2021-11-02
 ### Changed
-- **BREAKING**:`usePath` returns `decodeURIComponent`-ed path
-- **BREAKING**:`useRoutes`, `useMatch`, and `usePathParams` match paths that have been `decodeURIComponent`-ed (e.g. `/weird (route)` will match a path of `/weird%20(route)`)
+- **BREAKING**: `usePath` returns `decodeURIComponent`-ed path
+- **BREAKING**: `useRoutes`, `useMatch`, and `usePathParams` match paths that have been `decodeURIComponent`-ed (e.g. `/weird (route)` will match a path of `/weird%20(route)`)
 - **BREAKING**: type `RouteParams` renamed to `Routes`
 - **BREAKING**: `usePathParams` return type now depends on the input params. When a string it returns just the props, when an array it returns `[path, props]`
 ### Added
