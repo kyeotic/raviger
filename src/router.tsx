@@ -160,7 +160,6 @@ function usePathOptions(
   { basePath, matchTrailingSlash = true }: PathParamOptions
 ): [string | null, RouteMatcher[]] {
   const routes = (!Array.isArray(routeOrRoutes) ? [routeOrRoutes] : routeOrRoutes) as string[]
-
   const matchers = useMatchers(routes)
 
   return [trailingMatch(usePath(basePath), matchTrailingSlash), matchers]
