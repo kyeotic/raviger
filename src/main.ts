@@ -17,6 +17,7 @@ export {
   useBasePath,
   usePathChange,
   useLocationChange,
+  useHistory,
 } from './location'
 export type { PathChangeSetFn, LocationChangeSetFn, LocationChangeOptionParams } from './location'
 
