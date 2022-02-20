@@ -7,12 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.0.0] - Unreleased
 ### Added
 - `useHistory`
-- **BREAKING**: `useLocationChange` is a new hook that uses a `window.location`-like object instead of the _path_
 - `usePath`
 ### Changed
 - **BREAKING**: `navigate` now has `options` object instead of overloads
 - **BREAKING**: `useNavigate` uses updated `navigate` params
-- **BREAKING**: `useLocationChange` has been renamed to `usePath`### Fixed
+- **BREAKING**: `useLocationChange` now invokes the setter with a `RavigerLocation` object instead of the `path` string
 ### Fixed
 -  `usePath` getting an old path if `navigate` was called during the initial render
 

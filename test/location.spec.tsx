@@ -1,32 +1,24 @@
 import React, { useCallback, useEffect } from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
-import {
-  navigate,
-  usePathChange,
-  usePath,
-  useRoutes,
-  useHash,
-  PathChangeSetFn,
-  RouteParams,
-} from '../src/main'
+import { navigate, useLocationChange, usePath, useRoutes, useHash, RouteParams } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
 })
 
-describe('usePathChange', () => {
+describe('useLocationChange', () => {
   function Route({
     onChange,
     isActive,
     basePath,
     onInitial = false,
   }: {
-    onChange: PathChangeSetFn
+    onChange: (path: string) => void
     isActive?: boolean
     basePath?: string
     onInitial?: boolean
   }) {
-    usePathChange(onChange, { isActive, basePath, onInitial })
+    useLocationChange(({ path }) => onChange(path), { isActive, basePath, onInitial })
     return null
   }
   test("setter doesn't get updated on mount", async () => {

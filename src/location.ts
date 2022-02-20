@@ -7,9 +7,15 @@ import { shouldCancelNavigation } from './intercept'
 import { isFunction } from './typeChecks'
 
 export interface RavigerLocation {
+  /** The current path; alias of `pathname` */
+  path: string | null
+  /** The current path; alias of `path` */
   pathname: string | null
+  /** The full path, ignores any `basePath` in the context */
+  fullPath: string
   basePath?: string
   search: string
+  hash: string
   host: string
   hostname: string
   href: string
@@ -22,13 +28,8 @@ export interface RavigerHistory {
 }
 
 export interface LocationChangeSetFn {
-  (path: RavigerLocation): void
+  (location: RavigerLocation): void
 }
-
-export interface PathChangeSetFn {
-  (path: string | null): void
-}
-
 export interface LocationChangeOptionParams {
   inheritBasePath?: boolean
   basePath?: string
@@ -49,7 +50,8 @@ export function usePath(basePath?: string): string | null {
   //
   // This is just used to force a re-render
   const [, setPath] = useState(getFormattedPath(basePath))
-  usePathChange((newPath) => setPath(newPath), {
+  const onChange = useCallback(({ path: newPath }) => setPath(newPath), [])
+  useLocationChange(onChange, {
     basePath,
     inheritBasePath: !basePath,
   })
@@ -63,24 +65,28 @@ export function useBasePath(): string {
 
 export function useFullPath(): string {
   const [path, setPath] = useState<string | null>(getCurrentPath())
-  usePathChange(setPath, { inheritBasePath: false })
+  const onChange = useCallback(({ path: newPath }) => setPath(newPath), [])
+  useLocationChange(onChange, { inheritBasePath: false })
 
   return path || '/'
 }
 
 export function useHash({ stripHash = true } = {}): string {
   const [hash, setHash] = useState(window.location.hash)
-  const handleHash = useCallback(() => {
-    if (window.location.hash === hash) return
-    setHash(window.location.hash)
-  }, [setHash, hash])
+  const handleHash = useCallback(
+    ({ hash: newHash }) => {
+      if (newHash === hash) return
+      setHash(newHash)
+    },
+    [setHash, hash]
+  )
 
   useLayoutEffect(() => {
     window.addEventListener('hashchange', handleHash, false)
     return () => window.removeEventListener('hashchange', handleHash)
   }, [handleHash])
 
-  usePathChange(handleHash)
+  useLocationChange(handleHash)
   return stripHash ? hash.substring(1) : hash
 }
 
@@ -95,16 +101,6 @@ export function getCurrentHash(): string {
     return path.substring(hashIndex)
   }
   return window.location.hash
-}
-
-export function usePathChange(
-  setFn: PathChangeSetFn,
-  options: LocationChangeOptionParams = {}
-): void {
-  useLocationChange(
-    useCallback((location: RavigerLocation) => setFn(location.pathname), [setFn]),
-    options
-  )
 }
 
 export function useLocationChange(
@@ -186,10 +182,14 @@ export function getFormattedPath(basePath: string): string | null {
 }
 
 function getFormattedLocation(basePath: string): RavigerLocation {
+  const path = getFormattedPath(basePath)
   return {
     basePath,
-    pathname: getFormattedPath(basePath),
+    path,
+    pathname: path,
+    fullPath: getCurrentPath(),
     search: window.location.search,
+    hash: getCurrentHash(),
     host: window.location.host,
     hostname: window.location.hostname,
     href: window.location.href,

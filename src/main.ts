@@ -15,11 +15,10 @@ export {
   useHash,
   useFullPath,
   useBasePath,
-  usePathChange,
   useLocationChange,
   useHistory,
 } from './location'
-export type { PathChangeSetFn, LocationChangeSetFn, LocationChangeOptionParams } from './location'
+export type { LocationChangeSetFn, LocationChangeOptionParams } from './location'
 
 export { useQueryParams } from './querystring'
 export type { QueryParam, setQueryParamsOptions } from './querystring'
