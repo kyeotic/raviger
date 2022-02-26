@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 
 import { RouterProvider } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
-import { /* getFormattedPath, */ usePath } from './location'
+import { getFormattedPath, usePath } from './location'
 import type { NonEmptyRecord, Split, ValueOf } from './types'
 
 const emptyPathResult: [null, null] = [null, null]
@@ -53,12 +53,10 @@ export function useRoutes<Path extends string>(
     If usePath returns latest it causes render thrashing
     If useRoutes hacks itself into the latest path nothing bad happens (...afaik)
   */
-
-  const path = usePath(basePath)
+  const path = usePath(basePath) && getFormattedPath(basePath)
 
   // Handle potential <Redirect /> use in routes
-  // console.log('pre-detect', path, usePath(basePath), getFormattedPath(basePath))
-  // useRedirectDetection(basePath, usePath(basePath))
+  useRedirectDetection(basePath, usePath(basePath))
 
   // Get the current route
   const route = useMatchRoute(routes, path, {
@@ -229,16 +227,16 @@ function hashParams(params: string[]): string {
 // the `navigate` call in useRedirect *does* cause usePath/useLocationChange
 // to fire, but without this hack useRoutes suppresses the update
 // TODO: find a better way to cause a synchronous update from useRoutes
-// function useRedirectDetection(basePath: string, path: string | null) {
-//   const [, updateState] = useState({})
-//   const forceRender = useCallback(() => updateState({}), [])
+function useRedirectDetection(basePath: string, path: string | null) {
+  const [, updateState] = useState({})
+  const forceRender = useCallback(() => updateState({}), [])
 
-//   useLayoutEffect(() => {
-//     if (path !== getFormattedPath(basePath)) {
-//       forceRender()
-//     }
-//   }, [forceRender, basePath, path])
-// }
+  useLayoutEffect(() => {
+    if (path !== getFormattedPath(basePath)) {
+      forceRender()
+    }
+  }, [forceRender, basePath, path])
+}
 
 function trailingMatch(path: string | null, matchTrailingSlash: boolean): string | null {
   if (path === null) return path
