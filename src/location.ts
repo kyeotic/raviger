@@ -54,6 +54,8 @@ export function usePath(basePath?: string): string | null {
   useLocationChange(onChange, {
     basePath,
     inheritBasePath: !basePath,
+    // Use on initial to handle to force state updates from on-mount navigation
+    onInitial: true,
   })
 
   return contextPath || getFormattedPath(basePath)

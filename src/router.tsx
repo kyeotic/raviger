@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useLayoutEffect } from 'react'
+import React, { useMemo } from 'react'
 
 import { RouterProvider } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
-import { getFormattedPath, usePath } from './location'
+import { /* getFormattedPath, */ usePath } from './location'
 import type { NonEmptyRecord, Split, ValueOf } from './types'
 
 const emptyPathResult: [null, null] = [null, null]
@@ -54,10 +54,11 @@ export function useRoutes<Path extends string>(
     If useRoutes hacks itself into the latest path nothing bad happens (...afaik)
   */
 
-  const path = usePath(basePath) && getFormattedPath(basePath)
+  const path = usePath(basePath)
 
   // Handle potential <Redirect /> use in routes
-  useRedirectDetection(basePath, path)
+  // console.log('pre-detect', path, usePath(basePath), getFormattedPath(basePath))
+  // useRedirectDetection(basePath, usePath(basePath))
 
   // Get the current route
   const route = useMatchRoute(routes, path, {
@@ -228,14 +229,16 @@ function hashParams(params: string[]): string {
 // the `navigate` call in useRedirect *does* cause usePath/useLocationChange
 // to fire, but without this hack useRoutes suppresses the update
 // TODO: find a better way to cause a synchronous update from useRoutes
-function useRedirectDetection(basePath: string, path: string | null) {
-  const [, forceRender] = useState(false)
-  useLayoutEffect(() => {
-    if (path !== getFormattedPath(basePath)) {
-      forceRender((s) => !s)
-    }
-  }, [basePath, path])
-}
+// function useRedirectDetection(basePath: string, path: string | null) {
+//   const [, updateState] = useState({})
+//   const forceRender = useCallback(() => updateState({}), [])
+
+//   useLayoutEffect(() => {
+//     if (path !== getFormattedPath(basePath)) {
+//       forceRender()
+//     }
+//   }, [forceRender, basePath, path])
+// }
 
 function trailingMatch(path: string | null, matchTrailingSlash: boolean): string | null {
   if (path === null) return path
