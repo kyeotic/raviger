@@ -1,5 +1,5 @@
 let ssrPath = '/'
-let isNode = true // eslint-disable-line import/no-mutable-exports
+let isNode = true
 try {
   isNode = window === undefined
 } catch (e) {} // eslint-disable-line no-empty

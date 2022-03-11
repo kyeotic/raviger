@@ -12,6 +12,7 @@ export interface PathParamOptions {
   matchTrailingSlash?: boolean
 }
 export interface RouteOptionParams extends PathParamOptions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   routeProps?: { [k: string]: any }
   overridePathParams?: boolean
 }
@@ -75,6 +76,7 @@ export function useRoutes<Path extends string>(
 }
 
 function useMatchRoute(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   routes: { [key: string]: (...props: any) => JSX.Element },
   path: string | null,
   {
@@ -182,6 +184,7 @@ function getMatchParams(
   })
 
   if (!routeMatch || pathParams === null) return emptyPathResult
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const props = routeMatch.props.reduce((props: any, prop, i) => {
     // The following `match` can't be null because the above return asserts it
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

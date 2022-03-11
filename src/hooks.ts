@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 
 export function useMountedLayout(
-  fn: () => any,
+  fn: () => unknown,
   deps: React.DependencyList | undefined,
   { onInitial = false } = {}
 ): void {

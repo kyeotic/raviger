@@ -5,6 +5,7 @@ import { isNode, getSsrPath } from './node'
 import { getCurrentPath, getCurrentHash, useLocationChange } from './location'
 
 export interface QueryParam {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
 

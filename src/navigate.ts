@@ -52,6 +52,7 @@ export function navigate(url: string, options?: NavigateOptions): void {
 
   const event = new PopStateEvent('popstate')
   // Tag the event so navigation can be filtered out from browser events
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(event as any).__tag = 'raviger:navigation'
   dispatchEvent(event)
 }

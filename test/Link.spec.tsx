@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef } from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
 
