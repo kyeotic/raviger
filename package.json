@@ -36,7 +36,7 @@
     "build": "run-s build:clean build:compile",
     "build:watch": "rollup -c --watch",
     "example": "npm run start --prefix example",
-    "test": "jest --maxWorkers=1",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:coverage:open": "run-s test:coverage coverage:report",
@@ -70,7 +70,7 @@
     }
   ],
   "np": {
-    "yarn": false
+    "yarn": true
   },
   "devDependencies": {
     "@kyeotic/eslint-config": "^2.0.1",
