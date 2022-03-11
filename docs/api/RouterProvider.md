@@ -1,7 +1,7 @@
 ---
 title: "RouterProvider"
 permalink: /router-provider/
-nav_order: 99
+nav_order: 59
 ---
 
 # STOP

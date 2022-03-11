@@ -11,12 +11,18 @@ This function causes programmatic navigation and causes all **raviger** hooks to
 ## API
 
 ```typescript
-export function navigate(url: string, replace?: boolean): void
 export function navigate(
   url: string,
-  query?: QueryParam | URLSearchParams,
-  replace?: boolean,
-  state?: unknown
+  options?: {
+    /**
+     * Use a `replace` instead of `push` for navigation
+     * @default false */
+    replace?: boolean
+    /** Values to serialize as a querystring, which will be appended to the `url` */
+    query?: QueryParam | URLSearchParams
+    /**  value to pass as the state/data to history push/replace*/
+    state?: unknown
+  }
 ): void
 ```
 
@@ -42,33 +48,33 @@ import { navigate } from 'raviger'
 
 export async function createUser () {
   let user = await createUser()
-  navigate(`/users/${user.id}`, true)
+  navigate(`/users/${user.id}`, { replace: true })
 }
 ```
 
 ## Navigating with Query Params
 
-To navigate with a serialized query string pass an object as the second parameter.
+To navigate with a serialized query string pass an object to the `query` option.
 
 ```jsx
 import { navigate } from 'raviger'
 
 export async function createUser () {
   let user = await createUser()
-  navigate(`/users/${user.id}` { ref: 'create page' })
+  navigate(`/users/${user.id}`, { query: { ref: 'create page' }})
 }
 ```
 
 ## Navigating with History State
 
-By default the `state` is `null`. You can control the `state` passed to `history.pushState | history.replaceState` using the fourth parameter
+By default the `state` is `null`. You can control the `state` passed to `history.pushState | history.replaceState` using the `state` option.
 
 ```jsx
 import { navigate } from 'raviger'
 
 export async function createUser () {
   let user = await createUser()
-  navigate(`/users/${user.id}`, undefined, undefined, { user: user })
+  navigate(`/users/${user.id}`, { state: { user: user } })
 }
 ```
 

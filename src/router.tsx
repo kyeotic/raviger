@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useLayoutEffect } from 'react'
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 
 import { RouterProvider } from './context'
 import { isNode, setSsrPath, getSsrPath } from './node'
-import { getFormattedPath, usePath } from './path'
+import { getFormattedPath, usePath } from './location'
 import type { NonEmptyRecord, Split, ValueOf } from './types'
 
 const emptyPathResult: [null, null] = [null, null]
@@ -53,11 +53,10 @@ export function useRoutes<Path extends string>(
     If usePath returns latest it causes render thrashing
     If useRoutes hacks itself into the latest path nothing bad happens (...afaik)
   */
-
   const path = usePath(basePath) && getFormattedPath(basePath)
 
   // Handle potential <Redirect /> use in routes
-  useRedirectDetection(basePath, path)
+  useRedirectDetection(basePath, usePath(basePath))
 
   // Get the current route
   const route = useMatchRoute(routes, path, {
@@ -160,7 +159,6 @@ function usePathOptions(
   { basePath, matchTrailingSlash = true }: PathParamOptions
 ): [string | null, RouteMatcher[]] {
   const routes = (!Array.isArray(routeOrRoutes) ? [routeOrRoutes] : routeOrRoutes) as string[]
-
   const matchers = useMatchers(routes)
 
   return [trailingMatch(usePath(basePath), matchTrailingSlash), matchers]
@@ -230,12 +228,14 @@ function hashParams(params: string[]): string {
 // to fire, but without this hack useRoutes suppresses the update
 // TODO: find a better way to cause a synchronous update from useRoutes
 function useRedirectDetection(basePath: string, path: string | null) {
-  const [, forceRender] = useState(false)
+  const [, updateState] = useState({})
+  const forceRender = useCallback(() => updateState({}), [])
+
   useLayoutEffect(() => {
     if (path !== getFormattedPath(basePath)) {
-      forceRender((s) => !s)
+      forceRender()
     }
-  }, [basePath, path])
+  }, [forceRender, basePath, path])
 }
 
 function trailingMatch(path: string | null, matchTrailingSlash: boolean): string | null {

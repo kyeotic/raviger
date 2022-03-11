@@ -1,15 +1,24 @@
-import * as React from 'react'
-import {} from 'react-dom'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import React from 'react'
 
-import { useRoutes, Link, usePath, useQueryParams, Redirect } from '../../src/main'
+import {
+  useRoutes,
+  Link,
+  usePath,
+  useQueryParams,
+  Redirect,
+  navigate,
+  useHistory,
+} from '../../src/main'
 import Nav from './Nav'
 import Form from './Form'
 
 const routes = {
-  '/': () => <span>Home</span>,
+  '/': () => <Home />,
   '/about': () => <span>about</span>,
   '/contact': () => <span>contact</span>,
   '/form': () => <Form />,
+  '/error': () => <Error />,
   '/weird (route)': () => <span>Weird Route</span>,
   '/users/:userId': ({ userId }: { userId: string }) => <span>User: {userId}</span>,
   '/filter': () => <Filter />,
@@ -20,11 +29,11 @@ const routes = {
 }
 
 let renders = 0
-const App = () => {
+function App(): JSX.Element {
   renders++
   const route = useRoutes(routes)
   const path = usePath()
-  // console.log('rendered', renders)
+  console.log('rendered', renders, route?.props?.children?.type?.name)
   return (
     <div>
       <Nav>
@@ -55,6 +64,69 @@ const App = () => {
 // }
 
 export default App
+
+function Home(): JSX.Element {
+  console.log('rendering Home')
+
+  return (
+    <div>
+      <p>Home</p>
+      <button
+        onClick={() => {
+          console.log('replace clicked, so navigating to /error')
+          navigate('/error', {
+            replace: true,
+            state: {
+              historyState: 'yes',
+            },
+          })
+        }}
+      >
+        Go to Error (Replace)
+      </button>
+      <button
+        onClick={() => {
+          console.log('push clicked, so navigating to /error')
+          navigate('/error', {
+            replace: false,
+            state: {
+              historyState: 'yes',
+            },
+          })
+        }}
+      >
+        Go to Error (Push)
+      </button>
+    </div>
+  )
+}
+
+function Error(): JSX.Element | null {
+  console.log('rendering /error')
+
+  const { state } = useHistory()
+
+  if (!state) {
+    console.log('no history state, so navigating to /')
+    navigate('/')
+    return null
+  }
+
+  return (
+    <div>
+      <p>Error</p>
+      <p>{JSON.stringify(state)}</p>
+      <button
+        onClick={() => {
+          console.log('button clicked, so navigating to /')
+          navigate('/')
+        }}
+      >
+        Go to main
+      </button>
+    </div>
+  )
+}
 
 const DeepAbout = () => (
   <Nav>

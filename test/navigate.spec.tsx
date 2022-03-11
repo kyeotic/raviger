@@ -27,7 +27,7 @@ describe('useNavigate', () => {
     return (
       <button
         onClick={() => {
-          navigateWithBasePath(newPath, query, replace)
+          navigateWithBasePath(newPath, { query, replace })
         }}
       >
         click to navigate
@@ -222,39 +222,39 @@ describe('navigate', () => {
     window.history.pushState = jest.fn()
     const url = '/foo'
 
-    navigate(url, false)
+    navigate(url, { replace: false })
     expect(window.history.pushState).toHaveBeenCalled()
     jest.clearAllMocks()
 
-    navigate(url, true)
+    navigate(url, { replace: true })
     expect(window.history.replaceState).toHaveBeenCalled()
     jest.clearAllMocks()
 
-    navigate(url, null, true)
+    navigate(url, { replace: true })
     expect(window.history.replaceState).toHaveBeenCalled()
     jest.clearAllMocks()
 
-    navigate(url, null, false)
+    navigate(url, { replace: false })
     expect(window.history.pushState).toHaveBeenCalled()
     jest.clearAllMocks()
 
-    navigate(url, undefined, true)
+    navigate(url, { replace: true })
     expect(window.history.replaceState).toHaveBeenCalled()
     jest.clearAllMocks()
 
-    navigate(url, undefined, false)
+    navigate(url, { replace: false })
     expect(window.history.pushState).toHaveBeenCalled()
     jest.clearAllMocks()
 
-    navigate(url, {})
+    navigate(url, { query: {} })
     expect(window.history.pushState).toHaveBeenCalled()
     jest.clearAllMocks()
 
-    navigate(url, {}, true)
+    navigate(url, { replace: true, query: {} })
     expect(window.history.replaceState).toHaveBeenCalled()
     jest.clearAllMocks()
 
-    navigate(url, {}, false)
+    navigate(url, { replace: false, query: {} })
     expect(window.history.pushState).toHaveBeenCalled()
     jest.clearAllMocks()
   })

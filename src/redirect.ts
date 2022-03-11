@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react'
 
-import { getCurrentHash, usePath } from './path'
+import { getCurrentHash, usePath } from './location'
 import { navigate } from './navigate'
 import { QueryParam, useQueryParams } from './querystring'
 
@@ -55,7 +55,7 @@ export function useRedirect(
 
   useLayoutEffect(() => {
     if (currentPath === predicateUrl) {
-      navigate(url, undefined, replace)
+      navigate(url, { replace })
     }
   }, [predicateUrl, url, replace, currentPath])
 }

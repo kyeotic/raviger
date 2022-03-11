@@ -21,6 +21,8 @@ export function RouterProvider({
   children?: React.ReactNode
 }): JSX.Element {
   return (
+    // The ordering here is important, the basePath will change less often
+    // So putting it on the outside reduces its need to re-render
     <BasePathContext.Provider value={basePath}>
       <PathContext.Provider value={path ?? null}>{children}</PathContext.Provider>
     </BasePathContext.Provider>

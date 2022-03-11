@@ -1,14 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import { render, act, fireEvent } from '@testing-library/react'
-import {
-  navigate,
-  useLocationChange,
-  usePath,
-  useRoutes,
-  useHash,
-  LocationChangeSetFn,
-  RouteParams,
-} from '../src/main'
+import { navigate, useLocationChange, usePath, useRoutes, useHash, RouteParams } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -21,12 +13,12 @@ describe('useLocationChange', () => {
     basePath,
     onInitial = false,
   }: {
-    onChange: LocationChangeSetFn
+    onChange: (path: string) => void
     isActive?: boolean
     basePath?: string
     onInitial?: boolean
   }) {
-    useLocationChange(onChange, { isActive, basePath, onInitial })
+    useLocationChange(({ path }) => onChange(path), { isActive, basePath, onInitial })
     return null
   }
   test("setter doesn't get updated on mount", async () => {
@@ -233,6 +225,39 @@ describe('usePath', () => {
     act(() => navigate('/about'))
 
     expect(getByTestId('path')).toHaveTextContent('not found')
+  })
+
+  test('has correct path after navigate during mount', async () => {
+    const trace = jest.fn()
+
+    const routes = {
+      '/': () => <Main />,
+      '/sub': () => <Sub />,
+    }
+
+    function App() {
+      const route = useRoutes(routes)
+
+      trace(usePath())
+
+      return route
+    }
+
+    function Main() {
+      return <span data-testid="render">main</span>
+    }
+
+    function Sub() {
+      navigate('/')
+      return <span data-testid="hash">sub</span>
+    }
+
+    act(() => navigate('/sub'))
+
+    const { getByTestId } = render(<App />)
+
+    expect(trace).toHaveBeenCalledWith('/')
+    expect(getByTestId('render')).toHaveTextContent('main')
   })
 })
 

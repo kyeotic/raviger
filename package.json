@@ -1,6 +1,6 @@
 {
   "name": "raviger",
-  "version": "3.1.0",
+  "version": "4.0.0-3",
   "description": "React routing with hooks",
   "keywords": [
     "react",
@@ -61,7 +61,7 @@
   "size-limit": [
     {
       "path": "dist/main.js",
-      "limit": "2.8kb"
+      "limit": "2.9kb"
     },
     {
       "webpack": false,
@@ -94,7 +94,7 @@
     "mkdirp": "^1.0.4",
     "np": "^7.5.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.3.2",
+    "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",

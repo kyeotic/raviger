@@ -1,7 +1,7 @@
 ---
 title: "useNavigationPrompt"
 permalink: /use-navigation-prompt/
-date: 2019-10-26T11:32:24-07:00
+nav_order: 58
 ---
 
 # `useNavigationPrompt`

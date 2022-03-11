@@ -348,7 +348,7 @@ describe('navigate', () => {
 
   test('allows query string objects', async () => {
     // console.log(URLSearchParams)
-    act(() => navigate('/', { q: 'name', env: 'test' }))
+    act(() => navigate('/', { query: { q: 'name', env: 'test' } }))
     expect(window.location.search).toContain('q=name')
     expect(window.location.search).toContain('env=test')
   })

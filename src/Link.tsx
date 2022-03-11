@@ -1,7 +1,7 @@
 import React, { useCallback, forwardRef, Ref } from 'react'
 
 import { navigate } from './navigate'
-import { useBasePath, useFullPath } from './path'
+import { useBasePath, useFullPath } from './location'
 
 export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string
