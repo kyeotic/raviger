@@ -35,13 +35,13 @@ When called with a single path pattern `usePathParams` returns either `null`, if
 
 ```tsx
 // with path = /home
-const props = useMatch('/users') // props === null
+const props = usePathParams('/users') // props === null
 
 // with path = /users
-const props = useMatch('/users') // props === {}
+const props = usePathParams('/users') // props === {}
 
 // with path = /users/tester
-const props = useMatch('/users/:userId') // props === { userId: 'tester' }
+const props = usePathParams('/users/:userId') // props === { userId: 'tester' }
 ```
 
 ## Matching multiple paths
@@ -50,13 +50,13 @@ When called with an array of path patterns `usePathParams` returns `[null, null]
 
 ```tsx
 // with path = /home
-const [path, props] = useMatch(['/users']) // [null, null]
+const [path, props] = usePathParams(['/users']) // [null, null]
 
 // with path = /users
-const [path, props] = useMatch(['/users']) // ['/users', {}]
+const [path, props] = usePathParams(['/users']) // ['/users', {}]
 
 // with path = /users/tester
-const [path, props] = useMatch('/users/:userId') // ['/users/:userId', { userId: 'tester' }]
+const [path, props] = usePathParams('/users/:userId') // ['/users/:userId', { userId: 'tester' }]
 ```
 
 ## Community Contributions
