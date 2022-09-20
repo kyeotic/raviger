@@ -198,4 +198,21 @@ describe('ActiveLink', () => {
     expect(getByTestId('link')).toHaveClass('active')
     expect(getByTestId('link')).toHaveClass('exact')
   })
+
+  test('empty classname on active link', async () => {
+    const { getByTestId } = render(
+      <ActiveLink href="/foo" activeClass="extra" exactActiveClass="double" data-testid="link">
+        go to foo
+      </ActiveLink>
+    )
+
+    act(() => navigate('/'))
+    expect(getByTestId('link')).not.toHaveAttribute('class')
+
+    act(() => navigate('/foo'))
+    expect(getByTestId('link')).toHaveAttribute('class', 'double extra')
+
+    act(() => navigate('/foo/bar'))
+    expect(getByTestId('link')).toHaveAttribute('class', 'extra')
+  })
 })
