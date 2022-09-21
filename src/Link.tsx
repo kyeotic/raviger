@@ -57,8 +57,10 @@ function ActiveLink(
   let { href } = props
   href = absolutePathName(getLinkHref(href, basePath))
 
-  if (exactActiveClass && fullPath === href) className += ` ${exactActiveClass}`
-  if (activeClass && fullPath.startsWith(href)) className += ` ${activeClass}`
+  if (exactActiveClass && fullPath === href)
+    className = `${className ?? ``} ${exactActiveClass}`.trim()
+  if (activeClass && fullPath.startsWith(href))
+    className = `${className ?? ``} ${activeClass}`.trim()
 
   return <RefLink {...props} basePath={basePath} className={className} ref={ref} />
 }
