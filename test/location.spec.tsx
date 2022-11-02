@@ -276,8 +276,9 @@ describe('useHash', () => {
   test('returns updated hash', async () => {
     act(() => navigate('/#test'))
     const { getByTestId } = render(<Route />)
-    act(() => navigate('/#updated'))
+    expect(getByTestId('hash')).toHaveTextContent('test')
 
+    act(() => navigate('/#updated'))
     expect(getByTestId('hash')).toHaveTextContent('updated')
   })
   test('returns hash without stripping when stripHash is false', async () => {
