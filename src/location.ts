@@ -75,13 +75,11 @@ export function useFullPath(): string {
 
 export function useHash({ stripHash = true } = {}): string {
   const [hash, setHash] = useState(window.location.hash)
-  const handleHash = useCallback(
-    ({ hash: newHash }) => {
-      if (newHash === hash) return
-      setHash(newHash)
-    },
-    [setHash, hash]
-  )
+  const handleHash = useCallback(() => {
+    const newHash = window.location.hash
+    if (newHash === hash) return
+    setHash(newHash)
+  }, [setHash, hash])
 
   useLayoutEffect(() => {
     window.addEventListener('hashchange', handleHash, false)

@@ -6,6 +6,7 @@ import {
   Link,
   usePath,
   useQueryParams,
+  useHash,
   Redirect,
   navigate,
   useHistory,
@@ -17,6 +18,7 @@ const routes = {
   '/': () => <Home />,
   '/about': () => <span>about</span>,
   '/contact': () => <span>contact</span>,
+  '/hash-debug': () => <HashDebug />,
   '/form': () => <Form />,
   '/error': () => <Error />,
   '/weird (route)': () => <span>Weird Route</span>,
@@ -41,6 +43,7 @@ function App(): JSX.Element {
         <Link href="/about">About</Link>
         <Link href="/contact">Contact</Link>
         <Link href="/form">Form</Link>
+        <Link href="/hash-debug">Hash Debug</Link>
         <Link href={`/${encodeURIComponent('weird (route)')}`}>Weird (Route)</Link>
         <Link href="/users/1">Tom</Link>
         <Link href="/users/2">Jane</Link>
@@ -97,6 +100,18 @@ function Home(): JSX.Element {
       >
         Go to Error (Push)
       </button>
+    </div>
+  )
+}
+
+function HashDebug() {
+  const hash = useHash()
+
+  return (
+    <div>
+      <p>current hash {hash}</p>
+      <a href="#first">First</a>
+      <a href="#second">Second</a>
     </div>
   )
 }
