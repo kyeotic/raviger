@@ -1,7 +1,5 @@
 # raviger
 
-
-
 <p align="center">
     <a href="https://bundlephobia.com/package/raviger@latest" alt="Bundlephobia">
         <img src="https://badgen.net/bundlephobia/min/raviger" /></a>
@@ -16,6 +14,7 @@
 
 Zero dependencies. Tiny footprint.
 
+> Note: Raviger is considered feature complete and will very likely receive only maintainace patches going forward.
 
 # Installation
 
