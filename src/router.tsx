@@ -11,10 +11,14 @@ export interface PathParamOptions {
   basePath?: string
   matchTrailingSlash?: boolean
 }
+export interface RouteMatcherOptions {
+  partRegex?: string
+}
 export interface RouteOptionParams extends PathParamOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   routeProps?: { [k: string]: any }
   overridePathParams?: boolean
+  matcherOpts?: RouteMatcherOptions
 }
 interface RouteMatcher {
   path: string
@@ -44,6 +48,7 @@ export function useRoutes<Path extends string>(
     routeProps = {},
     overridePathParams = true,
     matchTrailingSlash = true,
+    matcherOpts = {}
   }: RouteOptionParams = {}
 ): JSX.Element | null {
   /*
@@ -64,6 +69,7 @@ export function useRoutes<Path extends string>(
     routeProps,
     overridePathParams,
     matchTrailingSlash,
+    matcherOpts
   })
 
   // No match should not return an empty Provider, just null
@@ -83,10 +89,11 @@ function useMatchRoute(
     routeProps,
     overridePathParams,
     matchTrailingSlash,
-  }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean }
+    matcherOpts
+  }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean, matcherOpts: RouteMatcherOptions }
 ) {
   path = trailingMatch(path, matchTrailingSlash)
-  const matchers = useMatchers(Object.keys(routes))
+  const matchers = useMatchers(Object.keys(routes), matcherOpts)
 
   if (path === null) return null
   const [routeMatch, props] = getMatchParams(path, matchers)
@@ -158,17 +165,19 @@ export function useMatch(routes: string | string[], options: PathParamOptions = 
 
 function usePathOptions(
   routeOrRoutes: string | string[],
-  { basePath, matchTrailingSlash = true }: PathParamOptions
+  { basePath, matchTrailingSlash = true, matcherOpts }: PathParamOptions & { matcherOpts?: RouteMatcherOptions}
 ): [string | null, RouteMatcher[]] {
   const routes = (!Array.isArray(routeOrRoutes) ? [routeOrRoutes] : routeOrRoutes) as string[]
-  const matchers = useMatchers(routes)
+  const matchers = useMatchers(routes, matcherOpts)
 
   return [trailingMatch(usePath(basePath), matchTrailingSlash), matchers]
 }
 
-function useMatchers(routes: string[]): RouteMatcher[] {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(() => routes.map(createRouteMatcher), [hashParams(routes)])
+function useMatchers(routes: string[], opts?: RouteMatcherOptions): RouteMatcher[] {
+  return useMemo(() => {
+    return routes.map(route => createRouteMatcher(route, opts))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hashParams(routes)])
 }
 
 function getMatchParams(
@@ -195,16 +204,19 @@ function getMatchParams(
   return [routeMatch, props]
 }
 
-function createRouteMatcher(path: string): RouteMatcher {
+function createRouteMatcher(path: string, {
+  partRegex = ':[a-zA-Z]+'
+}: RouteMatcherOptions = {}): RouteMatcher {
+  const partMatcher = new RegExp(partRegex, 'g')
   return {
     path,
     regex: new RegExp(
       `${path.substr(0, 1) === '*' ? '' : '^'}${escapeRegExp(path)
-        .replace(/:[a-zA-Z]+/g, '([^/]+)')
+        .replace(partRegex, '([^/]+)')
         .replace(/\*/g, '')}${path.substr(-1) === '*' ? '' : '$'}`,
       'i'
     ),
-    props: (path.match(/:[a-zA-Z]+/g) ?? []).map((paramName) => paramName.substr(1)),
+    props: (partMatcher.exec(path) ?? []).map((paramName) => paramName.substr(1))
   }
 }
 
