@@ -212,7 +212,7 @@ function createRouteMatcher(path: string, {
     path,
     regex: new RegExp(
       `${path.substr(0, 1) === '*' ? '' : '^'}${escapeRegExp(path)
-        .replace(partRegex, '([^/]+)')
+        .replace(partMatcher, '([^/]+)')
         .replace(/\*/g, '')}${path.substr(-1) === '*' ? '' : '$'}`,
       'i'
     ),
