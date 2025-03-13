@@ -30,7 +30,7 @@
     "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --ext .js,.ts,.tsx --ignore-pattern node_modules/",
     "check": "npm run style && npm run lint",
     "check:ci": "npm run style:ci && npm run lint",
-    "build:clean": "rimraf dist %% mkdirp dist",
+    "build:clean": "rimraf dist && mkdirp dist",
     "build:compile": "rollup -c",
     "build:tsc": "tsc",
     "build": "run-s build:clean build:compile",
@@ -43,8 +43,8 @@
     "test:unit:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit",
     "coverage:report": "open coverage/lcov-report/index.html",
     "test:ci": "run-s check:ci test:unit:ci size",
-    "size": "run-s build size:check",
-    "size:check": "size-limit",
+    "size": "set NODE_OPTIONS=--openssl-legacy-provider && run-s build size:check",
+    "size:check": "set NODE_OPTIONS=--openssl-legacy-provider && size-limit",
     "prepublishOnly": "run-s test:ci",
     "release": "np",
     "analyze": "size-limit --why"
@@ -98,10 +98,10 @@
     "rollup": "^2.56.1",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.30.0",
+    "rollup-plugin-typescript2": "^0.36.0",
     "size-limit": "^5.0.2",
     "ts-jest": "^27.1.4",
-    "tslib": "^2.3.0",
+    "tslib": "^2.8.1",
     "typescript": "^4.3.5"
   }
 }

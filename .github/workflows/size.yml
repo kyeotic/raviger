@@ -1,10 +1,17 @@
-name: size
-on: [pull_request]
+name: Size
+
+on:
+  pull_request:
+
 jobs:
   size:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: andresz1/size-limit-action@v1.8.0
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Run size-limit check
+        uses: andresz1/size-limit-action@v1.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
