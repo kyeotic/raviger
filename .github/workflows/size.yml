@@ -5,7 +5,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: andresz1/size-limit-action@v1.8.0
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          package_manager: yarn
+          node-version: ${{ matrix.node-version }}
+      - name: Test
+        run: |
+          yarn install
+          npm run build
+          npm run size
+      # - uses: andresz1/size-limit-action@v1.8.0
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     package_manager: yarn

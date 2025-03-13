@@ -107,7 +107,7 @@ export function usePathParams<Path extends string>(
   options?: PathParamOptions
 ):
   | ValueOf<{
-      [P in typeof routes[number]]: [
+      [P in (typeof routes)[number]]: [
         P,
         NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
       ]
@@ -119,7 +119,7 @@ export function usePathParams<Params extends ReadonlyArray<string> | string>(
 ): Params extends ReadonlyArray<string>
   ?
       | ValueOf<{
-          [P in typeof routes[number]]: [
+          [P in (typeof routes)[number]]: [
             P,
             NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
           ]
@@ -142,7 +142,7 @@ export function usePathParams<Params extends ReadonlyArray<string> | string>(
   return isSingle
     ? props
     : ([routeMatch.path, props] as ValueOf<{
-        [P in typeof routes[number]]: [
+        [P in (typeof routes)[number]]: [
           P,
           NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
         ]

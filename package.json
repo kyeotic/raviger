@@ -30,7 +30,7 @@
     "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --ext .js,.ts,.tsx --ignore-pattern node_modules/",
     "check": "npm run style && npm run lint",
     "check:ci": "npm run style:ci && npm run lint",
-    "build:clean": "rimraf dist %% mkdirp dist",
+    "build:clean": "rimraf dist && mkdirp dist",
     "build:compile": "rollup -c",
     "build:tsc": "tsc",
     "build": "run-s build:clean build:compile",
