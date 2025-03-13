@@ -15,12 +15,7 @@ A hook for reading and updating the query string parameters on the page. Updates
 export function useQueryParams<T extends QueryParam>(
   parseFn?: (query: string) => T,
   serializeFn?: (query: Partial<T>) => string
-): [T, (query: T, options?: setQueryParamsOptions) => void]
-
-export interface setQueryParamsOptions {
-  replace?: boolean
-  historyReplace?: boolean
-}
+): [T, (query: T, options?: { replace?: boolean, historyReplace?: boolean }) => void]
 ```
 
 ## Basic
