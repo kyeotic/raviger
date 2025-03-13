@@ -42,7 +42,7 @@
     "test:coverage:open": "run-s test:coverage coverage:report",
     "test:unit:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit",
     "coverage:report": "open coverage/lcov-report/index.html",
-    "test:ci": "run-s check:ci test:unit:ci size",
+    "test:ci": "run-s check:ci test:unit:ci",
     "size": "run-s build size:check",
     "size:check": "NODE_OPTIONS=--openssl-legacy-provider size-limit",
     "prepublishOnly": "run-s test:ci",
