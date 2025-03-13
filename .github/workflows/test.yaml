@@ -18,12 +18,12 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [20.x, 22.x]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4.2.2
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4.2.0
         with:
           node-version: ${{ matrix.node-version }}
       - name: Test
@@ -34,7 +34,7 @@ jobs:
         env:
           CI: true
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: code-coverage-report
           path: junit.xml
