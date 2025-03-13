@@ -11,6 +11,7 @@ export interface QueryParam {
 
 export interface setQueryParamsOptions {
   replace?: boolean
+  historyReplace?: boolean
 }
 
 export function useQueryParams<T extends QueryParam>(
@@ -19,7 +20,7 @@ export function useQueryParams<T extends QueryParam>(
 ): [T, (query: T, options?: setQueryParamsOptions) => void] {
   const [querystring, setQuerystring] = useState(getQueryString())
   const setQueryParams = useCallback(
-    (params, { replace = true } = {}) => {
+    (params, { replace = true, historyReplace = false } = {}) => {
       let path = getCurrentPath()
       params = replace ? params : { ...parseFn(querystring), ...params }
       const serialized = serializeFn(params).toString()
@@ -27,7 +28,7 @@ export function useQueryParams<T extends QueryParam>(
       if (serialized) path += '?' + serialized
       if (!replace) path += getCurrentHash()
 
-      navigate(path)
+      navigate(path, { replace: historyReplace })
     },
     [querystring, parseFn, serializeFn]
   )

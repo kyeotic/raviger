@@ -32,10 +32,18 @@ describe('useQueryParams', () => {
 })
 
 describe('setQueryParams', () => {
-  function Route({ replace, foo = 'bar' }: { replace?: boolean; foo?: string | null }) {
+  function Route({
+    replace,
+    historyReplace,
+    foo = 'bar',
+  }: {
+    replace?: boolean
+    historyReplace?: boolean
+    foo?: string | null
+  }) {
     const [query, setQuery] = useQueryParams()
     return (
-      <button data-testid="update" onClick={() => setQuery({ foo }, { replace })}>
+      <button data-testid="update" onClick={() => setQuery({ foo }, { replace, historyReplace })}>
         Set Query: {query.foo}
       </button>
     )
@@ -82,5 +90,27 @@ describe('setQueryParams', () => {
     const { getByTestId } = render(<Route replace={false} />)
     act(() => void fireEvent.click(getByTestId('update')))
     expect(document.location.hash).toEqual('#test')
+  })
+
+  test('uses history.replaceState when historyReplace is true', async () => {
+    const replaceStateSpy = jest.spyOn(window.history, 'replaceState')
+    replaceStateSpy.mockClear()
+    act(() => navigate('/about', { query: { bar: 'foo' } }))
+    const { getByTestId } = render(<Route historyReplace={true} />)
+    act(() => void fireEvent.click(getByTestId('update')))
+    expect(replaceStateSpy).toHaveBeenCalled()
+    expect(document.location.search).toEqual('?foo=bar')
+    replaceStateSpy.mockRestore()
+  })
+
+  test('uses history.pushState when historyReplace is false', async () => {
+    const pushStateSpy = jest.spyOn(window.history, 'pushState')
+    pushStateSpy.mockClear()
+    act(() => navigate('/about', { query: { bar: 'foo' } }))
+    const { getByTestId } = render(<Route historyReplace={false} />)
+    act(() => void fireEvent.click(getByTestId('update')))
+    expect(pushStateSpy).toHaveBeenCalled()
+    expect(document.location.search).toEqual('?foo=bar')
+    pushStateSpy.mockRestore()
   })
 })
