@@ -44,7 +44,7 @@
     "coverage:report": "open coverage/lcov-report/index.html",
     "test:ci": "run-s check:ci test:unit:ci size",
     "size": "run-s build size:check",
-    "size:check": "size-limit",
+    "size:check": "NODE_OPTIONS=--openssl-legacy-provider size-limit",
     "prepublishOnly": "run-s test:ci",
     "release": "np",
     "analyze": "size-limit --why"
