@@ -2,7 +2,7 @@
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
   "include": ["src"],
   "compilerOptions": {
-    "module": "esnext",
+    "module": "ES2020",
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "target": "ES2019",
     // "noEmitHelpers": true,
@@ -13,7 +13,7 @@
     "sourceMap": true,
     // match output dir to input dir. e.g. dist/index instead of dist/src/index
     "rootDir": "./src",
-    "outDir": "build",
+    "outDir": "dist",
     // stricter type-checking for stronger correctness. Recommended by TS
     "strict": true,
     // linter checks for common issues

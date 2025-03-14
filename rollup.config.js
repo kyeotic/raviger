@@ -1,7 +1,7 @@
-import replace from 'rollup-plugin-replace'
-import packageJson from './package.json'
-import { terser } from 'rollup-plugin-terser'
-import typescript from 'rollup-plugin-typescript2'
+import replace from '@rollup/plugin-replace'
+import packageJson from './package.json' with { type: "json" }
+import terser from '@rollup/plugin-terser'
+import typescript from '@rollup/plugin-typescript'
 
 const deps = Object.keys(packageJson.dependencies || []).concat(
   Object.keys(packageJson.peerDependencies)
@@ -34,12 +34,13 @@ export default [
       globals: {
         react: 'React',
       },
-      interop: false,
+      // interop: false,
       sourcemap: true,
     },
     external: deps,
     plugins: [
       replace({
+        preventAssignment: false,
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       }),
       typescript(),
@@ -60,6 +61,7 @@ export default [
     external: deps,
     plugins: [
       replace({
+        preventAssignment: false,
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       }),
       typescript(),

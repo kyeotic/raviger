@@ -1,5 +1,5 @@
-import React from 'react'
-import { render, act, fireEvent } from '@testing-library/react'
+import React, { act } from 'react'
+import { render, fireEvent } from '@testing-library/react'
 import { navigate, useQueryParams } from '../src/main'
 
 beforeEach(() => {

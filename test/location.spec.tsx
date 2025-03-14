@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react'
-import { render, act, fireEvent } from '@testing-library/react'
-import { navigate, useLocationChange, usePath, useRoutes, useHash, RouteParams } from '../src/main'
+import React, { useCallback, useEffect, act } from 'react'
+import { render, fireEvent } from '@testing-library/react'
+import { navigate, useLocationChange, usePath, useRoutes, useHash, Routes } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -13,7 +13,7 @@ describe('useLocationChange', () => {
     basePath,
     onInitial = false,
   }: {
-    onChange: (path: string) => void
+    onChange: (path: string | null) => void
     isActive?: boolean
     basePath?: string
     onInitial?: boolean
@@ -25,38 +25,38 @@ describe('useLocationChange', () => {
     const watcher = jest.fn()
     render(<Route onChange={watcher} />)
 
-    expect(watcher).not.toBeCalled()
+    expect(watcher).not.toHaveBeenCalled()
   })
   test('setter is updated on mount when onInitial is true', async () => {
     const watcher = jest.fn()
     render(<Route onChange={watcher} onInitial />)
 
-    expect(watcher).toBeCalled()
+    expect(watcher).toHaveBeenCalled()
   })
   test('setter gets updated path', async () => {
     const watcher = jest.fn()
     render(<Route onChange={watcher} />)
 
     act(() => navigate('/foo'))
-    expect(watcher).toBeCalledWith('/foo')
+    expect(watcher).toHaveBeenCalledWith('/foo')
     act(() => navigate('/base'))
-    expect(watcher).toBeCalledWith('/base')
+    expect(watcher).toHaveBeenCalledWith('/base')
   })
   test('setter is not updated when isActive is false', async () => {
     const watcher = jest.fn()
     render(<Route onChange={watcher} isActive={false} />)
     act(() => navigate('/foo'))
 
-    expect(watcher).not.toBeCalled()
+    expect(watcher).not.toHaveBeenCalled()
   })
   test('setter gets null when provided basePath is missing', async () => {
     const watcher = jest.fn()
     render(<Route onChange={watcher} basePath="/home" />)
 
     act(() => navigate('/foo'))
-    expect(watcher).toBeCalledWith(null)
+    expect(watcher).toHaveBeenCalledWith(null)
     act(() => navigate('/home'))
-    expect(watcher).toBeCalledWith('/')
+    expect(watcher).toHaveBeenCalledWith('/')
   })
 })
 
@@ -81,7 +81,7 @@ describe('usePath', () => {
   })
 
   test('does not include parent router base path', async () => {
-    function Harness({ routes, basePath }: { routes: RouteParams; basePath?: string }) {
+    function Harness({ routes, basePath }: { routes: Routes<string>; basePath?: string }) {
       const route = useRoutes(routes, { basePath })
       return route
     }
@@ -114,7 +114,7 @@ describe('usePath', () => {
   })
 
   test('has correct path for nested base path', async () => {
-    function Harness({ routes, basePath }: { routes: RouteParams; basePath?: string }) {
+    function Harness({ routes, basePath }: { routes: Routes<string>; basePath?: string }) {
       const route = useRoutes(routes, { basePath })
       return route
     }
@@ -170,7 +170,7 @@ describe('usePath', () => {
       '/': () => <Home />,
       '/about': () => <About />,
     }
-    function Harness({ routes, basePath }: { routes: RouteParams; basePath?: string }) {
+    function Harness({ routes, basePath }: { routes: Routes<string>; basePath?: string }) {
       // console.log('start harness update')
       const route = useRoutes(routes, { basePath })
       const onGoHome = useCallback(

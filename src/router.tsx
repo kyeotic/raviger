@@ -102,6 +102,7 @@ export function usePathParams<Path extends string>(
   route: Path,
   options?: PathParamOptions
 ): NonEmptyRecord<ExtractPathParams<Path extends `${infer P1}*` ? P1 : Path>> | null
+
 export function usePathParams<Path extends string>(
   routes: ReadonlyArray<Path>,
   options?: PathParamOptions
@@ -113,6 +114,7 @@ export function usePathParams<Path extends string>(
       ]
     }>
   | [null, null]
+
 export function usePathParams<Params extends ReadonlyArray<string> | string>(
   routes: Params,
   options: PathParamOptions = {}
@@ -138,10 +140,12 @@ export function usePathParams<Params extends ReadonlyArray<string> | string>(
   // @ts-expect-error inference is not carried forward and I don't know how to resolve this type
   if (!routeMatch) return isSingle ? null : emptyPathResult
 
-  // @ts-expect-error inference is not carried forward and I don't know how to resolve this type
+  // @ts-ignore inference is not carried forward and I don't know how to resolve this type
   return isSingle
-    ? props
-    : ([routeMatch.path, props] as ValueOf<{
+    ? // @ts-ignore
+      props
+    : // @ts-ignore
+      ([routeMatch.path, props] as ValueOf<{
         [P in (typeof routes)[number]]: [
           P,
           NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
