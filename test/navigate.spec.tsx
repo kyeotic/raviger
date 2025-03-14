@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
-import { render, act } from '@testing-library/react'
+import React, { act } from 'react'
+import { render } from '@testing-library/react'
 import { mockNavigation, delay } from './utils'
 
 import {
@@ -9,7 +9,7 @@ import {
   useRoutes,
   useNavigationPrompt,
   QueryParam,
-  RouteParams,
+  Routes,
 } from '../src/main'
 
 mockNavigation()
@@ -36,7 +36,8 @@ describe('useNavigate', () => {
     )
   }
 
-  const routes: RouteParams = {
+  const routes: Routes<string> = {
+    // @ts-expect-error there come from RouteProps, find a way to type them
     '/*': ({ newPath, query, replace }) => (
       <Route newPath={newPath} query={query} replace={replace} />
     ),

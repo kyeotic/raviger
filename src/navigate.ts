@@ -60,7 +60,6 @@ export function navigate(url: string, options?: NavigateOptions): void {
 export function useNavigationPrompt(predicate = true, prompt: string = defaultPrompt): void {
   if (isNode) return
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useLayoutEffect(() => {
     const onPopStateNavigation = () => {
       if (shouldCancelNavigation()) {
@@ -71,7 +70,6 @@ export function useNavigationPrompt(predicate = true, prompt: string = defaultPr
     return () => window.removeEventListener('popstate', onPopStateNavigation)
   }, [])
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useLayoutEffect(() => {
     const handler = (e?: BeforeUnloadEvent): string | void => {
       if (predicate) {

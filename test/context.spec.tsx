@@ -1,7 +1,7 @@
-import React from 'react'
-import { render, act } from '@testing-library/react'
+import React, { act } from 'react'
+import { render } from '@testing-library/react'
 
-import { useRoutes, navigate, RouteOptionParams, RouteParams } from '../src/main'
+import { useRoutes, navigate, RouteOptionParams, Routes } from '../src/main'
 import { useRouter } from '../src/context'
 
 beforeEach(() => {
@@ -9,7 +9,7 @@ beforeEach(() => {
 })
 
 describe('useRouter', () => {
-  function Harness({ routes, options }: { routes: RouteParams; options?: RouteOptionParams }) {
+  function Harness({ routes, options }: { routes: Routes<string>; options?: RouteOptionParams }) {
     const route = useRoutes(routes, options) || <span data-testid="label">not found</span>
     return route
   }
@@ -24,7 +24,7 @@ describe('useRouter', () => {
       </div>
     )
   }
-  const routes: RouteParams = {
+  const routes: Routes<string> = {
     '/': () => <Route label="home" />,
     '/about': () => <Route label="about" />,
   }

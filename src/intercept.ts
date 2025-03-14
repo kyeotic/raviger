@@ -16,7 +16,7 @@ export function shouldCancelNavigation(): boolean {
     if (!prompt) return false
 
     // cancel navigation if user declines
-    hasUserCancelled = !window.confirm(prompt) // eslint-disable-line no-alert
+    hasUserCancelled = !window.confirm(prompt)
 
     // track user response so that multiple interceptors don't prompt
     hasIntercepted = true

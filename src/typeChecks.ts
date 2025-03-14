@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/explicit-module-boundary-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function isFunction(obj: unknown): obj is Function {
   return !!obj && typeof obj === 'function'
 }

@@ -9,6 +9,5 @@ export function useMountedLayout(
   useLayoutEffect(() => {
     if (!hasMounted.current) hasMounted.current = true
     else fn()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
 }

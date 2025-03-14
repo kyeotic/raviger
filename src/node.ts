@@ -2,7 +2,7 @@ let ssrPath = '/'
 let isNode = true
 try {
   isNode = window === undefined
-} catch (e) {} // eslint-disable-line no-empty
+} catch {} // eslint-disable-line no-empty
 
 export { isNode }
 export function getSsrPath(): string {

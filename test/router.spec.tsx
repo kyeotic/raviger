@@ -473,6 +473,7 @@ describe('usePathParams', () => {
       if (path === '/user/:userId/child/:childId') {
         return (
           <span data-testid="params">
+            {/* @ts-expect-error test is missing typing for some reason? */}
             {JSON.stringify(props ? { path, user: props.userId, child: props.childId } : null)}
           </span>
         )
