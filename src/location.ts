@@ -115,7 +115,6 @@ export function useLocationChange(
   if (isNode) return
 
   // All hooks after this are conditional, but the runtime can't actually change
-  /* eslint-disable react-hooks/rules-of-hooks */
 
   const routerBasePath = useBasePath()
   if (inheritBasePath && routerBasePath) basePath = routerBasePath

@@ -27,7 +27,7 @@
   "scripts": {
     "style": "prettier --config package.json  --write \"{src,test}/**/*.{ts,tsx}\"",
     "style:ci": "prettier --config package.json --check \"{src,test}/**/*.{ts,tsx}\"",
-    "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --ext .js,.ts,.tsx --ignore-pattern node_modules/",
+    "lint": "eslint",
     "check": "npm run style && npm run lint",
     "check:ci": "npm run style:ci && npm run lint",
     "build:clean": "rimraf dist && mkdirp dist",
@@ -75,6 +75,7 @@
     "yarn": true
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
@@ -84,8 +85,6 @@
     "@testing-library/react": "15.x",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
-    "@typescript-eslint/eslint-plugin": "^8.26.1",
-    "@typescript-eslint/parser": "^8.26.1",
     "eslint": "^9.22.0",
     "eslint-plugin-import": "^2.24.0",
     "eslint-plugin-jest": "^28.11.0",
@@ -107,6 +106,7 @@
     "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1"
   }
 }

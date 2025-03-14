@@ -171,7 +171,6 @@ function usePathOptions(
 }
 
 function useMatchers(routes: string[]): RouteMatcher[] {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => routes.map(createRouteMatcher), [hashParams(routes)])
 }
 
@@ -191,7 +190,6 @@ function getMatchParams(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const props = routeMatch.props.reduce((props: any, prop, i) => {
     // The following `match` can't be null because the above return asserts it
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     props[prop] = pathParams![i + 1]
     return props
   }, {})
@@ -216,7 +214,7 @@ export function setPath(path: string): void {
   if (!isNode) {
     throw new Error('This method should only be used in NodeJS environments')
   }
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const url = require('url')
   setSsrPath(url.resolve(getSsrPath(), path))
 }
