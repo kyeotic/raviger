@@ -31,11 +31,20 @@ type ExtractPathParams<Path extends string, Parts = Split<Path, '/'>> = Parts ex
     : ExtractPathParams<Path, Tail>
   : unknown
 
-export type Routes<Path extends string> = {
-  [P in Path]: (
-    params: NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>,
+export type Route<Path extends string> = {
+  path: Path
+  fn: (
+    params: NonEmptyRecord<ExtractPathParams<Path extends `${infer P1}*` ? P1 : Path>>,
   ) => JSX.Element
 }
+
+export type Routes<Path extends string> =
+  | {
+      [P in Path]: (
+        params: NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>,
+      ) => JSX.Element
+    }
+  | Route<Path>[]
 
 export function useRoutes<Path extends string>(
   routes: Routes<Path>,
@@ -77,7 +86,7 @@ export function useRoutes<Path extends string>(
 
 function useMatchRoute(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  routes: { [key: string]: (...props: any) => JSX.Element },
+  routes: { [key: string]: (...props: any) => JSX.Element } | Route<string>[],
   path: string | null,
   {
     routeProps,
@@ -86,14 +95,28 @@ function useMatchRoute(
   }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean },
 ) {
   path = trailingMatch(path, matchTrailingSlash)
-  const matchers = useMatchers(Object.keys(routes))
+  const mappedRoutes = Array.isArray(routes)
+    ? routes
+    : Object.entries(routes).reduce((arr, [path, fn]) => {
+        // console.log('route fn', fn())
+        arr.push({ path, fn })
+        return arr
+      }, [] as Route<string>[])
+  const matchers = useMatchers(mappedRoutes.map((r) => r.path))
+
+  // console.log('mapped Routes', mappedRoutes)
+  // console.log('matchers', matchers)
 
   if (path === null) return null
-  const [routeMatch, props] = getMatchParams(path, matchers)
+  const [pathMatch, props] = getMatchParams(path, matchers)
+
+  if (!pathMatch) return null
+
+  const routeMatch = mappedRoutes.find((r) => r.path == pathMatch.path)
 
   if (!routeMatch) return null
 
-  return routes[routeMatch.path](
+  return routeMatch.fn(
     overridePathParams ? { ...props, ...routeProps } : { ...routeProps, ...props },
   )
 }

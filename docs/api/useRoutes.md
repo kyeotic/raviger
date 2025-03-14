@@ -12,7 +12,8 @@ This hook is the main entry point for an application using raviger. Returns the 
 
 ```typescript
 function useRoutes(
-  routes: { [key: string]: (props: { [k: string]: any }) => JSX.Element },
+  routes: { [key: string]: (props: { [k: string]: any }) => JSX.Element }
+   | { path: string, fn: (props: { [k: string]: any }) => JSX.Element },
   options?: {
     basePath?: string
     routeProps?: { [k: string]: any }
@@ -125,4 +126,33 @@ export default function App() {
     </div>
   )
 }
+```
+
+## Using an Array to Control Priority
+
+Raviger will normally match routes in the order they are defined in the routes object, allowing you to control matching priority. However, this behavior is not guaranteed by JS, and if you dynamically construct routes you may have difficulty ordering object keys.
+
+For this case, raviger supports taking an array of `{ path, fn }` objects, where the priority is determined by position in the array.
+
+Consider this case:
+
+```javascript
+{
+  '/comp1/*': () => <h1>Just Comp-1</h1>,
+  '/comp1/view2/*': () => <h1>Comp-1-view-2</h1>,
+  '/comp1/view1/*': () => <h1>Comp-1-view1</h1>,
+  '/comp2/*': () => <h1>Comp-2</h1>
+}
+```
+
+If the app tries to route to /comp1/view1, instead of matching route /comp1/view1/* it matches /comp1/*. This can be fixed if we define the routes like this
+
+```javascript
+[
+
+  { path: '/comp1/view2/*', fn:() => <h1>Comp-1-view-2</h1>, },
+  { path: '/comp1/view1/*', fn:() => <h1>Comp-1-view1</h1>, },
+  { path: '/comp1/*', fn:() => <h1>Just Comp-1</h1>, },
+  { path: '/comp2/*', fn:() => <h1>Comp-2</h1> },
+]
 ```
