@@ -24,7 +24,7 @@ function useRoutes(
 
 ## Basic
 
-The first parameter is an object of path keys whose values are functions that return a **ReactElement** (or null when no match is found). The paths should start with a forward-slash `/` and then contain literal matches (`/base`), path variables (`/:userId`), and a `*` for catch-all wildcards. Path variables will be provided to the matching route-function.
+The first parameter is an object of path keys whose values are functions that return a **ReactElement** (or null when no match is found). The paths should start with a forward-slash `/` and then contain literal matches (`/base`), path variables (`/:userId`, in the format `: + [a-zA-Z_]+`), and a `*` for catch-all wildcards. Path variables will be provided to the matching route-function.
 
 ```jsx
 import { useRoutes, Link } from 'raviger'
