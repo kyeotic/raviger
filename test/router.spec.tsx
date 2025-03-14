@@ -205,6 +205,37 @@ describe('useRoutes', () => {
     expect(getByTestId('label')).toHaveTextContent('new route')
   })
 
+  describe('with array routes', () => {
+    test('matches catch-all first', async () => {
+      const routes = [
+        { path: '/layer*', fn: () => <Route label="top" /> },
+        { path: '/layer/under', fn: () => <Route label="bottom" /> },
+      ]
+      act(() => navigate('/layer'))
+      const { getByTestId } = render(<Harness routes={routes} />)
+
+      // act(() => navigate('/foo'))
+      expect(getByTestId('label')).toHaveTextContent('top')
+      act(() => navigate('/layer/under'))
+      expect(getByTestId('label')).toHaveTextContent('top')
+    })
+
+    test('matches catch-all last', async () => {
+      const routes = [
+        { path: '/layer/under', fn: () => <Route label="bottom" /> },
+        { path: '/layer*', fn: () => <Route label="top" /> },
+      ]
+
+      act(() => navigate('/layer'))
+      const { getByTestId } = render(<Harness routes={routes} />)
+
+      // act(() => navigate('/foo'))
+      expect(getByTestId('label')).toHaveTextContent('top')
+      act(() => navigate('/layer/under'))
+      expect(getByTestId('label')).toHaveTextContent('bottom')
+    })
+  })
+
   describe('with basePath', () => {
     const routes = {
       '/': () => <Route label="home" />,
