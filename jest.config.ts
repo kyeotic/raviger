@@ -12,13 +12,7 @@ const config: Config = {
       statements: 50,
     },
   },
-  // globals: {
-  //   'ts-jest': {
-  //     isolatedModules: true,
-  //   },
-  // },
   preset: 'ts-jest',
-  // setupFiles: ['./test/setup.ts'],
   setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],

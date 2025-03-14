@@ -18,12 +18,11 @@
   "main": "dist/main.js",
   "module": "dist/module.js",
   "typings": "dist/main.d.ts",
-  "type": "module",
   "files": [
     "dist"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   },
   "scripts": {
     "style": "prettier --config package.json  --write \"{src,test}/**/*.{ts,tsx}\"",
@@ -80,6 +79,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
     "@size-limit/preset-small-lib": "9.x",
+    "@size-limit/webpack": "9.x",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "15.x",
     "@types/react": "^18.3.18",
