@@ -110,7 +110,7 @@ export function useLocationChange(
     basePath = '',
     isActive,
     onInitial = false,
-  }: LocationChangeOptionParams = {}
+  }: LocationChangeOptionParams = {},
 ): void {
   if (isNode) return
 
@@ -149,7 +149,7 @@ export function useLocationChange(
       setRef.current(getFormattedLocation(basePath))
     },
     [basePath, isActive],
-    { onInitial }
+    { onInitial },
   )
 }
 

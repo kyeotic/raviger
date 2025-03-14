@@ -7,9 +7,9 @@ export type NonEmptyRecord<Params> = Params extends EmptyRecord
 
 export type Split<
   Value extends string,
-  Separator extends string
+  Separator extends string,
 > = Value extends `${infer Head}${Separator}${infer Tail}`
   ? [Head, ...Split<Tail, Separator>]
   : Value extends Separator
-  ? []
-  : [Value]
+    ? []
+    : [Value]

@@ -34,14 +34,14 @@ function Link({ href, basePath, ...props }: LinkProps, ref?: Ref<HTMLAnchorEleme
         navigate(e.currentTarget.href)
       }
     },
-    [onClick, target]
+    [onClick, target],
   )
 
   return <a {...props} href={href} onClick={handleClick} ref={ref} />
 }
 
 const RefLink = forwardRef<LinkRef, LinkProps>(Link) as (
-  props: LinkProps & { ref?: React.ForwardedRef<HTMLAnchorElement> }
+  props: LinkProps & { ref?: React.ForwardedRef<HTMLAnchorElement> },
 ) => ReturnType<typeof Link>
 
 export default RefLink
@@ -49,7 +49,7 @@ export { RefLink as Link }
 
 function ActiveLink(
   { basePath, className, exactActiveClass, activeClass, ...props }: ActiveLinkProps,
-  ref?: Ref<HTMLAnchorElement>
+  ref?: Ref<HTMLAnchorElement>,
 ) {
   basePath = useLinkBasePath(basePath)
   const fullPath = useFullPath()
@@ -66,7 +66,7 @@ function ActiveLink(
 }
 
 const ActiveLinkRef = forwardRef<LinkRef, ActiveLinkProps>(ActiveLink) as (
-  props: ActiveLinkProps & { ref?: React.ForwardedRef<HTMLAnchorElement> }
+  props: ActiveLinkProps & { ref?: React.ForwardedRef<HTMLAnchorElement> },
 ) => ReturnType<typeof ActiveLink>
 
 export { ActiveLinkRef as ActiveLink }

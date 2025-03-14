@@ -98,7 +98,7 @@ export function useNavigate(optBasePath = ''): typeof navigate {
       const href = url.startsWith('/') ? base + url : url
       navigate(href, options)
     },
-    [basePath, optBasePath]
+    [basePath, optBasePath],
   )
   return navigateWithBasePath
 }

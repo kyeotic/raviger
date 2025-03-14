@@ -35,7 +35,7 @@ export function useRedirect(
     query,
     replace = true,
     merge = true,
-  }: { query?: QueryParam; replace?: boolean; merge?: boolean } = {}
+  }: { query?: QueryParam; replace?: boolean; merge?: boolean } = {},
 ): void {
   const currentPath = usePath()
   const [currentQuery] = useQueryParams()

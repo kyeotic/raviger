@@ -13,7 +13,7 @@ describe('Link', () => {
     const { getByTestId } = render(
       <Link href="/foo" className="base" data-testid="link">
         go to foo
-      </Link>
+      </Link>,
     )
 
     act(() => navigate('/'))
@@ -25,7 +25,7 @@ describe('Link', () => {
     const { getByTestId } = render(
       <Link href="/foo" className="base" data-testid="link">
         go to foo
-      </Link>
+      </Link>,
     )
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/foo')
@@ -36,7 +36,7 @@ describe('Link', () => {
     const { getByTestId } = render(
       <Link href="/foo" basePath="/bar" className="base" data-testid="link">
         go to foo
-      </Link>
+      </Link>,
     )
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/bar/foo')
@@ -60,7 +60,7 @@ describe('Link', () => {
         {
           '/': () => <Host />,
         },
-        { basePath: '/top' }
+        { basePath: '/top' },
       )
     }
 
@@ -75,7 +75,7 @@ describe('Link', () => {
     const { getByTestId } = render(
       <Link href="/foo" basePath="bar" className="base" data-testid="link">
         go to foo
-      </Link>
+      </Link>,
     )
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/bar/foo')
@@ -87,7 +87,7 @@ describe('Link', () => {
     const { getByTestId } = render(
       <Link href="/foo" className="base" data-testid="link" onClick={spy}>
         go to foo
-      </Link>
+      </Link>,
     )
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/foo')
@@ -99,7 +99,7 @@ describe('Link', () => {
     const { getByTestId } = render(
       <Link href="/foo" className="base" target="_blank" data-testid="link">
         go to foo
-      </Link>
+      </Link>,
     )
     act(() => void fireEvent.click(getByTestId('link')))
     expect(document.location.pathname).toEqual('/')
@@ -135,7 +135,7 @@ describe('ActiveLink', () => {
         data-testid="link"
       >
         go to foo
-      </ActiveLink>
+      </ActiveLink>,
     )
 
     act(() => navigate('/'))
@@ -162,7 +162,7 @@ describe('ActiveLink', () => {
         data-testid="link"
       >
         go to foo
-      </ActiveLink>
+      </ActiveLink>,
     )
 
     expect(getByTestId('link')).not.toHaveClass('active')
@@ -186,7 +186,7 @@ describe('ActiveLink', () => {
         data-testid="link"
       >
         go to foo
-      </ActiveLink>
+      </ActiveLink>,
     )
 
     expect(getByTestId('link')).not.toHaveClass('active')
@@ -203,7 +203,7 @@ describe('ActiveLink', () => {
     const { getByTestId } = render(
       <ActiveLink href="/foo" activeClass="extra" exactActiveClass="double" data-testid="link">
         go to foo
-      </ActiveLink>
+      </ActiveLink>,
     )
 
     act(() => navigate('/'))

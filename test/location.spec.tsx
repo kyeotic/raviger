@@ -176,7 +176,7 @@ describe('usePath', () => {
       const onGoHome = useCallback(
         () => setTimeout(() => navigate('/'), 50),
         // () => setTimeout(() => act(() => navigate('/')), 50),
-        []
+        [],
       )
       // console.log('harness update', route.props.children.props.children.type)
       return (

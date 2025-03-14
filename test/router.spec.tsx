@@ -79,7 +79,7 @@ describe('useRoutes', () => {
 
   test('does not match trailing slash with option', async () => {
     const { getByTestId } = render(
-      <Harness routes={routes} options={{ matchTrailingSlash: false }} />
+      <Harness routes={routes} options={{ matchTrailingSlash: false }} />,
     )
     act(() => navigate('/'))
     act(() => navigate('/about/'))
@@ -88,7 +88,7 @@ describe('useRoutes', () => {
 
   test('matches trailing slash with option', async () => {
     const { getByTestId } = render(
-      <Harness routes={routes} options={{ matchTrailingSlash: true }} />
+      <Harness routes={routes} options={{ matchTrailingSlash: true }} />,
     )
     act(() => navigate('/'))
     act(() => navigate('/about/'))
@@ -97,7 +97,7 @@ describe('useRoutes', () => {
 
   test('matches trailing slash on "/"', async () => {
     const { getByTestId } = render(
-      <Harness routes={routes} options={{ matchTrailingSlash: true }} />
+      <Harness routes={routes} options={{ matchTrailingSlash: true }} />,
     )
     act(() => navigate('/'))
     expect(getByTestId('label')).toHaveTextContent('home')
@@ -119,7 +119,7 @@ describe('useRoutes', () => {
 
   test('passes extra route props to route', async () => {
     const { getByTestId } = render(
-      <Harness routes={routes} options={{ routeProps: { extra: 'injected' } }} />
+      <Harness routes={routes} options={{ routeProps: { extra: 'injected' } }} />,
     )
     act(() => navigate('/about'))
     expect(getByTestId('extra')).toHaveTextContent('injected')
@@ -127,7 +127,7 @@ describe('useRoutes', () => {
 
   test('overrides route props', async () => {
     const { getByTestId } = render(
-      <Harness routes={routes} options={{ routeProps: { userId: 4 } }} />
+      <Harness routes={routes} options={{ routeProps: { userId: 4 } }} />,
     )
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 4')
@@ -135,7 +135,10 @@ describe('useRoutes', () => {
 
   test('underrides route props', async () => {
     const { getByTestId } = render(
-      <Harness routes={routes} options={{ routeProps: { userId: 4 }, overridePathParams: false }} />
+      <Harness
+        routes={routes}
+        options={{ routeProps: { userId: 4 }, overridePathParams: false }}
+      />,
     )
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 1')
@@ -235,7 +238,7 @@ describe('useRoutes', () => {
           () => ({
             '/settings': () => <RouteItem id={id} />,
           }),
-          [id]
+          [id],
         )
         const route = useRoutes(subRoutes, { basePath: `/app/${id}` })
         return route || <NotFound />
@@ -459,7 +462,7 @@ describe('usePathParams', () => {
 
     act(() => navigate('/user/tester'))
     expect(getByTestId('params')).toHaveTextContent(
-      '{"matched":"/user/:userId","props":{"userId":"tester"}}'
+      '{"matched":"/user/:userId","props":{"userId":"tester"}}',
     )
   })
 
@@ -488,7 +491,7 @@ describe('usePathParams', () => {
 
     act(() => navigate('/user/tester/child/qa'))
     expect(getByTestId('params')).toHaveTextContent(
-      '{"path":"/user/:userId/child/:childId","user":"tester","child":"qa"}'
+      '{"path":"/user/:userId/child/:childId","user":"tester","child":"qa"}',
     )
   })
 })

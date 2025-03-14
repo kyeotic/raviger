@@ -16,7 +16,7 @@ export interface setQueryParamsOptions {
 
 export function useQueryParams<T extends QueryParam>(
   parseFn: (query: string) => T = parseQuery,
-  serializeFn: (query: Partial<T>) => string = serializeQuery
+  serializeFn: (query: Partial<T>) => string = serializeQuery,
 ): [T, (query: T, options?: setQueryParamsOptions) => void] {
   const [querystring, setQuerystring] = useState(getQueryString())
   const setQueryParams = useCallback(
@@ -30,7 +30,7 @@ export function useQueryParams<T extends QueryParam>(
 
       navigate(path, { replace: historyReplace })
     },
-    [querystring, parseFn, serializeFn]
+    [querystring, parseFn, serializeFn],
   )
 
   // Update state when route changes
