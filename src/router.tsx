@@ -197,16 +197,18 @@ function getMatchParams(
   return [routeMatch, props]
 }
 
+const pathPartRegex = /:[a-zA-Z_]+/g
+
 function createRouteMatcher(path: string): RouteMatcher {
   return {
     path,
     regex: new RegExp(
       `${path.substr(0, 1) === '*' ? '' : '^'}${escapeRegExp(path)
-        .replace(/:[a-zA-Z]+/g, '([^/]+)')
+        .replace(pathPartRegex, '([^/]+)')
         .replace(/\*/g, '')}${path.substr(-1) === '*' ? '' : '$'}`,
       'i',
     ),
-    props: (path.match(/:[a-zA-Z]+/g) ?? []).map((paramName) => paramName.substr(1)),
+    props: (path.match(pathPartRegex) ?? []).map((paramName) => paramName.substr(1)),
   }
 }
 

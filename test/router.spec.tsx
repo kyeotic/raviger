@@ -42,6 +42,7 @@ describe('useRoutes', () => {
     '/': () => <Route label="home" />,
     '/about': ({ extra }: { extra?: string }) => <Route label="about" extra={extra} />,
     '/users/:userId': ({ userId }) => <Route label={`User ${userId}`} />,
+    '/people/:person_id': ({ person_id }) => <Route label={`Person ${person_id}`} />,
     '/weird (route)': () => <Route label="weird1" />,
     '/weird (route+2)': () => <Route label="weird2" />,
   }
@@ -108,6 +109,13 @@ describe('useRoutes', () => {
 
     act(() => navigate('/users/1'))
     expect(getByTestId('label')).toHaveTextContent('User 1')
+  })
+
+  test('matches route with underscored parameters', async () => {
+    const { getByTestId } = render(<Harness routes={routes} />)
+
+    act(() => navigate('/people/1'))
+    expect(getByTestId('label')).toHaveTextContent('Person 1')
   })
 
   test('matches case insensitive rout', async () => {
