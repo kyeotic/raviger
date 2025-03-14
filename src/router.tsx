@@ -24,7 +24,7 @@ interface RouteMatcher {
 
 type ExtractPathParams<Path extends string, Parts = Split<Path, '/'>> = Parts extends [
   infer Head,
-  ...infer Tail
+  ...infer Tail,
 ]
   ? Head extends `:${infer Name}`
     ? { [N in Name]: string } & ExtractPathParams<Path, Tail>
@@ -34,14 +34,14 @@ type ExtractPathParams<Path extends string, Parts = Split<Path, '/'>> = Parts ex
 export type Route<Path extends string> = {
   path: Path
   fn: (
-    params: NonEmptyRecord<ExtractPathParams<Path extends `${infer P1}*` ? P1 : Path>>
+    params: NonEmptyRecord<ExtractPathParams<Path extends `${infer P1}*` ? P1 : Path>>,
   ) => JSX.Element
 }
 
 export type Routes<Path extends string> =
   | {
       [P in Path]: (
-        params: NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+        params: NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>,
       ) => JSX.Element
     }
   | Route<Path>[]
@@ -53,7 +53,7 @@ export function useRoutes<Path extends string>(
     routeProps = {},
     overridePathParams = true,
     matchTrailingSlash = true,
-  }: RouteOptionParams = {}
+  }: RouteOptionParams = {},
 ): JSX.Element | null {
   /*
     This is a hack to setup a listener for the path while always using this latest path
@@ -92,7 +92,7 @@ function useMatchRoute(
     routeProps,
     overridePathParams,
     matchTrailingSlash,
-  }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean }
+  }: Omit<RouteOptionParams, 'basePath' | 'matchTrailingSlash'> & { matchTrailingSlash: boolean },
 ) {
   path = trailingMatch(path, matchTrailingSlash)
   const mappedRoutes = Array.isArray(routes)
@@ -117,42 +117,42 @@ function useMatchRoute(
   if (!routeMatch) return null
 
   return routeMatch.fn(
-    overridePathParams ? { ...props, ...routeProps } : { ...routeProps, ...props }
+    overridePathParams ? { ...props, ...routeProps } : { ...routeProps, ...props },
   )
 }
 
 export function usePathParams<Path extends string>(
   route: Path,
-  options?: PathParamOptions
+  options?: PathParamOptions,
 ): NonEmptyRecord<ExtractPathParams<Path extends `${infer P1}*` ? P1 : Path>> | null
 
 export function usePathParams<Path extends string>(
   routes: ReadonlyArray<Path>,
-  options?: PathParamOptions
+  options?: PathParamOptions,
 ):
   | ValueOf<{
       [P in (typeof routes)[number]]: [
         P,
-        NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+        NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>,
       ]
     }>
   | [null, null]
 
 export function usePathParams<Params extends ReadonlyArray<string> | string>(
   routes: Params,
-  options: PathParamOptions = {}
+  options: PathParamOptions = {},
 ): Params extends ReadonlyArray<string>
   ?
       | ValueOf<{
           [P in (typeof routes)[number]]: [
             P,
-            NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+            NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>,
           ]
         }>
       | [null, null]
   : Params extends string
-  ? NonEmptyRecord<ExtractPathParams<Params extends `${infer P1}*` ? P1 : Params>> | null
-  : never {
+    ? NonEmptyRecord<ExtractPathParams<Params extends `${infer P1}*` ? P1 : Params>> | null
+    : never {
   const isSingle = !Array.isArray(routes)
   const [path, matchers] = usePathOptions(routes as string | string[], options)
 
@@ -171,7 +171,7 @@ export function usePathParams<Params extends ReadonlyArray<string> | string>(
       ([routeMatch.path, props] as ValueOf<{
         [P in (typeof routes)[number]]: [
           P,
-          NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>
+          NonEmptyRecord<ExtractPathParams<P extends `${infer P1}*` ? P1 : P>>,
         ]
       }>)
 }
@@ -185,7 +185,7 @@ export function useMatch(routes: string | string[], options: PathParamOptions = 
 
 function usePathOptions(
   routeOrRoutes: string | string[],
-  { basePath, matchTrailingSlash = true }: PathParamOptions
+  { basePath, matchTrailingSlash = true }: PathParamOptions,
 ): [string | null, RouteMatcher[]] {
   const routes = (!Array.isArray(routeOrRoutes) ? [routeOrRoutes] : routeOrRoutes) as string[]
   const matchers = useMatchers(routes)
@@ -199,7 +199,7 @@ function useMatchers(routes: string[]): RouteMatcher[] {
 
 function getMatchParams(
   path: string,
-  routeMatchers: RouteMatcher[]
+  routeMatchers: RouteMatcher[],
 ): [RouteMatcher, Record<string, unknown>] | [null, null] {
   let pathParams: RegExpMatchArray | null = null
 
@@ -229,7 +229,7 @@ function createRouteMatcher(path: string): RouteMatcher {
       `${path.substr(0, 1) === '*' ? '' : '^'}${escapeRegExp(path)
         .replace(pathPartRegex, '([^/]+)')
         .replace(/\*/g, '')}${path.substr(-1) === '*' ? '' : '$'}`,
-      'i'
+      'i',
     ),
     props: (path.match(pathPartRegex) ?? []).map((paramName) => paramName.substr(1)),
   }
