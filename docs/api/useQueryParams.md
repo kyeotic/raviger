@@ -12,10 +12,10 @@ A hook for reading and updating the query string parameters on the page. Updates
 
 
 ```typescript
-export function useQueryParams(
-  parseFn?: (query: string) => QueryParam,
-  serializeFn?: (query: QueryParam) => string
-): [QueryParam, (query: QueryParam, replace?: boolean) => void]
+export function useQueryParams<T extends QueryParam>(
+  parseFn?: (query: string) => T,
+  serializeFn?: (query: Partial<T>) => string
+): [T, (query: T, options?: { replace?: boolean, historyReplace?: boolean }) => void]
 ```
 
 ## Basic
@@ -44,7 +44,7 @@ function UserList ({ users }) {
 
 ## Updating the Query with merge
 
-The second return value from `useQueryParams` is a function that updates the query string. By default it overwrites the entire query, but it can merge with the query object by setting the second param to `{ replace: false }`.
+The second return value from `useQueryParams` is a function that updates the query string. By default it overwrites the entire query, but it can merge with the query object by setting the `replace` option to `false`.
 
 ```jsx
 import { useQueryParams } from 'raviger'
@@ -58,6 +58,25 @@ function UserList ({ users }) {
 ```
 
 The `replace: false` setting also preserves the `location.hash`. The intent should be thought of as updating only the part of the URL that the `setQuery` object describes.
+
+You can also control whether the navigation replaces the current history entry by using the `historyReplace` option:
+
+```jsx
+import { useQueryParams } from 'raviger'
+
+function UserList ({ users }) {
+  const [{ startsWith }, setQuery] = useQueryParams()
+  
+  // This will update the query params without adding a new history entry
+  const handleChange = (e) => {
+    setQuery({ startsWith: e.target.value}, { historyReplace: true })
+  }
+  
+  return (
+    <input value={startsWith || ''} onChange={handleChange} />
+  )
+}
+```
 
 > Warning: using `setQuery` inside of a `useEffect` (or other on-mount/on-update lifecycle methods) can result in unwanted navigations, which show up as duplicate entries in the browser history stack.
 
