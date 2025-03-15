@@ -185,7 +185,7 @@ function Filter() {
         type="text"
         placeholder="Enter a query"
         value={name || ''}
-        onChange={(e) => setQuery({ name: e.target.value }, { replace: false })}
+        onChange={(e) => setQuery({ name: e.target.value }, { overwrite: false, replace: true })}
       />
     </Nav>
   )
