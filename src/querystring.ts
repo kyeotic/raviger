@@ -10,8 +10,18 @@ export interface QueryParam {
 }
 
 export interface setQueryParamsOptions {
+  /**
+   * Controls whether the querystring is overwritten or merged into
+   *
+   * default: true
+   */
+  overwrite?: boolean
+  /**
+   * Controls whether the querystring update causes a history push or replace
+   *
+   * default: false
+   */
   replace?: boolean
-  historyReplace?: boolean
 }
 
 export function useQueryParams<T extends QueryParam>(
@@ -20,15 +30,15 @@ export function useQueryParams<T extends QueryParam>(
 ): [T, (query: T, options?: setQueryParamsOptions) => void] {
   const [querystring, setQuerystring] = useState(getQueryString())
   const setQueryParams = useCallback(
-    (params, { replace = true, historyReplace = false } = {}) => {
+    (params, { overwrite = true, replace = false } = {}) => {
       let path = getCurrentPath()
-      params = replace ? params : { ...parseFn(querystring), ...params }
+      params = overwrite ? params : { ...parseFn(querystring), ...params }
       const serialized = serializeFn(params).toString()
 
       if (serialized) path += '?' + serialized
-      if (!replace) path += getCurrentHash()
+      if (!overwrite) path += getCurrentHash()
 
-      navigate(path, { replace: historyReplace })
+      navigate(path, { replace })
     },
     [querystring, parseFn, serializeFn],
   )

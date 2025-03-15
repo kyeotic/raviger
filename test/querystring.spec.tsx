@@ -33,31 +33,31 @@ describe('useQueryParams', () => {
 
 describe('setQueryParams', () => {
   function Route({
+    overwrite,
     replace,
-    historyReplace,
     foo = 'bar',
   }: {
+    overwrite?: boolean
     replace?: boolean
-    historyReplace?: boolean
     foo?: string | null
   }) {
     const [query, setQuery] = useQueryParams()
     return (
-      <button data-testid="update" onClick={() => setQuery({ foo }, { replace, historyReplace })}>
+      <button data-testid="update" onClick={() => setQuery({ foo }, { overwrite, replace })}>
         Set Query: {query.foo}
       </button>
     )
   }
   test('updates query', async () => {
     act(() => navigate('/about', { query: { bar: 'foo' } }))
-    const { getByTestId } = render(<Route replace />)
+    const { getByTestId } = render(<Route overwrite />)
 
     act(() => void fireEvent.click(getByTestId('update')))
     expect(document.location.search).toEqual('?foo=bar')
   })
   test('handles encoded values', async () => {
     act(() => navigate('/about', { query: { foo: 'foo' } }))
-    const { getByTestId } = render(<Route replace={false} foo={'%100'} />)
+    const { getByTestId } = render(<Route overwrite={false} foo={'%100'} />)
 
     act(() => void fireEvent.click(getByTestId('update')))
     expect(document.location.search).toContain(`foo=${encodeURIComponent('%100')}`)
@@ -65,7 +65,7 @@ describe('setQueryParams', () => {
   })
   test('merges query', async () => {
     act(() => navigate('/about', { query: { bar: 'foo' } }))
-    const { getByTestId } = render(<Route replace={false} />)
+    const { getByTestId } = render(<Route overwrite={false} />)
 
     act(() => void fireEvent.click(getByTestId('update')))
     expect(document.location.search).toContain('bar=foo')
@@ -73,41 +73,41 @@ describe('setQueryParams', () => {
   })
   test('merges query without null', async () => {
     act(() => navigate('/about', { query: { bar: 'foo' } }))
-    const { getByTestId } = render(<Route replace={false} foo={null} />)
+    const { getByTestId } = render(<Route overwrite={false} foo={null} />)
 
     act(() => void fireEvent.click(getByTestId('update')))
     expect(document.location.search).toContain('bar=foo')
     expect(document.location.search).not.toContain('foo=')
   })
-  test('removes has when replace is true', async () => {
+  test('removes has when overwrite is true', async () => {
     act(() => navigate('/about#test'))
-    const { getByTestId } = render(<Route replace />)
+    const { getByTestId } = render(<Route overwrite />)
     act(() => void fireEvent.click(getByTestId('update')))
     expect(document.location.hash).toEqual('')
   })
-  test('retains has when replace is false', async () => {
+  test('retains has when overwrite is false', async () => {
     act(() => navigate('/about#test'))
-    const { getByTestId } = render(<Route replace={false} />)
+    const { getByTestId } = render(<Route overwrite={false} />)
     act(() => void fireEvent.click(getByTestId('update')))
     expect(document.location.hash).toEqual('#test')
   })
 
-  test('uses history.replaceState when historyReplace is true', async () => {
+  test('uses history.replaceState when replace is true', async () => {
     const replaceStateSpy = jest.spyOn(window.history, 'replaceState')
     replaceStateSpy.mockClear()
     act(() => navigate('/about', { query: { bar: 'foo' } }))
-    const { getByTestId } = render(<Route historyReplace={true} />)
+    const { getByTestId } = render(<Route replace={true} />)
     act(() => void fireEvent.click(getByTestId('update')))
     expect(replaceStateSpy).toHaveBeenCalled()
     expect(document.location.search).toEqual('?foo=bar')
     replaceStateSpy.mockRestore()
   })
 
-  test('uses history.pushState when historyReplace is false', async () => {
+  test('uses history.pushState when replace is false', async () => {
     const pushStateSpy = jest.spyOn(window.history, 'pushState')
     pushStateSpy.mockClear()
     act(() => navigate('/about', { query: { bar: 'foo' } }))
-    const { getByTestId } = render(<Route historyReplace={false} />)
+    const { getByTestId } = render(<Route replace={false} />)
     act(() => void fireEvent.click(getByTestId('update')))
     expect(pushStateSpy).toHaveBeenCalled()
     expect(document.location.search).toEqual('?foo=bar')

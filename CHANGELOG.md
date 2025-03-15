@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added support for `useRoutes` to take an array to specify route matching priority
 ### Changed
+- **BREAKING**: changed parameters on `useQueryParams` setter options from `replace, replaceHistory` to `overwrite, replace` to keep consistency with `replace` on other navigation functions.
 - Added support for underscore `_` in path part matchers
 
 ## [4.1.2] - 2022-11-02
