@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   // This global ignore syntax is maximum wtf
-  { ignores: ['node_modules/', 'coverage/'] },
+  { ignores: ['node_modules/', 'coverage/', 'dist/', 'example/'] },
   {
     extends: [
       eslint.configs.recommended,
@@ -25,5 +25,5 @@ export default tseslint.config(
       '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
       '@typescript-eslint/ban-ts-comment': 0,
     },
-  }
+  },
 )
