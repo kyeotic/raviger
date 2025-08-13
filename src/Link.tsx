@@ -15,7 +15,10 @@ export interface ActiveLinkProps extends LinkProps {
   exactActiveClass?: string
 }
 
-function Link({ href, basePath, replace, query, state, ...props }: LinkProps, ref?: Ref<HTMLAnchorElement>) {
+function Link(
+  { href, basePath, replace, query, state, ...props }: LinkProps,
+  ref?: Ref<HTMLAnchorElement>,
+) {
   basePath = useLinkBasePath(basePath)
   href = getLinkHref(href, basePath)
 
