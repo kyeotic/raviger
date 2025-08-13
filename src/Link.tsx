@@ -1,9 +1,9 @@
 import React, { useCallback, forwardRef, Ref } from 'react'
 
-import { navigate } from './navigate'
+import { navigate, NavigateOptions } from './navigate'
 import { useBasePath, useFullPath } from './location'
 
-export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement>, NavigateOptions {
   href: string
   basePath?: string
   children?: React.ReactNode
@@ -15,7 +15,10 @@ export interface ActiveLinkProps extends LinkProps {
   exactActiveClass?: string
 }
 
-function Link({ href, basePath, ...props }: LinkProps, ref?: Ref<HTMLAnchorElement>) {
+function Link(
+  { href, basePath, replace, query, state, ...props }: LinkProps,
+  ref?: Ref<HTMLAnchorElement>,
+) {
   basePath = useLinkBasePath(basePath)
   href = getLinkHref(href, basePath)
 
@@ -31,7 +34,7 @@ function Link({ href, basePath, ...props }: LinkProps, ref?: Ref<HTMLAnchorEleme
       }
       if (shouldTrap(e, target)) {
         e.preventDefault() // prevent the link from actually navigating
-        navigate(e.currentTarget.href)
+        navigate(e.currentTarget.href, { replace: replace, query: query, state: state })
       }
     },
     [onClick, target],
