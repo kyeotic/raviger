@@ -15,6 +15,7 @@
     "type": "git",
     "url": "https://github.com/kyeotic/raviger.git"
   },
+  "homepage": "https://kyeotic.github.io/raviger",
   "author": "Tim Kye <tyrsius@gmail.com>",
   "license": "MIT",
   "private": false,
