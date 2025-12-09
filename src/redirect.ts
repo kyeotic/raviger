@@ -13,7 +13,7 @@ export interface UseRedirectProps {
   predicateUrl: string
   targetUrl: string
   queryParams?: QueryParam | URLSearchParams
-  replace?: boolean,
+  replace?: boolean
   state?: unknown
 }
 
@@ -22,7 +22,7 @@ export function Redirect({
   query,
   replace = true,
   merge = true,
-  state
+  state,
 }: RedirectProps): JSX.Element | null {
   useRedirect(usePath(), to, { query, replace, merge, state })
   return null
@@ -35,8 +35,8 @@ export function useRedirect(
     query,
     replace = true,
     merge = true,
-    state
-  }: { query?: QueryParam; replace?: boolean; merge?: boolean, state?: unknown } = {},
+    state,
+  }: { query?: QueryParam; replace?: boolean; merge?: boolean; state?: unknown } = {},
 ): void {
   const currentPath = usePath()
   const [currentQuery] = useQueryParams()
