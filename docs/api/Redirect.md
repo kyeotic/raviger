@@ -16,6 +16,7 @@ export interface RedirectProps {
   query?: QueryParam | URLSearchParams
   replace?: boolean
   merge?: boolean
+  state?: unknown
 }
 export const Redirect: React.FC<RedirectProps>
 ```
@@ -56,3 +57,7 @@ Provide an object or URLSearchParams to be appended to the `url`. Will be merged
 ## merge
 
 If `merge` is `true` the redirect will use existing `location.hash` and `location.query` values. Useful for rewriting URLs without losing their intended state. `default = true`
+
+## state
+
+State to be passed to the new page, via history. See [navigate()](/api/navigate) for more details.
