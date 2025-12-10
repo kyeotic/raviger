@@ -1,13 +1,11 @@
 import { useLayoutEffect } from 'react'
 
 import { getCurrentHash, usePath } from './location'
-import { navigate } from './navigate'
+import { navigate, NavigateOptions } from './navigate'
 import { QueryParam, useQueryParams } from './querystring'
 
-export interface RedirectProps {
+export interface RedirectProps extends NavigateOptions {
   to: string
-  query?: QueryParam | URLSearchParams
-  replace?: boolean
   merge?: boolean
 }
 
@@ -16,6 +14,7 @@ export interface UseRedirectProps {
   targetUrl: string
   queryParams?: QueryParam | URLSearchParams
   replace?: boolean
+  state?: unknown
 }
 
 export function Redirect({
@@ -23,8 +22,9 @@ export function Redirect({
   query,
   replace = true,
   merge = true,
+  state,
 }: RedirectProps): JSX.Element | null {
-  useRedirect(usePath(), to, { query, replace, merge })
+  useRedirect(usePath(), to, { query, replace, merge, state })
   return null
 }
 
@@ -35,7 +35,8 @@ export function useRedirect(
     query,
     replace = true,
     merge = true,
-  }: { query?: QueryParam; replace?: boolean; merge?: boolean } = {},
+    state,
+  }: { query?: QueryParam; replace?: boolean; merge?: boolean; state?: unknown } = {},
 ): void {
   const currentPath = usePath()
   const [currentQuery] = useQueryParams()
@@ -55,7 +56,7 @@ export function useRedirect(
 
   useLayoutEffect(() => {
     if (currentPath === predicateUrl) {
-      navigate(url, { replace })
+      navigate(url, { replace, state })
     }
-  }, [predicateUrl, url, replace, currentPath])
+  }, [predicateUrl, url, replace, currentPath, state])
 }
