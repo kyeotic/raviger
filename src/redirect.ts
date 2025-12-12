@@ -2,19 +2,11 @@ import { useLayoutEffect } from 'react'
 
 import { getCurrentHash, usePath } from './location'
 import { navigate, NavigateOptions } from './navigate'
-import { QueryParam, useQueryParams } from './querystring'
+import { useQueryParams } from './querystring'
 
 export interface RedirectProps extends NavigateOptions {
   to: string
   merge?: boolean
-}
-
-export interface UseRedirectProps {
-  predicateUrl: string
-  targetUrl: string
-  queryParams?: QueryParam | URLSearchParams
-  replace?: boolean
-  state?: unknown
 }
 
 export function Redirect({
@@ -28,15 +20,14 @@ export function Redirect({
   return null
 }
 
+export interface UseRedirectOptions extends NavigateOptions {
+  merge?: boolean
+}
+
 export function useRedirect(
   predicateUrl: string | null,
   targetUrl: string,
-  {
-    query,
-    replace = true,
-    merge = true,
-    state,
-  }: { query?: QueryParam; replace?: boolean; merge?: boolean; state?: unknown } = {},
+  { query, replace = true, merge = true, state }: UseRedirectOptions = {},
 ): void {
   const currentPath = usePath()
   const [currentQuery] = useQueryParams()
