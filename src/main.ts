@@ -4,7 +4,7 @@ export type { Routes, RouteOptionParams, PathParamOptions } from './router'
 export { RouterProvider } from './context'
 
 export { useRedirect, Redirect } from './redirect'
-export type { RedirectProps, UseRedirectProps } from './redirect'
+export type { RedirectProps } from './redirect'
 
 export { Link, ActiveLink } from './Link'
 
