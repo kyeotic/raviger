@@ -49,7 +49,7 @@
     "test:ci": "run-s check:ci test:unit:ci",
     "size": "run-s build size:check",
     "size:check": "size-limit",
-    "prepublishOnly": "run-s test:ci",
+    "prepublishOnly": "run-s test:ci build",
     "release": "np",
     "analyze": "size-limit --why"
   },
