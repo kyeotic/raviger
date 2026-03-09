@@ -1,6 +1,14 @@
 import React, { useCallback, useEffect, act } from 'react'
 import { render, fireEvent } from '@testing-library/react'
-import { navigate, useLocationChange, usePath, useRoutes, useHash, Routes, RavigerLocation } from '../src/main'
+import {
+  navigate,
+  useLocationChange,
+  usePath,
+  useRoutes,
+  useHash,
+  Routes,
+  RavigerLocation,
+} from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -70,7 +78,9 @@ describe('useLocationChange', () => {
       render(<LocationRoute onChange={watcher} />)
 
       act(() => navigate('/foo'))
-      expect(watcher).toHaveBeenCalledWith(expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'push' }))
+      expect(watcher).toHaveBeenCalledWith(
+        expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'push' }),
+      )
     })
 
     test('is "replace" when navigating with navigate({ replace: true })', () => {
@@ -78,7 +88,9 @@ describe('useLocationChange', () => {
       render(<LocationRoute onChange={watcher} />)
 
       act(() => navigate('/foo', { replace: true }))
-      expect(watcher).toHaveBeenCalledWith(expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'replace' }))
+      expect(watcher).toHaveBeenCalledWith(
+        expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'replace' }),
+      )
     })
 
     test('is "pop" for browser back/forward (popstate without __method)', () => {
@@ -88,7 +100,9 @@ describe('useLocationChange', () => {
       act(() => {
         window.dispatchEvent(new PopStateEvent('popstate'))
       })
-      expect(watcher).toHaveBeenCalledWith(expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'pop' }))
+      expect(watcher).toHaveBeenCalledWith(
+        expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'pop' }),
+      )
     })
 
     test('is undefined on initial mount when onInitial is true', () => {
@@ -99,7 +113,9 @@ describe('useLocationChange', () => {
       const watcher = jest.fn()
       render(<InitialRoute onChange={watcher} />)
 
-      expect(watcher).toHaveBeenCalledWith(expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: undefined }))
+      expect(watcher).toHaveBeenCalledWith(
+        expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: undefined }),
+      )
     })
   })
 })

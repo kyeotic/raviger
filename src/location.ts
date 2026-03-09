@@ -133,16 +133,19 @@ export function useLocationChange(
     setRef.current = setFn
   })
 
-  const onPopState = useCallback((event: PopStateEvent) => {
-    // No predicate defaults true
-    if (isActive !== undefined && !isPredicateActive(isActive)) return
-    if (shouldCancelNavigation()) return
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const method = (event as any).__method as string | undefined
-    const initiatedBy: NavigationInitiator =
-      method === 'push' ? 'push' : method === 'replace' ? 'replace' : 'pop'
-    setRef.current(getFormattedLocation(basePath, initiatedBy))
-  }, [isActive, basePath])
+  const onPopState = useCallback(
+    (event: PopStateEvent) => {
+      // No predicate defaults true
+      if (isActive !== undefined && !isPredicateActive(isActive)) return
+      if (shouldCancelNavigation()) return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const method = (event as any).__method as string | undefined
+      const initiatedBy: NavigationInitiator =
+        method === 'push' ? 'push' : method === 'replace' ? 'replace' : 'pop'
+      setRef.current(getFormattedLocation(basePath, initiatedBy))
+    },
+    [isActive, basePath],
+  )
 
   useLayoutEffect(() => {
     window.addEventListener('popstate', onPopState)
@@ -188,7 +191,10 @@ export function getFormattedPath(basePath: string): string | null {
   return decodeURIComponent(!basePath ? path : path.replace(basePathMatcher(basePath), '') || '/')
 }
 
-function getFormattedLocation(basePath: string, initiatedBy?: NavigationInitiator): RavigerLocation {
+function getFormattedLocation(
+  basePath: string,
+  initiatedBy?: NavigationInitiator,
+): RavigerLocation {
   const path = getFormattedPath(basePath)
   return {
     basePath,
