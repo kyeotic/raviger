@@ -11,6 +11,8 @@ This hook invokes a setter whenever the page location is updated. It uses a `win
 ## API
 
 ```typescript
+export type NavigationInitiator = 'push' | 'replace' | 'pop'
+
 export interface RavigerLocation {
   /** The current path; alias of `pathname` */
   path: string | null
@@ -25,6 +27,14 @@ export interface RavigerLocation {
   hostname: string
   href: string
   origin: string
+  /**
+   * How the navigation was initiated.
+   * - `'push'`: programmatic navigation via `navigate()` (history.pushState)
+   * - `'replace'`: programmatic navigation via `navigate({ replace: true })` (history.replaceState)
+   * - `'pop'`: browser back/forward button (popstate event)
+   * - `undefined`: fired on mount or basePath change, not triggered by navigation
+   */
+  initiatedBy?: NavigationInitiator
 }
 
 export function useLocationChange(
@@ -96,6 +106,39 @@ import { useLocationChange } from 'raviger'
 function Route () {
   const [location, setLoc] = useState(null)
   useLocationChange(setLoc, { onInitial: true })
+
+  return (
+    // ...
+  )
+}
+```
+
+## Detecting How Navigation Was Initiated
+
+The `initiatedBy` field on `RavigerLocation` indicates what caused the navigation:
+
+| Value | Cause |
+|---|---|
+| `'push'` | Programmatic call to `navigate()` (adds a history entry) |
+| `'replace'` | Programmatic call to `navigate({ replace: true })` (replaces current history entry) |
+| `'pop'` | Browser back/forward button |
+| `undefined` | Fired on initial mount or basePath change — not a navigation event |
+
+```jsx
+import { useCallback } from 'react'
+import { useLocationChange } from 'raviger'
+
+function App () {
+  const onChange = useCallback(location => {
+    if (location.initiatedBy === 'pop') {
+      console.log('User navigated with browser back/forward')
+    } else if (location.initiatedBy === 'push') {
+      console.log('Programmatic navigation to', location.path)
+    } else if (location.initiatedBy === 'replace') {
+      console.log('Programmatic replace to', location.path)
+    }
+  }, [])
+  useLocationChange(onChange)
 
   return (
     // ...

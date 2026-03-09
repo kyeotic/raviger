@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, act } from 'react'
 import { render, fireEvent } from '@testing-library/react'
-import { navigate, useLocationChange, usePath, useRoutes, useHash, Routes } from '../src/main'
+import { navigate, useLocationChange, usePath, useRoutes, useHash, Routes, RavigerLocation } from '../src/main'
 
 beforeEach(() => {
   act(() => navigate('/'))
@@ -57,6 +57,50 @@ describe('useLocationChange', () => {
     expect(watcher).toHaveBeenCalledWith(null)
     act(() => navigate('/home'))
     expect(watcher).toHaveBeenCalledWith('/')
+  })
+
+  describe('initiatedBy', () => {
+    function LocationRoute({ onChange }: { onChange: (location: RavigerLocation) => void }) {
+      useLocationChange(onChange)
+      return null
+    }
+
+    test('is "push" when navigating with navigate()', () => {
+      const watcher = jest.fn()
+      render(<LocationRoute onChange={watcher} />)
+
+      act(() => navigate('/foo'))
+      expect(watcher).toHaveBeenCalledWith(expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'push' }))
+    })
+
+    test('is "replace" when navigating with navigate({ replace: true })', () => {
+      const watcher = jest.fn()
+      render(<LocationRoute onChange={watcher} />)
+
+      act(() => navigate('/foo', { replace: true }))
+      expect(watcher).toHaveBeenCalledWith(expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'replace' }))
+    })
+
+    test('is "pop" for browser back/forward (popstate without __method)', () => {
+      const watcher = jest.fn()
+      render(<LocationRoute onChange={watcher} />)
+
+      act(() => {
+        window.dispatchEvent(new PopStateEvent('popstate'))
+      })
+      expect(watcher).toHaveBeenCalledWith(expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: 'pop' }))
+    })
+
+    test('is undefined on initial mount when onInitial is true', () => {
+      function InitialRoute({ onChange }: { onChange: (location: RavigerLocation) => void }) {
+        useLocationChange(onChange, { onInitial: true })
+        return null
+      }
+      const watcher = jest.fn()
+      render(<InitialRoute onChange={watcher} />)
+
+      expect(watcher).toHaveBeenCalledWith(expect.objectContaining<Partial<RavigerLocation>>({ initiatedBy: undefined }))
+    })
   })
 })
 

@@ -47,13 +47,16 @@ export function navigate(url: string, options?: NavigateOptions): void {
     return
   }
 
-  if (options?.replace) window.history.replaceState(options?.state, '', url)
+  const replace = !!options?.replace
+  if (replace) window.history.replaceState(options?.state, '', url)
   else window.history.pushState(options?.state, '', url)
 
   const event = new PopStateEvent('popstate')
   // Tag the event so navigation can be filtered out from browser events
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(event as any).__tag = 'raviger:navigation'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(event as any).__method = replace ? 'replace' : 'push'
   dispatchEvent(event)
 }
 
