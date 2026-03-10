@@ -50,7 +50,7 @@
     "size": "run-s build size:check",
     "size:check": "size-limit",
     "prepublishOnly": "run-s test:ci build",
-    "release": "np",
+    "release": "np --no-publish",
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
