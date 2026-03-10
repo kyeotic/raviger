@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.3.0] - 2026-03-10
+### Added
+- `initiatedBy` to `useLocationChange` to distinguish between replace navigations
+
 ## [5.2.0] - 2025-12-10
 ### Added
 - `<Redirect>` support the `state` param
