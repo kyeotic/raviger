@@ -18,7 +18,12 @@ export {
   useLocationChange,
   useHistory,
 } from './location'
-export type { LocationChangeSetFn, LocationChangeOptionParams } from './location'
+export type {
+  LocationChangeSetFn,
+  LocationChangeOptionParams,
+  RavigerLocation,
+  NavigationInitiator,
+} from './location'
 
 export { useQueryParams } from './querystring'
 export type { QueryParam, setQueryParamsOptions } from './querystring'

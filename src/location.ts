@@ -6,6 +6,8 @@ import { getSsrPath, isNode } from './node'
 import { shouldCancelNavigation } from './intercept'
 import { isFunction } from './typeChecks'
 
+export type NavigationInitiator = 'push' | 'replace' | 'pop'
+
 export interface RavigerLocation {
   /** The current path; alias of `pathname` */
   path: string | null
@@ -20,6 +22,8 @@ export interface RavigerLocation {
   hostname: string
   href: string
   origin: string
+  /** How the navigation was initiated: 'push' (history.pushState), 'replace' (history.replaceState), or 'pop' (browser back/forward) */
+  initiatedBy?: NavigationInitiator
 }
 
 export interface RavigerHistory {
@@ -129,12 +133,19 @@ export function useLocationChange(
     setRef.current = setFn
   })
 
-  const onPopState = useCallback(() => {
-    // No predicate defaults true
-    if (isActive !== undefined && !isPredicateActive(isActive)) return
-    if (shouldCancelNavigation()) return
-    setRef.current(getFormattedLocation(basePath))
-  }, [isActive, basePath])
+  const onPopState = useCallback(
+    (event: PopStateEvent) => {
+      // No predicate defaults true
+      if (isActive !== undefined && !isPredicateActive(isActive)) return
+      if (shouldCancelNavigation()) return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const method = (event as any).__method as string | undefined
+      const initiatedBy: NavigationInitiator =
+        method === 'push' ? 'push' : method === 'replace' ? 'replace' : 'pop'
+      setRef.current(getFormattedLocation(basePath, initiatedBy))
+    },
+    [isActive, basePath],
+  )
 
   useLayoutEffect(() => {
     window.addEventListener('popstate', onPopState)
@@ -180,7 +191,10 @@ export function getFormattedPath(basePath: string): string | null {
   return decodeURIComponent(!basePath ? path : path.replace(basePathMatcher(basePath), '') || '/')
 }
 
-function getFormattedLocation(basePath: string): RavigerLocation {
+function getFormattedLocation(
+  basePath: string,
+  initiatedBy?: NavigationInitiator,
+): RavigerLocation {
   const path = getFormattedPath(basePath)
   return {
     basePath,
@@ -193,6 +207,7 @@ function getFormattedLocation(basePath: string): RavigerLocation {
     hostname: window.location.hostname,
     href: window.location.href,
     origin: window.location.origin,
+    initiatedBy,
   }
 }
 
