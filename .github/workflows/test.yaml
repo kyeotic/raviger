@@ -22,15 +22,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
       - name: Test
         run: |
-          npm install
-          npm run build
-          npm run test:ci
+          pnpm install
+          pnpm run build
+          pnpm run test:ci
         env:
           CI: true
       - name: Archive code coverage results
