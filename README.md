@@ -2,9 +2,9 @@
 
 <p align="center">
     <a href="https://bundlephobia.com/package/raviger@latest" alt="Bundlephobia">
-        <img src="https://badgen.net/bundlephobia/min/raviger" /></a>
+        <img src="https://img.shields.io/bundlephobia/minzip/raviger" /></a>
     <a href="https://bundlephobia.com/package/raviger@latest" alt="Bundlephobia gzip">
-        <img src="https://badgen.net/bundlephobia/minzip/raviger" /></a>
+        <img src="https://img.shields.io/bundlephobia/minzip/raviger" /></a>
     <a href="https://github.com/kyeotic/raviger/actions" alt="Builds">
         <img src="https://github.com/kyeotic/raviger/workflows/Tests/badge.svg" /></a>
 </p>
