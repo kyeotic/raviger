@@ -1,0 +1,286 @@
+# raviger
+
+> React hook-based router. Zero dependencies, tiny footprint (~3KB), updates on **all** URL changes including browser back/forward. Supports React 16.8+.
+
+Install: `npm i raviger`
+
+## Core Concepts
+
+Routes are plain objects mapping path strings to functions that return JSX. Path variables use `:name` syntax. Wildcards use `*`. Route functions receive path params as props.
+
+## API
+
+### `useRoutes(routes, options?)`
+
+Main routing hook. Returns matched JSX element or `null`.
+
+```jsx
+import { useRoutes, Link } from 'raviger'
+
+const routes = {
+  '/': () => <Home />,
+  '/about': () => <About />,
+  '/users/:userId': ({ userId }) => <User id={userId} />
+}
+
+export default function App() {
+  const route = useRoutes(routes)
+  return (
+    <div>
+      <Link href="/">Home</Link>
+      <Link href="/about">About</Link>
+      {route}
+    </div>
+  )
+}
+```
+
+Options:
+- `basePath?: string` — prepend to all routes; sets context for nested hooks/Links
+- `routeProps?: object` — extra props passed to matched route function
+- `overridePathParams?: boolean` (default `true`) — routeProps override path params
+- `matchTrailingSlash?: boolean` (default `true`) — `/about/` matches `/about`
+
+Array form for explicit priority control:
+```js
+const routes = [
+  { path: '/users/:id/edit', fn: ({ id }) => <EditUser id={id} /> },
+  { path: '/users/:id',      fn: ({ id }) => <User id={id} /> },
+]
+```
+
+---
+
+### `navigate(url, options?)`
+
+Programmatic navigation. Options: `{ replace?: boolean, query?: object, state?: unknown }`.
+
+```js
+import { navigate } from 'raviger'
+
+navigate('/users/1')
+navigate('/search', { query: { q: 'hello' } })
+navigate('/replace-me', { replace: true })
+```
+
+---
+
+### `useNavigate(basePath?)`
+
+Hook version of `navigate` that respects `basePath` context.
+
+```jsx
+function Nav() {
+  const navigate = useNavigate()
+  return <button onClick={() => navigate('/about')}>About</button>
+}
+```
+
+---
+
+### `usePath(basePath?)`
+
+Returns the current path string. Strips `basePath` if provided (or from context).
+
+```jsx
+const path = usePath() // '/users/1'
+```
+
+---
+
+### `useFullPath()`
+
+Returns the full path, ignoring any basePath context.
+
+---
+
+### `useBasePath()`
+
+Returns the current basePath from context.
+
+---
+
+### `useHash(options?)`
+
+Returns and watches the URL hash. Options: `{ stripHash?: boolean }` (default `true`).
+
+```jsx
+const hash = useHash() // 'section-1' (without '#')
+```
+
+---
+
+### `useQueryParams(parseFn?, serializeFn?)`
+
+Returns `[params, setParams]`. `setParams(patch, options?)` merges query string. Options: `{ replace?: boolean }`.
+
+```jsx
+const [{ search, page }, setQuery] = useQueryParams()
+
+// Update one key, keep others
+setQuery({ search: 'hello' })
+
+// Replace all
+setQuery({ page: 2 }, { replace: true })
+```
+
+---
+
+### `usePathParams(route | routes[], options?)`
+
+Extract path params from the current path without rendering a route.
+
+```jsx
+const { userId } = usePathParams('/users/:userId') // null if no match
+```
+
+---
+
+### `useMatch(routes, options?)`
+
+Returns `true`/`false` (or the matched route) without rendering.
+
+---
+
+### `useLocationChange(fn, options?)`
+
+Subscribe to location changes. Options: `{ onInitial?: boolean }`.
+
+The callback receives a `RavigerLocation` object:
+```typescript
+{
+  path: string          // path with basePath stripped
+  fullPath: string      // full path
+  search: string        // query string
+  hash: string
+  href: string
+  initiatedBy?: 'push' | 'replace' | 'pop'
+}
+```
+
+```jsx
+useLocationChange((loc) => {
+  analytics.track(loc.path)
+}, { onInitial: true })
+```
+
+---
+
+### `useHistory()`
+
+Returns history state and whether scroll restoration is enabled.
+
+---
+
+### `useNavigationPrompt(predicate, prompt?)`
+
+Blocks navigation when `predicate` is truthy. Shows browser `confirm()` with `prompt` string.
+
+```jsx
+useNavigationPrompt(formIsDirty, 'Leave without saving?')
+```
+
+---
+
+### `<Link href props>`
+
+Anchor tag that uses `history.pushState`. All standard anchor props supported. Passes `query` as `NavigateOptions.query`.
+
+```jsx
+<Link href="/users/1">View User</Link>
+<Link href="/search" query={{ q: 'hello' }}>Search</Link>
+```
+
+---
+
+### `<ActiveLink href activeClass exactActiveClass props>`
+
+Like `<Link>` but applies CSS classes based on path matching.
+- `activeClass` — applied when current path starts with href
+- `exactActiveClass` — applied when current path exactly matches href
+
+```jsx
+<ActiveLink href="/users" activeClass="active" exactActiveClass="exact">Users</ActiveLink>
+```
+
+---
+
+### `<Redirect href mergeQuery>`
+
+Immediately navigates to `href` on render. Set `mergeQuery` to carry forward existing query params.
+
+```jsx
+<Redirect href="/login" />
+```
+
+---
+
+### `<RouterProvider basePath path>`
+
+Provides `basePath` context to all child hooks and `<Link>` components. Use for nested routing or sub-apps.
+
+```jsx
+<RouterProvider basePath="/app">
+  <App />
+</RouterProvider>
+```
+
+---
+
+## Nested Routing
+
+Use `basePath` option in `useRoutes` for nested sub-apps. Child hooks and Links automatically inherit the basePath.
+
+```jsx
+function App() {
+  return useRoutes({
+    '/': () => <Home />,
+    '/admin/*': () => <AdminApp />
+  })
+}
+
+function AdminApp() {
+  // basePath '/admin' is set automatically by parent useRoutes
+  return useRoutes({
+    '/': () => <AdminHome />,
+    '/users': () => <AdminUsers />
+  })
+}
+```
+
+## Common Patterns
+
+**404 / catch-all:**
+```jsx
+const routes = {
+  '/': () => <Home />,
+  '/*': () => <NotFound />
+}
+```
+
+**Redirect unauthenticated users:**
+```jsx
+const routes = {
+  '/dashboard': () => isLoggedIn ? <Dashboard /> : <Redirect href="/login" />
+}
+```
+
+**Query-driven list filtering:**
+```jsx
+function UserList() {
+  const [{ filter = '' }, setQuery] = useQueryParams()
+  return (
+    <>
+      <input value={filter} onChange={e => setQuery({ filter: e.target.value })} />
+      <Users filter={filter} />
+    </>
+  )
+}
+```
+
+**Scroll to hash on navigation:**
+```jsx
+useLocationChange((loc) => {
+  if (loc.hash) document.getElementById(loc.hash)?.scrollIntoView()
+}, { onInitial: true })
+```

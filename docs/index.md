@@ -11,6 +11,8 @@ nav_order: 1
 
 Zero dependencies. Tiny footprint.
 
+[llms.txt](https://raw.githubusercontent.com/kyeotic/raviger/main/llms.txt) — machine-readable API reference for LLMs
+
 # Quick Start
 
 Getting started with [raviger](https://github.com/kyeotic/raviger)
