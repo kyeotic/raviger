@@ -75,9 +75,7 @@
       "limit": "3.5kb"
     }
   ],
-  "np": {
-    "yarn": true
-  },
+  "np": {},
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@rollup/plugin-replace": "^6.0.2",
@@ -86,6 +84,9 @@
     "@size-limit/preset-small-lib": "9.x",
     "@size-limit/webpack": "9.x",
     "@testing-library/jest-dom": "^5.16.4",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@types/testing-library__jest-dom": "^5.14.9",
     "@testing-library/react": "15.x",
     "@types/react": "18",
     "@types/react-dom": "18",
